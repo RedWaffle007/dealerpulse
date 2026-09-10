@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, type ReactNode } from "react";
 import {
   Select,
   SelectContent,
@@ -45,71 +45,106 @@ export function FilterBar({
   const applyPreset = (key: string | null) => {
     if (!key) return;
     if (key === "all") setParam({ from: months[0], to: months[months.length - 1] });
+    else if (key === "q3") setParam({ from: "2025-07", to: "2025-09" });
     else if (key === "q4") setParam({ from: "2025-10", to: "2025-12" });
     else if (key === "last") setParam({ from: months[months.length - 1], to: months[months.length - 1] });
+  };
+
+  // Changing one end can never leave the range inverted: if the new start is
+  // after the end (or the new end before the start), the other end follows.
+  const setFrom = (v: string | null) => {
+    if (v) setParam(v > to ? { from: v, to: v } : { from: v });
+  };
+  const setTo = (v: string | null) => {
+    if (v) setParam(v < from ? { from: v, to: v } : { to: v });
   };
 
   const presetValue =
     from === months[0] && to === months[months.length - 1]
       ? "all"
-      : from === "2025-10" && to === "2025-12"
-        ? "q4"
-        : from === to && to === months[months.length - 1]
-          ? "last"
-          : "custom";
+      : from === "2025-07" && to === "2025-09"
+        ? "q3"
+        : from === "2025-10" && to === "2025-12"
+          ? "q4"
+          : from === to && to === months[months.length - 1]
+            ? "last"
+            : "custom";
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <Select value={presetValue === "custom" ? undefined : presetValue} onValueChange={applyPreset}>
-        <SelectTrigger size="sm" className="w-[150px]">
-          <SelectValue placeholder="Custom range" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All (Jun–Dec)</SelectItem>
-          <SelectItem value="q4">Q4 (Oct–Dec)</SelectItem>
-          <SelectItem value="last">Latest month</SelectItem>
-        </SelectContent>
-      </Select>
+    <div className="flex flex-wrap items-end gap-x-2 gap-y-2">
+      <Field label="Period">
+        <Select value={presetValue === "custom" ? null : presetValue} onValueChange={applyPreset}>
+          <SelectTrigger size="sm" className="w-[148px]">
+            <SelectValue placeholder="Custom range" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All (Jun–Dec)</SelectItem>
+            <SelectItem value="q3">Q3 (Jul–Sep)</SelectItem>
+            <SelectItem value="q4">Q4 (Oct–Dec)</SelectItem>
+            <SelectItem value="last">Latest month</SelectItem>
+          </SelectContent>
+        </Select>
+      </Field>
 
-      <Select value={from} onValueChange={(v) => v && setParam({ from: v })}>
-        <SelectTrigger size="sm" className="w-[120px]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {months.map((m) => (
-            <SelectItem key={m} value={m}>
-              {formatMonth(m)}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <span className="text-muted-foreground text-xs">to</span>
-      <Select value={to} onValueChange={(v) => v && setParam({ to: v })}>
-        <SelectTrigger size="sm" className="w-[120px]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {months.map((m) => (
-            <SelectItem key={m} value={m}>
-              {formatMonth(m)}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <Field label="From">
+        <Select value={from} onValueChange={setFrom}>
+          <SelectTrigger size="sm" className="w-[116px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {months.map((m) => (
+              // A start month can't be after the current end month.
+              <SelectItem key={m} value={m} disabled={m > to}>
+                {formatMonth(m)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Field>
 
-      <Select value={branch} onValueChange={(v) => v && setParam({ branch: v })}>
-        <SelectTrigger size="sm" className="w-[170px]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All branches</SelectItem>
-          {branches.map((b) => (
-            <SelectItem key={b.id} value={b.id}>
-              {b.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <Field label="To">
+        <Select value={to} onValueChange={setTo}>
+          <SelectTrigger size="sm" className="w-[116px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {months.map((m) => (
+              // An end month can't be before the current start month.
+              <SelectItem key={m} value={m} disabled={m < from}>
+                {formatMonth(m)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Field>
+
+      <Field label="Branch">
+        <Select value={branch} onValueChange={(v) => v && setParam({ branch: v })}>
+          <SelectTrigger size="sm" className="w-[168px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All branches</SelectItem>
+            {branches.map((b) => (
+              <SelectItem key={b.id} value={b.id}>
+                {b.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Field>
     </div>
+  );
+}
+
+/** A control with a small caption above it, so no dropdown is a mystery. */
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <label className="flex flex-col gap-1">
+      <span className="px-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </span>
+      {children}
+    </label>
   );
 }
