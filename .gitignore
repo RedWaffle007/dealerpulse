@@ -1,0 +1,11 @@
+# OS / editor cruft
+.DS_Store
+*.log
+.~lock.*#
+
+# Node / Next — dealerpulse/.gitignore already covers its subtree; this is a safety net
+node_modules/
+.next/
+
+# Internal session handoff (delete this line if you want it in the repo)
+HANDOFF.md
