@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDataset, getIndexes } from "@/lib/data";
 import {
@@ -20,6 +19,7 @@ import {
 } from "@/lib/format";
 import type { Filter } from "@/lib/types";
 import { KpiCard } from "@/components/dashboard/kpi-card";
+import { PageHero } from "@/components/layout/page-hero";
 import { FunnelBars } from "@/components/dashboard/funnel-bars";
 import { ActionList } from "@/components/dashboard/action-list";
 import {
@@ -66,26 +66,24 @@ export default async function RepPage(props: PageProps<"/reps/[repId]">) {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 md:py-8">
-      <div className="mb-4 text-sm">
-        <Link
-          href={`/branches/${rep.branch_id}?${qs}`}
-          className="text-muted-foreground hover:text-foreground"
-        >
-          ← {branch?.name}
-        </Link>
-      </div>
-      <header className="mb-6 flex items-center gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{rep.name}</h1>
-          <p className="text-muted-foreground text-sm">
-            {branch?.name} · {formatMonth(base.from)} – {formatMonth(base.to)}
-          </p>
-        </div>
-        {rep.role === "branch_manager" && <Badge variant="secondary">Manager</Badge>}
-        {k.leadsCreated < 5 && (
-          <Badge variant="outline">Low sample ({k.leadsCreated} leads)</Badge>
-        )}
-      </header>
+      <PageHero
+        title={rep.name}
+        period={`${formatMonth(base.from)} – ${formatMonth(base.to)}`}
+        backHref={`/branches/${rep.branch_id}?${qs}`}
+        backLabel={branch?.name}
+        actions={
+          <>
+            {rep.role === "branch_manager" && (
+              <Badge variant="secondary">Manager</Badge>
+            )}
+            {k.leadsCreated < 5 && (
+              <Badge variant="outline">Low sample ({k.leadsCreated} leads)</Badge>
+            )}
+          </>
+        }
+      >
+        {branch?.name}
+      </PageHero>
 
       <section className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5">
         <KpiCard label="Leads" value={formatInt(k.leadsCreated)} />
@@ -142,7 +140,9 @@ export default async function RepPage(props: PageProps<"/reps/[repId]">) {
             <CardDescription>{actions.length} flagged</CardDescription>
           </CardHeader>
           <CardContent>
-            <ActionList items={actions.slice(0, 6)} showBranch={false} />
+            <div className="max-h-[22rem] overflow-y-auto pr-1">
+              <ActionList items={actions} showBranch={false} />
+            </div>
           </CardContent>
         </Card>
       </div>

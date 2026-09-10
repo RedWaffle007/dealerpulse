@@ -5,6 +5,8 @@ import { formatCrore, formatInt, formatMonth } from "@/lib/format";
 import type { Filter } from "@/lib/types";
 import { ActionList } from "@/components/dashboard/action-list";
 import { KpiCard } from "@/components/dashboard/kpi-card";
+import { PageHero } from "@/components/layout/page-hero";
+import { cn } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -13,26 +15,35 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const RULES: { type: ActionType; title: string; blurb: string }[] = [
+const RULES: {
+  type: ActionType;
+  title: string;
+  blurb: string;
+  accent: string;
+}[] = [
   {
     type: "stale_order",
     title: "Order placed, going stale",
     blurb: "Committed buyers with no activity for 7+ days — highest urgency.",
+    accent: "border-t-red-500",
   },
   {
     type: "overdue",
     title: "Past expected close",
     blurb: "Expected-close date has passed but the lead is still open.",
+    accent: "border-t-amber-500",
   },
   {
     type: "high_value_late",
     title: "Late-stage idle",
     blurb: "Negotiation-or-deeper leads with no movement for 7+ days.",
+    accent: "border-t-orange-500",
   },
   {
     type: "cold",
     title: "Cold leads",
     blurb: "Early-stage leads with no activity for 7+ days.",
+    accent: "border-t-brand",
   },
 ];
 
@@ -56,16 +67,16 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 md:py-8">
-      <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Action Center</h1>
-        <p className="text-muted-foreground text-sm">
-          Deterministic, explainable alerts ·{" "}
-          {base.branchId
-            ? idx.branchById.get(base.branchId)?.name
-            : "all branches"}{" "}
-          · as of 31 Dec 2025
-        </p>
-      </header>
+      <PageHero
+        title="Action Center"
+        period={`${formatMonth(base.from)} – ${formatMonth(base.to)}`}
+      >
+        Deterministic, explainable alerts ·{" "}
+        {base.branchId
+          ? idx.branchById.get(base.branchId)?.name
+          : "all branches"}{" "}
+        · <span className="font-medium text-foreground">as of 31 Dec 2025</span>
+      </PageHero>
 
       <section className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
         <KpiCard
@@ -91,7 +102,7 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
         {RULES.map((r) => {
           const list = byType(r.type);
           return (
-            <Card key={r.type}>
+            <Card key={r.type} className={cn("border-t-2", r.accent)}>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>{r.title}</span>
@@ -102,12 +113,9 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
                 <CardDescription>{r.blurb}</CardDescription>
               </CardHeader>
               <CardContent>
-                <ActionList items={list.slice(0, 8)} />
-                {list.length > 8 && (
-                  <p className="text-muted-foreground pt-2 text-xs">
-                    +{list.length - 8} more
-                  </p>
-                )}
+                <div className="max-h-[30rem] overflow-y-auto pr-1">
+                  <ActionList items={list} />
+                </div>
               </CardContent>
             </Card>
           );
