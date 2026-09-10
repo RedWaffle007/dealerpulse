@@ -18,6 +18,7 @@ import {
   stageLabel,
 } from "@/lib/format";
 import { KpiCard, type KpiTone } from "@/components/dashboard/kpi-card";
+import { PageHero } from "@/components/layout/page-hero";
 import { AttainmentChart } from "@/components/charts/attainment-chart";
 import {
   Card,
@@ -68,18 +69,14 @@ export default async function OverviewPage(props: PageProps<"/">) {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 md:py-8">
-      <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Executive overview
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          {formatMonth(f.from)} – {formatMonth(f.to)}
-          {f.branchId
-            ? ` · ${idx.branchById.get(f.branchId)?.name}`
-            : " · all branches"}{" "}
-          · pipeline & alerts <span className="font-medium">as of 31 Dec 2025</span>
-        </p>
-      </header>
+      <PageHero
+        title="Executive overview"
+        period={`${formatMonth(f.from)} – ${formatMonth(f.to)}`}
+      >
+        {f.branchId ? idx.branchById.get(f.branchId)?.name : "All branches"} ·
+        pipeline &amp; alerts{" "}
+        <span className="font-medium text-foreground">as of 31 Dec 2025</span>
+      </PageHero>
 
       {/* KPI row */}
       <section className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
@@ -146,7 +143,7 @@ export default async function OverviewPage(props: PageProps<"/">) {
             {actions.slice(0, 5).map((a) => (
               <div
                 key={a.leadId}
-                className="rounded-md border border-border/60 p-2.5 text-sm"
+                className="rounded-md border border-l-2 border-border/60 border-l-brand/60 bg-brand/[0.03] p-2.5 text-sm"
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-medium">{a.customer}</span>
@@ -160,9 +157,12 @@ export default async function OverviewPage(props: PageProps<"/">) {
                 <div className="mt-1 text-xs">{a.reason}</div>
               </div>
             ))}
-            <div className="pt-1 text-xs text-muted-foreground">
-              {actions.length} leads flagged in total
-            </div>
+            <Link
+              href={`/actions?${qs}${f.branchId ? `&branch=${f.branchId}` : ""}`}
+              className="inline-flex pt-1 text-xs font-medium text-brand hover:underline"
+            >
+              View all {actions.length} in Action Center →
+            </Link>
           </CardContent>
         </Card>
       </div>
@@ -192,7 +192,7 @@ export default async function OverviewPage(props: PageProps<"/">) {
                     <TableCell>
                       <Link
                         href={`/branches/${b.branchId}?${qs}`}
-                        className="font-medium hover:underline"
+                        className="font-medium text-brand hover:underline"
                       >
                         {b.name}
                       </Link>
@@ -243,9 +243,9 @@ export default async function OverviewPage(props: PageProps<"/">) {
                     )}
                   </span>
                 </div>
-                <div className="mt-1 h-2 rounded-full bg-muted">
+                <div className="mt-1 h-2.5 rounded-full bg-muted">
                   <div
-                    className="h-2 rounded-full bg-primary"
+                    className="h-2.5 rounded-full bg-gradient-to-r from-brand to-brand/60 transition-[width]"
                     style={{ width: `${(100 * s.reached) / funnelTop}%` }}
                   />
                 </div>
