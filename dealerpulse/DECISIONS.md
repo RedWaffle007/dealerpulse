@@ -4,7 +4,7 @@ A real-time performance dashboard for a 5-branch Toyota dealer group. Built for 
 CEO to grasp the state of the business in 30 seconds, and for branch managers to
 drill into the exact leads and reps behind the numbers.
 
-**Live:** _<add Vercel link>_ · **Stack:** Next.js 16 (App Router) · TypeScript ·
+**Live:** _https://dealerpulse-sooty.vercel.app/_ · **Stack:** Next.js 16 (App Router) · TypeScript ·
 Tailwind + shadcn/ui · Recharts · Zod · Vitest
 
 ---
