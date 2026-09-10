@@ -7,9 +7,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-geist-sans);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-muted: var(--brand-muted);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -66,12 +69,17 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --ring: oklch(0.55 0.17 264);
+  /* Signature brand accent (indigo) — used for nav, links, funnel, focus. */
+  --brand: oklch(0.52 0.19 264);
+  --brand-foreground: oklch(0.985 0 0);
+  --brand-muted: oklch(0.95 0.03 264);
+  /* Semantic categorical chart palette (real chroma). */
+  --chart-1: oklch(0.55 0.19 264); /* brand indigo */
+  --chart-2: oklch(0.62 0.15 155); /* healthy green */
+  --chart-3: oklch(0.75 0.15 75); /* caution amber */
+  --chart-4: oklch(0.62 0.2 25); /* alert red */
+  --chart-5: oklch(0.6 0.16 300); /* violet */
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
@@ -101,12 +109,15 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --ring: oklch(0.7 0.16 264);
+  --brand: oklch(0.72 0.16 264);
+  --brand-foreground: oklch(0.16 0.02 264);
+  --brand-muted: oklch(0.3 0.07 264 / 35%);
+  --chart-1: oklch(0.72 0.16 264);
+  --chart-2: oklch(0.72 0.15 155);
+  --chart-3: oklch(0.8 0.14 80);
+  --chart-4: oklch(0.68 0.19 25);
+  --chart-5: oklch(0.7 0.15 300);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);

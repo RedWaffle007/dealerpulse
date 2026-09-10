@@ -17,9 +17,9 @@ export function FunnelBars({ steps }: { steps: FunnelStep[] }) {
               )}
             </span>
           </div>
-          <div className="bg-muted mt-1 h-2 rounded-full">
+          <div className="bg-muted mt-1 h-2.5 rounded-full">
             <div
-              className="bg-primary h-2 rounded-full"
+              className="h-2.5 rounded-full bg-gradient-to-r from-brand to-brand/60"
               style={{ width: `${(100 * s.reached) / top}%` }}
             />
           </div>
