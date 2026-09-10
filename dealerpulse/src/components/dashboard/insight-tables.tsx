@@ -1,5 +1,5 @@
-import type { LossAnalysis, SourceRow } from "@/lib/metrics";
-import { formatCrore, formatINR, formatPct, stageLabel } from "@/lib/format";
+import type { LossAnalysis, ModelRow, SourceRow } from "@/lib/metrics";
+import { formatCrore, formatINR, formatInt, formatPct, stageLabel } from "@/lib/format";
 import {
   Table,
   TableBody,
@@ -37,6 +37,100 @@ export function LossByStage({ loss }: { loss: LossAnalysis }) {
           .map((r) => `${r.reason} (${r.count})`)
           .join(" · ")}
       </div>
+    </div>
+  );
+}
+
+/** Reason × stage cross-tab: which reason kills deals at which stage. */
+export function LossMatrix({ loss }: { loss: LossAnalysis }) {
+  const { stages, rows } = loss.matrix;
+  if (rows.length === 0) {
+    return (
+      <p className="text-muted-foreground py-6 text-center text-sm">
+        No lost leads in this view.
+      </p>
+    );
+  }
+  // Peak single cell drives the red-tint intensity, so the hotspot pops.
+  const peak = Math.max(
+    1,
+    ...rows.flatMap((r) => stages.map((s) => r.cells[s] ?? 0)),
+  );
+  return (
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Reason</TableHead>
+            {stages.map((s) => (
+              <TableHead key={s} className="text-right">
+                {stageLabel(s)}
+              </TableHead>
+            ))}
+            <TableHead className="text-right">Total</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rows.map((r) => (
+            <TableRow key={r.reason}>
+              <TableCell className="font-medium">{r.reason}</TableCell>
+              {stages.map((s) => {
+                const c = r.cells[s] ?? 0;
+                return (
+                  <TableCell
+                    key={s}
+                    className="text-right tabular-nums"
+                    style={
+                      c > 0
+                        ? { background: `color-mix(in oklch, var(--destructive) ${Math.round((c / peak) * 55)}%, transparent)` }
+                        : undefined
+                    }
+                  >
+                    {c > 0 ? c : <span className="text-muted-foreground/40">·</span>}
+                  </TableCell>
+                );
+              })}
+              <TableCell className="text-right font-medium tabular-nums">
+                {r.total}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+
+/** Revenue concentration by model, as share bars (top models pay the bills). */
+export function ModelConcentration({ rows }: { rows: ModelRow[] }) {
+  const shown = rows.slice(0, 8);
+  const max = shown[0]?.sharePct || 1;
+  if (shown.length === 0) {
+    return (
+      <p className="text-muted-foreground py-6 text-center text-sm">
+        No delivered revenue in this view.
+      </p>
+    );
+  }
+  return (
+    <div className="space-y-2.5">
+      {shown.map((m) => (
+        <div key={m.model}>
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-medium">{m.model}</span>
+            <span className="tabular-nums text-muted-foreground">
+              {formatCrore(m.revenue)} · {formatPct(m.sharePct, 0)} ·{" "}
+              {formatInt(m.delivered)} sold
+            </span>
+          </div>
+          <div className="mt-1 h-2.5 rounded-full bg-muted">
+            <div
+              className="h-2.5 rounded-full bg-gradient-to-r from-brand to-brand/60"
+              style={{ width: `${(100 * m.sharePct) / max}%` }}
+            />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

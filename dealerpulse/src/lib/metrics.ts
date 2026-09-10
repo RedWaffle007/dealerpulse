@@ -287,6 +287,11 @@ export function funnel(d: Dataset, f: Filter): FunnelStep[] {
 export type LossAnalysis = {
   byStage: { stage: string; count: number; value: number }[];
   reasons: { reason: string; count: number }[];
+  /** reason × stage cross-tab: which reason kills deals at which stage. */
+  matrix: {
+    stages: string[];
+    rows: { reason: string; total: number; cells: Record<string, number> }[];
+  };
   totalLost: number;
   totalLostValue: number;
 };
@@ -296,13 +301,25 @@ export function lossAnalysis(d: Dataset, f: Filter): LossAnalysis {
   const stageCount: Record<string, number> = {};
   const stageValue: Record<string, number> = {};
   const reasonCount: Record<string, number> = {};
+  // reason -> stage -> count, for the cross-tab.
+  const cross: Record<string, Record<string, number>> = {};
+  const stagesSeen = new Set<string>();
   for (const l of lost) {
     const s = stageBeforeLost(l);
     stageCount[s] = (stageCount[s] ?? 0) + 1;
     stageValue[s] = (stageValue[s] ?? 0) + l.deal_value;
     const reason = l.lost_reason ?? "Unknown"; // anomaly disclosure, never dropped
     reasonCount[reason] = (reasonCount[reason] ?? 0) + 1;
+    stagesSeen.add(s);
+    (cross[reason] ??= {})[s] = (cross[reason][s] ?? 0) + 1;
   }
+
+  // Order stages by the funnel; reasons by total losses (desc).
+  const stages = STAGES.filter((s) => stagesSeen.has(s));
+  const matrixRows = Object.entries(reasonCount)
+    .map(([reason, total]) => ({ reason, total, cells: cross[reason] ?? {} }))
+    .sort((a, b) => b.total - a.total);
+
   return {
     byStage: Object.keys(stageCount)
       .map((stage) => ({
@@ -314,6 +331,7 @@ export function lossAnalysis(d: Dataset, f: Filter): LossAnalysis {
     reasons: Object.entries(reasonCount)
       .map(([reason, count]) => ({ reason, count }))
       .sort((a, b) => b.count - a.count),
+    matrix: { stages, rows: matrixRows },
     totalLost: lost.length,
     totalLostValue: lost.reduce((s, l) => s + l.deal_value, 0),
   };
@@ -351,6 +369,40 @@ export function sourceQuality(d: Dataset, f: Filter): SourceRow[] {
       revenuePerLead: e.leads ? e.rev / e.leads : 0,
     }))
     .sort((a, b) => b.revenuePerLead - a.revenuePerLead);
+}
+
+// ---- model revenue concentration -------------------------------------------
+
+export type ModelRow = {
+  model: string;
+  leads: number;
+  delivered: number;
+  revenue: number;
+  sharePct: number; // share of realized revenue in scope
+};
+
+/** Revenue concentration by model — which cars actually pay the bills. */
+export function modelConcentration(d: Dataset, f: Filter): ModelRow[] {
+  const map = new Map<string, { leads: number; delivered: number; rev: number }>();
+  for (const l of scopedLeads(d, f)) {
+    const e = map.get(l.model_interested) ?? { leads: 0, delivered: 0, rev: 0 };
+    e.leads += 1;
+    if (l.status === "delivered") {
+      e.delivered += 1;
+      e.rev += l.deal_value;
+    }
+    map.set(l.model_interested, e);
+  }
+  const total = [...map.values()].reduce((s, e) => s + e.rev, 0) || 1;
+  return [...map.entries()]
+    .map(([model, e]) => ({
+      model,
+      leads: e.leads,
+      delivered: e.delivered,
+      revenue: e.rev,
+      sharePct: (100 * e.rev) / total,
+    }))
+    .sort((a, b) => b.revenue - a.revenue);
 }
 
 // ---- velocity ---------------------------------------------------------------

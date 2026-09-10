@@ -12,12 +12,21 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 /** Rep leaderboard with a minimum-sample guardrail (<5 leads flagged). */
-export function RepTable({ rows, qs }: { rows: RepRow[]; qs?: string }) {
+export function RepTable({
+  rows,
+  qs,
+  showBranch = false,
+}: {
+  rows: RepRow[];
+  qs?: string;
+  showBranch?: boolean;
+}) {
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Rep</TableHead>
+          {showBranch && <TableHead>Branch</TableHead>}
           <TableHead className="text-right">Leads</TableHead>
           <TableHead className="text-right">Delivered</TableHead>
           <TableHead className="text-right">Conv.</TableHead>
@@ -30,7 +39,7 @@ export function RepTable({ rows, qs }: { rows: RepRow[]; qs?: string }) {
             <TableCell>
               <Link
                 href={`/reps/${r.repId}${qs ? `?${qs}` : ""}`}
-                className="font-medium hover:underline"
+                className="font-medium text-brand hover:underline"
               >
                 {r.name}
               </Link>{" "}
@@ -45,6 +54,11 @@ export function RepTable({ rows, qs }: { rows: RepRow[]; qs?: string }) {
                 </Badge>
               )}
             </TableCell>
+            {showBranch && (
+              <TableCell className="text-muted-foreground">
+                {r.branchName}
+              </TableCell>
+            )}
             <TableCell className="text-right tabular-nums">{r.leads}</TableCell>
             <TableCell className="text-right tabular-nums">{r.delivered}</TableCell>
             <TableCell className="text-right tabular-nums">

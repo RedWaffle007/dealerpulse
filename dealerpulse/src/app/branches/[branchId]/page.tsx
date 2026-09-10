@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDataset, getIndexes } from "@/lib/data";
 import {
@@ -7,6 +6,7 @@ import {
   funnel,
   lossAnalysis,
   sourceQuality,
+  modelConcentration,
   repLeaderboard,
   actionItems,
   velocity,
@@ -21,11 +21,17 @@ import {
 } from "@/lib/format";
 import type { Filter } from "@/lib/types";
 import { KpiCard, type KpiTone } from "@/components/dashboard/kpi-card";
+import { PageHero } from "@/components/layout/page-hero";
 import { AttainmentChart } from "@/components/charts/attainment-chart";
 import { FunnelBars } from "@/components/dashboard/funnel-bars";
 import { ActionList } from "@/components/dashboard/action-list";
 import { RepTable } from "@/components/dashboard/rep-table";
-import { LossByStage, SourceTable } from "@/components/dashboard/insight-tables";
+import {
+  LossByStage,
+  LossMatrix,
+  ModelConcentration,
+  SourceTable,
+} from "@/components/dashboard/insight-tables";
 import {
   Card,
   CardContent,
@@ -48,6 +54,9 @@ export default async function BranchPage(
   const idx = getIndexes();
   const branch = idx.branchById.get(branchId);
   if (!branch) notFound();
+  const manager = d.sales_reps.find(
+    (r) => r.branch_id === branchId && r.role === "branch_manager",
+  );
 
   const sp = await props.searchParams;
   const base = parseFilter(
@@ -65,6 +74,7 @@ export default async function BranchPage(
   const steps = funnel(d, f);
   const loss = lossAnalysis(d, f);
   const sources = sourceQuality(d, f);
+  const models = modelConcentration(d, f);
   const reps = repLeaderboard(d, idx, f);
   const actions = actionItems(d, idx, f);
   const v = velocity(d, f);
@@ -72,17 +82,20 @@ export default async function BranchPage(
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 md:py-8">
-      <div className="mb-4 text-sm">
-        <Link href={`/?${qs}`} className="text-muted-foreground hover:text-foreground">
-          ← Overview
-        </Link>
-      </div>
-      <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">{branch.name}</h1>
-        <p className="text-muted-foreground text-sm">
-          {branch.city} · {formatMonth(base.from)} – {formatMonth(base.to)}
-        </p>
-      </header>
+      <PageHero
+        title={branch.name}
+        period={`${formatMonth(base.from)} – ${formatMonth(base.to)}`}
+        backHref={`/?${qs}`}
+        backLabel="Overview"
+      >
+        {branch.city}
+        {manager && (
+          <>
+            {" · "}Branch manager:{" "}
+            <span className="font-medium text-foreground">{manager.name}</span>
+          </>
+        )}
+      </PageHero>
 
       <section className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
         <KpiCard
@@ -130,7 +143,9 @@ export default async function BranchPage(
             <CardDescription>{actions.length} open leads flagged</CardDescription>
           </CardHeader>
           <CardContent>
-            <ActionList items={actions.slice(0, 6)} showBranch={false} />
+            <div className="max-h-[22rem] overflow-y-auto pr-1">
+              <ActionList items={actions} showBranch={false} />
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -152,6 +167,31 @@ export default async function BranchPage(
           </CardHeader>
           <CardContent>
             <LossByStage loss={loss} />
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Loss reasons by stage</CardTitle>
+            <CardDescription>
+              Cross-tab of why deals die and where — the hotspot names the fix
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LossMatrix loss={loss} />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Revenue by model</CardTitle>
+            <CardDescription>
+              Where realized revenue concentrates across the line-up
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ModelConcentration rows={models} />
           </CardContent>
         </Card>
       </div>

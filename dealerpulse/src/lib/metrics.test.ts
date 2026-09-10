@@ -7,11 +7,13 @@ import {
   funnel,
   lossAnalysis,
   sourceQuality,
+  modelConcentration,
   velocity,
   actionItems,
   branchComparison,
   repLeaderboard,
 } from "./metrics";
+import { STAGES } from "./types";
 
 // These expectations are the figures independently verified in analysis/eda.ipynb.
 const d = DatasetSchema.parse(raw);
@@ -69,6 +71,38 @@ describe("loss analysis", () => {
   it("14 malformed losses surface as 'Unknown', not dropped", () => {
     const unknown = la.reasons.find((r) => r.reason === "Unknown");
     expect(unknown?.count).toBe(14);
+  });
+  it("reason × stage matrix reconciles with the totals", () => {
+    // Every loss lands in exactly one cell.
+    const cellSum = la.matrix.rows.reduce(
+      (s, r) => s + la.matrix.stages.reduce((t, st) => t + (r.cells[st] ?? 0), 0),
+      0,
+    );
+    expect(cellSum).toBe(la.totalLost);
+    // Each matrix row total equals that reason's count.
+    for (const row of la.matrix.rows) {
+      const reason = la.reasons.find((r) => r.reason === row.reason);
+      expect(row.total).toBe(reason?.count);
+    }
+    // Stages are a funnel-ordered subset.
+    expect(la.matrix.stages).toEqual(
+      STAGES.filter((s) => la.matrix.stages.includes(s)),
+    );
+  });
+});
+
+describe("model concentration", () => {
+  const rows = modelConcentration(d, ALL);
+  it("total revenue equals company delivered revenue", () => {
+    const sum = rows.reduce((s, r) => s + r.revenue, 0);
+    expect(sum).toBeCloseTo(kpis(d, idx, ALL).revenue, 0);
+  });
+  it("shares sum to ~100% and rows are revenue-sorted", () => {
+    const shareSum = rows.reduce((s, r) => s + r.sharePct, 0);
+    expect(shareSum).toBeCloseTo(100, 0);
+    for (let i = 1; i < rows.length; i++) {
+      expect(rows[i - 1].revenue).toBeGreaterThanOrEqual(rows[i].revenue);
+    }
   });
 });
 
