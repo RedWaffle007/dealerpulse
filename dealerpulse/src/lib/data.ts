@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { del, get, list, put } from "@vercel/blob";
 import raw from "@/data/dealership_data.json";
 import { DatasetSchema, type Dataset } from "./types";
@@ -51,6 +52,7 @@ function getBase(): Dataset {
 const BLOB_PATH = "dealerpulse-overlay.json";
 const BLOB_ACCESS = "private" as const;
 const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
+const OVERLAY_TAG = "dp-overlay";
 
 type OverlayStore = { overlay: Dataset | null };
 const globalForOverlay = globalThis as unknown as {
@@ -60,23 +62,39 @@ const memStore: OverlayStore = (globalForOverlay.__dealerpulseOverlay ??= {
   overlay: null,
 });
 
+/**
+ * Fetch + parse the overlay blob from origin. Wrapped in the Next data cache so
+ * navigation doesn't re-read storage on every request (that was the ~seconds of
+ * latency on the hosted site). A merge/reset busts it immediately via
+ * `revalidateTag(OVERLAY_TAG)`; the 30s `revalidate` bounds staleness if a bust
+ * is ever missed (e.g. a write on a cold instance).
+ */
+const loadOverlayFromBlob = unstable_cache(
+  async (): Promise<Dataset | null> => {
+    if (!blobToken) return null;
+    try {
+      const result = await get(BLOB_PATH, {
+        access: BLOB_ACCESS,
+        token: blobToken,
+        useCache: false, // read the latest from origin; the Next cache layers on top
+      });
+      if (!result || result.statusCode !== 200 || !result.stream) return null;
+      const json = await new Response(result.stream).json();
+      const parsed = DatasetSchema.safeParse(json);
+      return parsed.success ? parsed.data : null;
+    } catch {
+      // Never let a storage hiccup take down the dashboard — fall back to base.
+      return null;
+    }
+  },
+  ["dp-overlay-blob"],
+  { tags: [OVERLAY_TAG], revalidate: 30 },
+);
+
 /** Read the current overlay from the active backend, or null if none. */
 const getOverlay = cache(async (): Promise<Dataset | null> => {
   if (!blobToken) return memStore.overlay;
-  try {
-    const result = await get(BLOB_PATH, {
-      access: BLOB_ACCESS,
-      token: blobToken,
-      useCache: false, // always read the latest, never a cached version
-    });
-    if (!result || result.statusCode !== 200 || !result.stream) return null;
-    const json = await new Response(result.stream).json();
-    const parsed = DatasetSchema.safeParse(json);
-    return parsed.success ? parsed.data : null;
-  } catch {
-    // Never let a storage hiccup take down the dashboard — fall back to base.
-    return null;
-  }
+  return loadOverlayFromBlob();
 });
 
 export const getDataset = cache(async (): Promise<Dataset> => {
@@ -119,6 +137,7 @@ export async function setMergedDataset(ds: Dataset): Promise<void> {
     allowOverwrite: true,
     contentType: "application/json",
   });
+  revalidateTag(OVERLAY_TAG, { expire: 0 }); // drop the cached overlay so the merge shows at once
 }
 
 /** Discard any merge and return to the pristine bundled dataset. */
@@ -133,6 +152,7 @@ export async function resetDataset(): Promise<void> {
   } catch {
     // A missing blob is already "reset" — nothing to do.
   }
+  revalidateTag(OVERLAY_TAG, { expire: 0 }); // drop the cached overlay so reset shows at once
 }
 
 export type { Indexes } from "./indexes";
