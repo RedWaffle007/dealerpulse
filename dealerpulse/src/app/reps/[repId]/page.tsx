@@ -21,8 +21,13 @@ import {
 import type { Filter } from "@/lib/types";
 import { KpiCard } from "@/components/dashboard/kpi-card";
 import { PageHero } from "@/components/layout/page-hero";
-import { FunnelBars } from "@/components/dashboard/funnel-bars";
+import { FunnelChart } from "@/components/dashboard/funnel-chart";
 import { ActionList } from "@/components/dashboard/action-list";
+import {
+  SortableTable,
+  type SortColumn,
+  type SortRow,
+} from "@/components/dashboard/sortable-table";
 import {
   Card,
   CardContent,
@@ -30,15 +35,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { STAGE_INDEX } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
+
+const OPEN_LEAD_COLUMNS: SortColumn[] = [
+  { key: "customer", label: "Customer", type: "text" },
+  { key: "stage", label: "Stage", type: "text" },
+  { key: "source", label: "Source", type: "text" },
+  { key: "idle", label: "Idle", type: "number", align: "right" },
+  { key: "value", label: "Value", type: "number", align: "right" },
+];
 
 export default async function RepPage(props: PageProps<"/reps/[repId]">) {
   const { repId } = await props.params;
@@ -82,6 +88,13 @@ export default async function RepPage(props: PageProps<"/reps/[repId]">) {
             )}
           </>
         }
+        lead={
+          <>
+            Worked <span className="text-brand">{formatInt(k.leadsCreated)}</span>{" "}
+            leads, delivering {formatInt(k.convertedLeads)} (
+            {formatPct(k.conversionPct, 0)}) for {formatCrore(k.revenue)}.
+          </>
+        }
       >
         {branch?.name}
       </PageHero>
@@ -113,7 +126,7 @@ export default async function RepPage(props: PageProps<"/reps/[repId]">) {
             <CardDescription>This rep&apos;s leads</CardDescription>
           </CardHeader>
           <CardContent>
-            <FunnelBars steps={steps} />
+            <FunnelChart steps={steps} showHeadline={false} />
           </CardContent>
         </Card>
         <Card>
@@ -156,49 +169,42 @@ export default async function RepPage(props: PageProps<"/reps/[repId]">) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {pipeline.length === 0 ? (
-            <p className="text-muted-foreground py-6 text-center text-sm">
-              No open leads for this rep.
-            </p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Stage</TableHead>
-                  <TableHead>Source</TableHead>
-                  <TableHead className="text-right">Idle</TableHead>
-                  <TableHead className="text-right">Value</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {pipeline.map((l) => (
-                  <TableRow key={l.leadId}>
-                    <TableCell className="font-medium">
-                      <Link
-                        href={`/leads/${l.leadId}`}
-                        className="text-brand hover:underline"
-                      >
-                        {l.customer}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{stageLabel(l.stage)}</TableCell>
-                    <TableCell className="capitalize">
-                      {l.source.replace("_", " ")}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      <span className={l.daysStale >= 7 ? "text-amber-600" : ""}>
-                        {formatDaysAgo(l.daysStale)}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {formatINR(l.value)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+          <SortableTable
+            columns={OPEN_LEAD_COLUMNS}
+            initialSort="value"
+            initialDir="desc"
+            emptyMessage="No open leads for this rep."
+            rows={pipeline.map((l): SortRow => ({
+              id: l.leadId,
+              sort: {
+                customer: l.customer,
+                stage: STAGE_INDEX[l.stage] ?? 0,
+                source: l.source,
+                idle: l.daysStale,
+                value: l.value,
+              },
+              cells: {
+                customer: (
+                  <Link
+                    href={`/leads/${l.leadId}`}
+                    className="font-medium text-brand hover:underline"
+                  >
+                    {l.customer}
+                  </Link>
+                ),
+                stage: stageLabel(l.stage),
+                source: (
+                  <span className="capitalize">{l.source.replace("_", " ")}</span>
+                ),
+                idle: (
+                  <span className={l.daysStale >= 7 ? "text-amber-600" : ""}>
+                    {formatDaysAgo(l.daysStale)}
+                  </span>
+                ),
+                value: formatINR(l.value),
+              },
+            }))}
+          />
         </CardContent>
       </Card>
     </main>

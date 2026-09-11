@@ -8,6 +8,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  SortableTable,
+  type SortColumn,
+  type SortRow,
+} from "@/components/dashboard/sortable-table";
+
+const SOURCE_COLUMNS: SortColumn[] = [
+  { key: "source", label: "Source", type: "text" },
+  { key: "leads", label: "Leads", type: "number", align: "right" },
+  { key: "conversionPct", label: "Conv.", type: "number", align: "right" },
+  { key: "revenuePerLead", label: "₹/lead", type: "number", align: "right" },
+  { key: "revenue", label: "Revenue", type: "number", align: "right" },
+];
 
 /** Where deals die: stage-before-lost with pipeline value. */
 export function LossByStage({ loss }: { loss: LossAnalysis }) {
@@ -135,38 +148,36 @@ export function ModelConcentration({ rows }: { rows: ModelRow[] }) {
   );
 }
 
-/** Lead-source quality, value-weighted (revenue per lead). */
+/** Lead-source quality, value-weighted (revenue per lead). Sortable by any column. */
 export function SourceTable({ rows }: { rows: SourceRow[] }) {
+  const tableRows: SortRow[] = rows.map((s) => ({
+    id: s.source,
+    sort: {
+      source: s.source,
+      leads: s.leads,
+      conversionPct: s.conversionPct,
+      revenuePerLead: s.revenuePerLead,
+      revenue: s.revenue,
+    },
+    cells: {
+      source: (
+        <span className="font-medium capitalize">
+          {s.source.replace("_", " ")}
+        </span>
+      ),
+      leads: s.leads,
+      conversionPct: formatPct(s.conversionPct, 0),
+      revenuePerLead: formatINR(s.revenuePerLead),
+      revenue: formatCrore(s.revenue),
+    },
+  }));
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Source</TableHead>
-          <TableHead className="text-right">Leads</TableHead>
-          <TableHead className="text-right">Conv.</TableHead>
-          <TableHead className="text-right">₹/lead</TableHead>
-          <TableHead className="text-right">Revenue</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {rows.map((s) => (
-          <TableRow key={s.source}>
-            <TableCell className="font-medium capitalize">
-              {s.source.replace("_", " ")}
-            </TableCell>
-            <TableCell className="text-right tabular-nums">{s.leads}</TableCell>
-            <TableCell className="text-right tabular-nums">
-              {formatPct(s.conversionPct, 0)}
-            </TableCell>
-            <TableCell className="text-right tabular-nums">
-              {formatINR(s.revenuePerLead)}
-            </TableCell>
-            <TableCell className="text-right tabular-nums">
-              {formatCrore(s.revenue)}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <SortableTable
+      columns={SOURCE_COLUMNS}
+      rows={tableRows}
+      initialSort="revenuePerLead"
+      initialDir="desc"
+      emptyMessage="No lead sources in this view."
+    />
   );
 }

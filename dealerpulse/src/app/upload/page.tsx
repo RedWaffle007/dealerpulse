@@ -47,9 +47,14 @@ export default function UploadPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-6 md:py-8">
-      <PageHero title="Upload data" period={merged ? "merged" : "original"}>
-        Add a continuation of the dataset (new months, leads, deliveries). It is
-        validated and merged into the live dashboard.
+      <PageHero
+        title="Data Import"
+        period={merged ? "merged" : "original"}
+        lead="Bring a new reporting period into the live dashboard."
+      >
+        Upload a validated JSON continuation (new months, leads, deliveries). It
+        is merged into the dataset and reflected across every screen — and you
+        can reset to the original at any time.
       </PageHero>
 
       <section className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">

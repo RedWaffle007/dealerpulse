@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 export function PageHero({
   title,
   period,
+  lead,
   children,
   backHref,
   backLabel,
@@ -15,6 +16,8 @@ export function PageHero({
 }: {
   title: string;
   period?: string;
+  /** Plain-language headline takeaway — the one thing to read first. */
+  lead?: ReactNode;
   children?: ReactNode;
   backHref?: string;
   backLabel?: string;
@@ -31,7 +34,9 @@ export function PageHero({
         </Link>
       )}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-[1.75rem]">
+          {title}
+        </h1>
         {period && (
           <span className="rounded-full bg-background/70 px-2.5 py-0.5 text-xs font-medium text-brand ring-1 ring-brand/25">
             {period}
@@ -39,6 +44,11 @@ export function PageHero({
         )}
         {actions}
       </div>
+      {lead && (
+        <p className="mt-2 max-w-3xl text-base font-medium leading-snug text-foreground md:text-lg">
+          {lead}
+        </p>
+      )}
       {children && (
         <p className="mt-1 text-sm text-muted-foreground">{children}</p>
       )}

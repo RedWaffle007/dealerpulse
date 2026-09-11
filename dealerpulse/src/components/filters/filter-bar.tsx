@@ -78,7 +78,7 @@ export function FilterBar({
             <SelectValue placeholder="Custom range" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All (Jun–Dec)</SelectItem>
+            <SelectItem value="all">All months</SelectItem>
             <SelectItem value="q3">Q3 (Jul–Sep)</SelectItem>
             <SelectItem value="q4">Q4 (Oct–Dec)</SelectItem>
             <SelectItem value="last">Latest month</SelectItem>

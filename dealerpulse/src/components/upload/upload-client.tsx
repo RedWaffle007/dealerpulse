@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -108,9 +108,15 @@ export function UploadClient({ seed, merged }: { seed: UploadSeed; merged: boole
   const [busy, setBusy] = useState(false);
   const [summary, setSummary] = useState<Summary | null>(null);
   // Track live merge state on the client so the Reset control flips instantly,
-  // not only after a server prop refresh settles.
+  // not only after a server prop refresh settles. When the server prop changes
+  // (after router.refresh()), sync it during render — the React-recommended
+  // alternative to a prop→state effect.
   const [mergedNow, setMergedNow] = useState(merged);
-  useEffect(() => setMergedNow(merged), [merged]);
+  const [prevMerged, setPrevMerged] = useState(merged);
+  if (merged !== prevMerged) {
+    setPrevMerged(merged);
+    setMergedNow(merged);
+  }
 
   const loadFile = async (file: File) => {
     setError(null);

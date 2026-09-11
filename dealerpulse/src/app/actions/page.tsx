@@ -7,12 +7,12 @@ import {
   type ActionType,
 } from "@/lib/metrics";
 import { parseFilter } from "@/lib/filter";
-import { formatCrore, formatInt, formatMonth, formatPct } from "@/lib/format";
+import { formatCrore, formatDate, formatInt, formatMonth, formatPct } from "@/lib/format";
 import type { Filter } from "@/lib/types";
 import { ActionList } from "@/components/dashboard/action-list";
 import { KpiCard } from "@/components/dashboard/kpi-card";
 import { PageHero } from "@/components/layout/page-hero";
-import { cn } from "@/lib/utils";
+import { Disclosure } from "@/components/ui/disclosure";
 import {
   Card,
   CardContent,
@@ -31,25 +31,25 @@ const RULES: {
     type: "stale_order",
     title: "Order placed, going stale",
     blurb: "Committed buyers with no activity for 7+ days — highest urgency.",
-    accent: "border-t-red-500",
+    accent: "border-t-2 border-t-red-500",
   },
   {
     type: "overdue",
     title: "Past expected close",
     blurb: "Expected-close date has passed but the lead is still open.",
-    accent: "border-t-amber-500",
+    accent: "border-t-2 border-t-amber-500",
   },
   {
     type: "high_value_late",
     title: "Late-stage idle",
     blurb: "Negotiation-or-deeper leads with no movement for 7+ days.",
-    accent: "border-t-orange-500",
+    accent: "border-t-2 border-t-orange-500",
   },
   {
     type: "cold",
     title: "Cold leads",
     blurb: "Early-stage leads with no activity for 7+ days.",
-    accent: "border-t-brand",
+    accent: "border-t-2 border-t-brand",
   },
 ];
 
@@ -79,12 +79,26 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
       <PageHero
         title="Action Center"
         period={`${formatMonth(base.from)} – ${formatMonth(base.to)}`}
+        lead={
+          items.length > 0 ? (
+            <>
+              <span className="text-brand">{formatInt(items.length)}</span> open
+              leads need attention — {formatCrore(totalValue)} of pipeline at
+              risk. Expand a category below to work the list.
+            </>
+          ) : (
+            <>Nothing needs attention in this view. 🎉</>
+          )
+        }
       >
         Deterministic, explainable alerts ·{" "}
         {base.branchId
           ? idx.branchById.get(base.branchId)?.name
           : "all branches"}{" "}
-        · <span className="font-medium text-foreground">as of 31 Dec 2025</span>
+        ·{" "}
+        <span className="font-medium text-foreground">
+          as of {formatDate(idx.cutoff.toISOString())}
+        </span>
       </PageHero>
 
       <section className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
@@ -195,28 +209,31 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
         </Card>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        {RULES.map((r) => {
-          const list = byType(r.type);
-          return (
-            <Card key={r.type} className={cn("border-t-2", r.accent)}>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>{r.title}</span>
-                  <span className="text-muted-foreground text-sm font-normal tabular-nums">
-                    {list.length}
+      <div className="grid gap-4 md:grid-cols-2">
+        {(() => {
+          const firstNonEmpty = RULES.find((r) => byType(r.type).length > 0)?.type;
+          return RULES.map((r) => {
+            const list = byType(r.type);
+            return (
+              <Disclosure
+                key={r.type}
+                accent={r.accent}
+                defaultOpen={r.type === firstNonEmpty}
+                title={r.title}
+                description={r.blurb}
+                meta={
+                  <span className="tabular-nums">
+                    {list.length} · {formatCrore(list.reduce((s, a) => s + a.value, 0))}
                   </span>
-                </CardTitle>
-                <CardDescription>{r.blurb}</CardDescription>
-              </CardHeader>
-              <CardContent>
+                }
+              >
                 <div className="max-h-[30rem] overflow-y-auto pr-1">
                   <ActionList items={list} />
                 </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+              </Disclosure>
+            );
+          });
+        })()}
       </div>
 
       <p className="text-muted-foreground mt-6 text-xs">

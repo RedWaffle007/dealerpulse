@@ -23,7 +23,7 @@ import type { Filter } from "@/lib/types";
 import { KpiCard, type KpiTone } from "@/components/dashboard/kpi-card";
 import { PageHero } from "@/components/layout/page-hero";
 import { AttainmentChart } from "@/components/charts/attainment-chart";
-import { FunnelBars } from "@/components/dashboard/funnel-bars";
+import { FunnelChart } from "@/components/dashboard/funnel-chart";
 import { ActionList } from "@/components/dashboard/action-list";
 import { RepTable } from "@/components/dashboard/rep-table";
 import {
@@ -87,6 +87,14 @@ export default async function BranchPage(
         period={`${formatMonth(base.from)} – ${formatMonth(base.to)}`}
         backHref={`/?${qs}`}
         backLabel="Overview"
+        lead={
+          <>
+            Delivered <span className="text-brand">{formatInt(k.unitsDelivered)}</span>{" "}
+            of {formatInt(k.targetUnits)} target cars (
+            {formatPct(k.unitAttainmentPct, 0)} of plan) on{" "}
+            {formatPct(k.conversionPct, 0)} lead conversion.
+          </>
+        }
       >
         {branch.city}
         {manager && (
@@ -157,7 +165,7 @@ export default async function BranchPage(
             <CardDescription>Reconstructed from status history</CardDescription>
           </CardHeader>
           <CardContent>
-            <FunnelBars steps={steps} />
+            <FunnelChart steps={steps} />
           </CardContent>
         </Card>
         <Card>
@@ -200,10 +208,12 @@ export default async function BranchPage(
         <Card>
           <CardHeader>
             <CardTitle>Rep leaderboard</CardTitle>
-            <CardDescription>Ranked by conversion (≥5 leads reliable)</CardDescription>
+            <CardDescription>
+              Click a column to re-rank; medals mark the top rows
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <RepTable rows={reps} qs={qs} />
+            <RepTable rows={reps} qs={qs} ranked />
           </CardContent>
         </Card>
         <Card>
