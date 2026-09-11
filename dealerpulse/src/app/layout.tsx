@@ -49,6 +49,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${anton.variable} h-full antialiased`}
     >
+      <head>
+        {/* Warm the intro strike so it is cached before hydration — the splash
+            decodes it via Web Audio and fires it in sync with the wordmark. */}
+        <link rel="preload" as="audio" href="/tick.mp3" type="audio/mpeg" />
+      </head>
       <body className="min-h-full flex flex-col bg-muted/30">
         <script dangerouslySetInnerHTML={{ __html: INTRO_GATE }} />
         <IntroSplash />
