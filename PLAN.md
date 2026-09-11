@@ -17,8 +17,9 @@ to the specific leads to act on.
 2. **Lakeside Toyota (Bangalore) is the outlier** — 7.6% conversion vs 33–41% elsewhere; its reps fill
    the entire bottom of the leaderboard.
 3. **The biggest leak is early and high-value** — 114 leads lost at `new` = **~₹27 cr** never truly engaged.
-4. **Loss reason maps to stage → to a fix** — competitor/pricing losses early; **financing-not-approved
-   clusters at test-drive/negotiation** (a finance-desk problem).
+4. **Losses are early-stage churn, not a late-funnel cluster** — 68% of the 288 losses die at
+   `new`/`contacted` (better offer, unresponsive, budget); **"financing not approved" recurs at every
+   stage** (14/10/8/6 from new to negotiation), a standing finance-desk friction, not a test-drive/negotiation cluster.
 5. **Channel quality** — walk-ins = ~half of all revenue (₹16 cr) at 45.7% conversion; social media is
    weakest by both conversion (13.9%) and revenue/lead (₹3.5 L).
 6. **Actionable now (as of 2025-12-31)** — 35 cold leads (₹8.1 cr), 32 stale order-placed (₹7.6 cr),
