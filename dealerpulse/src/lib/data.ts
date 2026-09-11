@@ -1,6 +1,6 @@
 import "server-only";
 import { cache } from "react";
-import { del, list, put } from "@vercel/blob";
+import { del, get, list, put } from "@vercel/blob";
 import raw from "@/data/dealership_data.json";
 import { DatasetSchema, type Dataset } from "./types";
 import { buildIndexes, type Indexes } from "./indexes";
@@ -43,11 +43,13 @@ function getBase(): Dataset {
  * Reads are memoized per request with React `cache()`, so a single render that
  * touches the dataset several times hits the backend once.
  */
-// Each write gets a unique suffixed pathname (dealerpulse-overlay-<id>.json), so
-// every URL is immutable — the newest wins on read and the Blob CDN can never
-// serve a stale merge (which a fixed pathname + edge cache would, given the SDK's
-// 1-minute minimum cacheControlMaxAge).
-const BLOB_PREFIX = "dealerpulse-overlay";
+// The store is private, so the blob is written and read only server-side with
+// the token (never a public URL). A fixed pathname is safe because reads use
+// `get(..., { useCache: false })`, which bypasses the CDN and returns the latest
+// content from origin — so a merge/reset is visible immediately, with no stale
+// edge cache.
+const BLOB_PATH = "dealerpulse-overlay.json";
+const BLOB_ACCESS = "private" as const;
 const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
 type OverlayStore = { overlay: Dataset | null };
@@ -62,14 +64,14 @@ const memStore: OverlayStore = (globalForOverlay.__dealerpulseOverlay ??= {
 const getOverlay = cache(async (): Promise<Dataset | null> => {
   if (!blobToken) return memStore.overlay;
   try {
-    const { blobs } = await list({ prefix: BLOB_PREFIX, token: blobToken });
-    if (blobs.length === 0) return null;
-    const newest = blobs.reduce((a, b) =>
-      new Date(b.uploadedAt) > new Date(a.uploadedAt) ? b : a,
-    );
-    const res = await fetch(newest.url, { cache: "no-store" });
-    if (!res.ok) return null;
-    const parsed = DatasetSchema.safeParse(await res.json());
+    const result = await get(BLOB_PATH, {
+      access: BLOB_ACCESS,
+      token: blobToken,
+      useCache: false, // always read the latest, never a cached version
+    });
+    if (!result || result.statusCode !== 200 || !result.stream) return null;
+    const json = await new Response(result.stream).json();
+    const parsed = DatasetSchema.safeParse(json);
     return parsed.success ? parsed.data : null;
   } catch {
     // Never let a storage hiccup take down the dashboard — fall back to base.
@@ -110,20 +112,13 @@ export async function setMergedDataset(ds: Dataset): Promise<void> {
     memStore.overlay = ds;
     return;
   }
-  const { url } = await put(`${BLOB_PREFIX}.json`, JSON.stringify(ds), {
-    access: "public",
+  await put(BLOB_PATH, JSON.stringify(ds), {
+    access: BLOB_ACCESS,
     token: blobToken,
-    addRandomSuffix: true,
+    addRandomSuffix: false,
+    allowOverwrite: true,
     contentType: "application/json",
   });
-  // Best-effort cleanup of superseded versions so the store doesn't accumulate.
-  try {
-    const { blobs } = await list({ prefix: BLOB_PREFIX, token: blobToken });
-    const stale = blobs.filter((b) => b.url !== url).map((b) => b.url);
-    if (stale.length) await del(stale, { token: blobToken });
-  } catch {
-    // Cleanup is non-critical; the newest blob still wins on read.
-  }
 }
 
 /** Discard any merge and return to the pristine bundled dataset. */
@@ -133,7 +128,7 @@ export async function resetDataset(): Promise<void> {
     return;
   }
   try {
-    const { blobs } = await list({ prefix: BLOB_PREFIX, token: blobToken });
+    const { blobs } = await list({ prefix: BLOB_PATH, token: blobToken });
     if (blobs.length) await del(blobs.map((b) => b.url), { token: blobToken });
   } catch {
     // A missing blob is already "reset" — nothing to do.
