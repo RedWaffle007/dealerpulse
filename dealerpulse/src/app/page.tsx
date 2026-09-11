@@ -20,6 +20,8 @@ import {
 } from "@/lib/format";
 import { KpiCard, type KpiTone } from "@/components/dashboard/kpi-card";
 import { PageHero } from "@/components/layout/page-hero";
+import { HeroPreview } from "@/components/layout/hero-preview";
+import { buttonVariants } from "@/components/ui/button";
 import { AttainmentChart } from "@/components/charts/attainment-chart";
 import { FunnelChart } from "@/components/dashboard/funnel-chart";
 import { Disclosure } from "@/components/ui/disclosure";
@@ -140,6 +142,20 @@ export default async function OverviewPage(props: PageProps<"/">) {
         title="Executive overview"
         period={`${formatMonth(f.from)} – ${formatMonth(f.to)}`}
         lead={lead}
+        cta={
+          <>
+            <Link href={actionsHref} className={buttonVariants({ size: "sm" })}>
+              Review {actions.length} alerts →
+            </Link>
+            <Link
+              href="/upload"
+              className={buttonVariants({ variant: "outline", size: "sm" })}
+            >
+              Import data
+            </Link>
+          </>
+        }
+        visual={<HeroPreview />}
       >
         {f.branchId ? idx.branchById.get(f.branchId)?.name : "All branches"} ·
         pipeline &amp; alerts{" "}
