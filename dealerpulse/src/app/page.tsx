@@ -146,7 +146,12 @@ export default async function OverviewPage(props: PageProps<"/">) {
                 className="rounded-md border border-l-2 border-border/60 border-l-brand/60 bg-brand/[0.03] p-2.5 text-sm"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-medium">{a.customer}</span>
+                  <Link
+                    href={`/leads/${a.leadId}`}
+                    className="font-medium text-brand hover:underline"
+                  >
+                    {a.customer}
+                  </Link>
                   <span className="tabular-nums text-muted-foreground">
                     {formatINR(a.value)}
                   </span>

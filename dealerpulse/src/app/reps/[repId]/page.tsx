@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDataset, getIndexes } from "@/lib/data";
 import {
@@ -173,7 +174,14 @@ export default async function RepPage(props: PageProps<"/reps/[repId]">) {
               <TableBody>
                 {pipeline.map((l) => (
                   <TableRow key={l.leadId}>
-                    <TableCell className="font-medium">{l.customer}</TableCell>
+                    <TableCell className="font-medium">
+                      <Link
+                        href={`/leads/${l.leadId}`}
+                        className="text-brand hover:underline"
+                      >
+                        {l.customer}
+                      </Link>
+                    </TableCell>
                     <TableCell>{stageLabel(l.stage)}</TableCell>
                     <TableCell className="capitalize">
                       {l.source.replace("_", " ")}

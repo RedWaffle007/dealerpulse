@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ActionItem, ActionType } from "@/lib/metrics";
 import { formatINR, formatDaysAgo, stageLabel } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +44,12 @@ export function ActionList({
               <Badge variant="outline" className="text-[10px]">
                 {TYPE_LABEL[a.type]}
               </Badge>
-              <span className="font-medium">{a.customer}</span>
+              <Link
+                href={`/leads/${a.leadId}`}
+                className="font-medium text-brand hover:underline"
+              >
+                {a.customer}
+              </Link>
             </div>
             <span className="text-muted-foreground tabular-nums">
               {formatINR(a.value)}

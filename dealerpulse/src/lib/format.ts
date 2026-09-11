@@ -32,6 +32,30 @@ export function formatMonth(month: string): string {
   });
 }
 
+/** e.g. "16 Jun 2025" from an ISO timestamp or date string. */
+export function formatDate(iso: string): string {
+  const d = new Date(iso.length <= 10 ? `${iso}T00:00:00Z` : iso);
+  return d.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+/** e.g. "16 Jun 2025, 04:08" from an ISO timestamp. */
+export function formatDateTime(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "UTC",
+  });
+}
+
 /** "3 days ago" style, given an integer day count. */
 export function formatDaysAgo(days: number): string {
   if (days <= 0) return "today";
