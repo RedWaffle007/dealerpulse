@@ -32,14 +32,30 @@ export async function POST(request: Request) {
     );
   }
 
-  await setMergedDataset(check.data);
+  try {
+    await setMergedDataset(check.data);
+  } catch (e) {
+    // Surface the real storage error as JSON so the client shows it, rather than
+    // a bare 500 that reads as a generic "network error".
+    return Response.json(
+      { error: `Could not persist the merge: ${e instanceof Error ? e.message : "unknown error"}` },
+      { status: 500 },
+    );
+  }
   revalidatePath("/", "layout");
   return Response.json({ ok: true, summary });
 }
 
 /** Reset back to the pristine bundled dataset. */
 export async function DELETE() {
-  await resetDataset();
+  try {
+    await resetDataset();
+  } catch (e) {
+    return Response.json(
+      { error: `Could not reset: ${e instanceof Error ? e.message : "unknown error"}` },
+      { status: 500 },
+    );
+  }
   revalidatePath("/", "layout");
   return Response.json({ ok: true });
 }

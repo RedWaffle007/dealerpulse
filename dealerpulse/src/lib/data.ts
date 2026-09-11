@@ -43,7 +43,11 @@ function getBase(): Dataset {
  * Reads are memoized per request with React `cache()`, so a single render that
  * touches the dataset several times hits the backend once.
  */
-const BLOB_PATH = "dealerpulse-overlay.json";
+// Each write gets a unique suffixed pathname (dealerpulse-overlay-<id>.json), so
+// every URL is immutable — the newest wins on read and the Blob CDN can never
+// serve a stale merge (which a fixed pathname + edge cache would, given the SDK's
+// 1-minute minimum cacheControlMaxAge).
+const BLOB_PREFIX = "dealerpulse-overlay";
 const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
 type OverlayStore = { overlay: Dataset | null };
@@ -58,10 +62,12 @@ const memStore: OverlayStore = (globalForOverlay.__dealerpulseOverlay ??= {
 const getOverlay = cache(async (): Promise<Dataset | null> => {
   if (!blobToken) return memStore.overlay;
   try {
-    const { blobs } = await list({ prefix: BLOB_PATH, token: blobToken, limit: 1 });
-    const hit = blobs.find((b) => b.pathname === BLOB_PATH) ?? blobs[0];
-    if (!hit) return null;
-    const res = await fetch(hit.url, { cache: "no-store" });
+    const { blobs } = await list({ prefix: BLOB_PREFIX, token: blobToken });
+    if (blobs.length === 0) return null;
+    const newest = blobs.reduce((a, b) =>
+      new Date(b.uploadedAt) > new Date(a.uploadedAt) ? b : a,
+    );
+    const res = await fetch(newest.url, { cache: "no-store" });
     if (!res.ok) return null;
     const parsed = DatasetSchema.safeParse(await res.json());
     return parsed.success ? parsed.data : null;
@@ -104,14 +110,20 @@ export async function setMergedDataset(ds: Dataset): Promise<void> {
     memStore.overlay = ds;
     return;
   }
-  await put(BLOB_PATH, JSON.stringify(ds), {
+  const { url } = await put(`${BLOB_PREFIX}.json`, JSON.stringify(ds), {
     access: "public",
     token: blobToken,
-    addRandomSuffix: false,
+    addRandomSuffix: true,
     contentType: "application/json",
-    allowOverwrite: true,
-    cacheControlMaxAge: 0,
   });
+  // Best-effort cleanup of superseded versions so the store doesn't accumulate.
+  try {
+    const { blobs } = await list({ prefix: BLOB_PREFIX, token: blobToken });
+    const stale = blobs.filter((b) => b.url !== url).map((b) => b.url);
+    if (stale.length) await del(stale, { token: blobToken });
+  } catch {
+    // Cleanup is non-critical; the newest blob still wins on read.
+  }
 }
 
 /** Discard any merge and return to the pristine bundled dataset. */
@@ -121,9 +133,8 @@ export async function resetDataset(): Promise<void> {
     return;
   }
   try {
-    const { blobs } = await list({ prefix: BLOB_PATH, token: blobToken, limit: 1 });
-    const hit = blobs.find((b) => b.pathname === BLOB_PATH) ?? blobs[0];
-    if (hit) await del(hit.url, { token: blobToken });
+    const { blobs } = await list({ prefix: BLOB_PREFIX, token: blobToken });
+    if (blobs.length) await del(blobs.map((b) => b.url), { token: blobToken });
   } catch {
     // A missing blob is already "reset" — nothing to do.
   }
