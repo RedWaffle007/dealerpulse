@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { getDataset, getIndexes } from "@/lib/data";
+import { getIndexes } from "@/lib/data";
 import { daysStale, stageBeforeLost } from "@/lib/metrics";
 import {
   formatDate,
@@ -36,7 +36,6 @@ function Row({ label, value }: { label: string; value: ReactNode }) {
 
 export default async function LeadPage(props: PageProps<"/leads/[leadId]">) {
   const { leadId } = await props.params;
-  const d = getDataset();
   const idx = getIndexes();
   const lead = idx.leadById.get(leadId);
   if (!lead) notFound();
@@ -78,8 +77,8 @@ export default async function LeadPage(props: PageProps<"/leads/[leadId]">) {
         {open ? (
           <KpiCard
             label="Idle"
-            value={formatDaysAgo(daysStale(lead))}
-            tone={daysStale(lead) >= 7 ? "warn" : "neutral"}
+            value={formatDaysAgo(daysStale(lead, idx.cutoff))}
+            tone={daysStale(lead, idx.cutoff) >= 7 ? "warn" : "neutral"}
           />
         ) : (
           <KpiCard

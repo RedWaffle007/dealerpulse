@@ -22,12 +22,6 @@ export const OPEN_STATUSES = new Set<string>([
   "order_placed",
 ]);
 
-/**
- * The analytical "now". The dataset ends 2025-12-31; all aging/staleness is
- * measured from here, never the real wall-clock date. See PLAN.md metric contract.
- */
-export const CUTOFF = new Date("2025-12-31T00:00:00Z");
-
 const StatusEventSchema = z.object({
   status: z.string(),
   timestamp: z.string(),

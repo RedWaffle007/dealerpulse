@@ -1,5 +1,4 @@
 import {
-  CUTOFF,
   OPEN_STATUSES,
   STAGES,
   STAGE_INDEX,
@@ -12,7 +11,8 @@ import type { Indexes } from "./indexes";
 
 /**
  * Pure analytics layer. Every function is deterministic and obeys the metric
- * contract (PLAN.md): "now" = CUTOFF; delivery metrics key on delivery_date;
+ * contract (PLAN.md): "now" = idx.cutoff (last day of the latest reporting
+ * month); delivery metrics key on delivery_date;
  * lead/funnel/source metrics key on created_at; revenue realized on delivery;
  * funnel reconstructed from status_history; targets summed over selected months.
  */
@@ -29,8 +29,8 @@ export function daysBetween(a: Date, b: Date): number {
   return Math.floor((a.getTime() - b.getTime()) / DAY);
 }
 /** Days since a lead's last activity, measured from the analytical cutoff. */
-export function daysStale(lead: Lead): number {
-  return daysBetween(CUTOFF, parseTs(lead.last_activity_at));
+export function daysStale(lead: Lead, cutoff: Date): number {
+  return daysBetween(cutoff, parseTs(lead.last_activity_at));
 }
 export function reachedStages(lead: Lead): Set<string> {
   return new Set(lead.status_history.map((h) => h.status));
@@ -143,7 +143,7 @@ export function kpis(d: Dataset, idx: Indexes, f: Filter): Kpis {
       repMatch(l.assigned_to, f) &&
       OPEN_STATUSES.has(l.status),
   );
-  const cold = openLeads.filter((l) => daysStale(l) >= 7);
+  const cold = openLeads.filter((l) => daysStale(l, idx.cutoff) >= 7);
 
   return {
     unitsDelivered,
@@ -595,7 +595,7 @@ export function openPipeline(d: Dataset, idx: Indexes, f: Filter): OpenLeadRow[]
       customer: l.customer_name,
       stage: l.status,
       value: l.deal_value,
-      daysStale: daysStale(l),
+      daysStale: daysStale(l, idx.cutoff),
       expectedClose: l.expected_close_date ?? null,
       repName: idx.repById.get(l.assigned_to)?.name ?? l.assigned_to,
       branchName: idx.branchById.get(l.branch_id)?.name ?? l.branch_id,
@@ -664,7 +664,7 @@ export function actionItems(d: Dataset, idx: Indexes, f: Filter): ActionItem[] {
   );
   const items: ActionItem[] = [];
   for (const l of open) {
-    const stale = daysStale(l);
+    const stale = daysStale(l, idx.cutoff);
     const rep = idx.repById.get(l.assigned_to);
     const base = {
       leadId: l.id,
@@ -682,7 +682,7 @@ export function actionItems(d: Dataset, idx: Indexes, f: Filter): ActionItem[] {
     };
     const overdue =
       l.expected_close_date &&
-      parseTs(l.expected_close_date + "T00:00:00Z") < CUTOFF;
+      parseTs(l.expected_close_date + "T00:00:00Z") < idx.cutoff;
 
     let type: ActionType | null = null;
     let reason = "";
