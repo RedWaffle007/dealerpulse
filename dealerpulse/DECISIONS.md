@@ -26,7 +26,10 @@ action-queue** product rather than a chart gallery. Three questions drive every 
 
 Every insight is scoped by the global **time-range + branch filter** (state lives in
 the URL, so views are shareable and navigation preserves context), and you can drill
-**company → branch → rep** throughout.
+all the way down: **company → branch → rep → individual lead**. Any flagged lead opens
+its own page with the full **status-history timeline** (every stage transition, with
+notes), owner, value, and delivery or loss detail, so an alert always resolves to the
+specific record and its story.
 
 ### Design & UX
 The look is deliberately restrained — a neutral, data-dense base (Linear/Vercel-style)
@@ -39,7 +42,18 @@ always shows where you are, and each filter is captioned so nothing is a mystery
 Most dashboards stop at "social media converts at 14%." This one ends at a ranked,
 explainable worklist: _"Order placed but no activity for 194 days — delivery at
 risk. Omkar Varma, Lakeside, ₹51 L."_ Rules are pure functions (no black box),
-ranked by **deal value × stage depth × days idle**, each carrying a one-line reason.
+ranked by **deal value × stage depth × days idle**, each carrying a one-line reason
+and linking straight to that lead's journey. Above the lead-level buckets sits a
+**portfolio-alert band**: branches below the group's attainment (ranked by unit
+shortfall) and a delivery-delay summary, so the queue covers both "which deals to
+chase" and "which parts of the business are slipping".
+
+### Uploading more data
+Real dealership data arrives continuously, so there's an **Upload** screen: drop in a
+JSON continuation (new months, leads, deliveries) and it is Zod-validated and merged
+into the live dashboard, upserting each record by id (new records added, existing ones
+updated). A one-click demo continuation lets a reviewer try it without a file, and a
+Reset returns to the bundled data.
 
 ---
 
@@ -51,8 +65,18 @@ ranked by **deal value × stage depth × days idle**, each carrying a one-line r
 - **Client-side vs. backend:** the dataset is 622 KB. I parse + Zod-validate it once
   on the **server** (so it never bloats the client bundle) and compute every metric in
   a pure, memoized selector layer. No database earns its keep here.
-- **Correctness is a feature, so I tested it.** The analytics layer has a 20-test Vitest
-  suite asserting the exact figures I verified in `../analysis/eda.ipynb` (160 delivered,
+- **Upload merge is validated and honest about persistence.** The Upload screen reuses
+  the same Zod schema to validate a continuation, then merges via a pure `mergeDatasets`
+  function (upsert by id) that the metrics layer reads through unchanged. The merged
+  result is held **in server memory** (on `globalThis`, so the API writer and the page
+  readers share one instance): it persists while the server is warm and resets on
+  restart/redeploy, and is not shared across serverless instances. I chose this over a
+  half-built database so the flow works end-to-end and stays truthful about its limits;
+  production would swap the in-memory store for Vercel KV/Blob or a database behind the
+  same interface. The tradeoff is stated in the UI.
+- **Correctness is a feature, so I tested it.** The analytics + merge layers have a
+  24-test Vitest suite asserting the exact figures I verified in `../analysis/eda.ipynb`
+  (160 delivered,
   11.2% attainment, 35 cold leads, 114 losses at the `new` stage, etc.). The newer
   selectors are checked by *reconciliation* — the loss reason × stage matrix must sum to
   the total losses, and model revenue shares must sum to 100% of delivered revenue — so
@@ -127,15 +151,16 @@ ranked by **deal value × stage depth × days idle**, each carrying a one-line r
 
 ## What I'd build next with more time
 
-- **Lead-detail drill-through** — click any action item to open its full status-history
-  timeline and log a follow-up.
+- **Durable upload storage** — the upload/merge flow works end-to-end but keeps the
+  merged dataset in server memory; backing it with Vercel KV/Blob or a database (behind
+  the same interface) would make merges persist and be shared across instances.
+- **Follow-up actions on a lead** — the lead page shows the full journey; logging a
+  next action or reassigning from there would close the loop.
 - **Templated natural-language summaries** — a per-branch "what changed and why" written
   from the same deterministic metrics (trustworthy, reproducible; an optional LLM pass
   could polish the prose).
 - **Created-month cohort view** — leads by created-month cohort to separate cycle lag
   from genuine decline.
-- **Promote two more Action Center rules** — "branch behind target" and "delivery
-  delayed" exist as views today; ranking them as alerts would complete the worklist.
 - **CSV / shareable-view export** and saved filter presets.
 - **Playwright smoke tests** for the core navigation + filter flows (I prioritized unit
   tests on the analytics layer, where correctness risk is highest).
