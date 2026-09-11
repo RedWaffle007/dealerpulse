@@ -11,7 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import type { MonthPoint } from "@/lib/metrics";
-import { formatMonth } from "@/lib/format";
+import { formatInt, formatMonth } from "@/lib/format";
 
 /** Color a delivered bar by how close it is to target. */
 function healthColor(pct: number): string {
@@ -61,10 +61,9 @@ export function AttainmentChart({ data }: { data: MonthPoint[] }) {
               color: "var(--popover-foreground)",
               fontSize: 12,
             }}
-            formatter={(value, name) => [
-              String(value),
-              name === "delivered" ? "Delivered" : "Target",
-            ]}
+            // Each bar sets its own `name` ("Delivered" / "Target"), so the
+            // tooltip labels each row correctly — no custom name mapping needed.
+            formatter={(value) => formatInt(Number(value) || 0)}
           />
           <Bar
             dataKey="target"
@@ -72,10 +71,16 @@ export function AttainmentChart({ data }: { data: MonthPoint[] }) {
             fill="var(--muted-foreground)"
             fillOpacity={0.28}
             radius={[3, 3, 0, 0]}
+            isAnimationActive={false}
           />
-          <Bar dataKey="delivered" name="Delivered" radius={[3, 3, 0, 0]}>
-            {rows.map((r, i) => (
-              <Cell key={i} fill={healthColor(r.attainmentPct)} />
+          <Bar
+            dataKey="delivered"
+            name="Delivered"
+            radius={[3, 3, 0, 0]}
+            isAnimationActive={false}
+          >
+            {rows.map((r) => (
+              <Cell key={r.month} fill={healthColor(r.attainmentPct)} />
             ))}
           </Bar>
         </BarChart>
