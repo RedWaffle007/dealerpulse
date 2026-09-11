@@ -155,7 +155,14 @@ export default async function OverviewPage(props: PageProps<"/">) {
             </Link>
           </>
         }
-        visual={<HeroPreview />}
+        visual={
+          <HeroPreview
+            units={k.unitsDelivered}
+            attainmentPct={k.unitAttainmentPct}
+            revenue={k.revenue}
+            caption={`as of ${formatDate(idx.cutoff.toISOString())}`}
+          />
+        }
       >
         {f.branchId ? idx.branchById.get(f.branchId)?.name : "All branches"} ·
         pipeline &amp; alerts{" "}

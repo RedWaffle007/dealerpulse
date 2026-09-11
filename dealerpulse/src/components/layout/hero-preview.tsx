@@ -3,75 +3,79 @@
 import { useEffect, useRef } from "react";
 
 /**
- * A self-contained, looping "product preview" for the hero — a mini live-metrics
- * panel whose KPIs count up on a ~3s loop. Pure decoration built in code (no
- * video asset), animated via refs + rAF so it never re-renders the React tree,
- * and it holds its final frame under prefers-reduced-motion.
+ * A compact "product preview" panel for the hero. Its KPIs count up once on
+ * mount and then hold the real values (no distracting loop). Values are the
+ * live overview figures, so it always matches the dashboard below. Animated via
+ * refs + rAF (no React re-renders) and it shows the final numbers immediately
+ * under prefers-reduced-motion or without JS.
  */
-const UNITS = 176;
-const ATTAIN = 12; // %
-const REVENUE = 42.5; // ₹ Cr
-
 function easeOut(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
-export function HeroPreview() {
+export function HeroPreview({
+  units,
+  attainmentPct,
+  revenue, // in rupees
+  caption,
+}: {
+  units: number;
+  attainmentPct: number;
+  revenue: number;
+  caption?: string;
+}) {
+  const revenueCr = revenue / 1e7;
   const unitsRef = useRef<HTMLSpanElement>(null);
   const attainRef = useRef<HTMLSpanElement>(null);
   const revRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return; // leave the static final frame in place
+    if (reduce) return; // final values are already rendered
 
     let raf = 0;
     let start: number | null = null;
-    const RISE = 1500;
-    const HOLD = 1400;
-    const CYCLE = RISE + HOLD;
+    const DURATION = 1600; // count up once, then stop
 
     const frame = (now: number) => {
       if (start === null) start = now;
-      const elapsed = (now - start) % CYCLE;
-      const t = elapsed < RISE ? easeOut(elapsed / RISE) : 1;
-
+      const t = Math.min(1, (now - start) / DURATION);
+      const e = easeOut(t);
       if (unitsRef.current)
-        unitsRef.current.textContent = String(Math.round(UNITS * t));
+        unitsRef.current.textContent = String(Math.round(units * e));
       if (attainRef.current)
-        attainRef.current.textContent = `${Math.round(ATTAIN * t)}%`;
+        attainRef.current.textContent = `${(attainmentPct * e).toFixed(1)}%`;
       if (revRef.current)
-        revRef.current.textContent = `₹${(REVENUE * t).toFixed(1)}`;
-      raf = requestAnimationFrame(frame);
+        revRef.current.textContent = `₹${(revenueCr * e).toFixed(2)}`;
+      if (t < 1) raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [units, attainmentPct, revenueCr]);
 
   return (
     <div
       className="w-full rounded-2xl border border-white/60 bg-card/80 p-4 shadow-xl ring-1 ring-brand/10 backdrop-blur dark:border-white/10"
       aria-hidden
     >
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3 flex items-center justify-between gap-2">
         <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-          Group performance · live
+          Group performance
         </span>
-        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
-          <span className="size-1.5 animate-pulse rounded-full bg-emerald-500" />
-          syncing
-        </span>
+        {caption && (
+          <span className="text-[10px] text-muted-foreground">{caption}</span>
+        )}
       </div>
 
       <div className="grid grid-cols-3 gap-2">
         <Stat label="Units">
-          <span ref={unitsRef}>{UNITS}</span>
+          <span ref={unitsRef}>{Math.round(units)}</span>
         </Stat>
         <Stat label="Attainment">
-          <span ref={attainRef}>{ATTAIN}%</span>
+          <span ref={attainRef}>{attainmentPct.toFixed(1)}%</span>
         </Stat>
         <Stat label="Revenue">
-          <span ref={revRef}>₹{REVENUE.toFixed(1)}</span>
+          <span ref={revRef}>₹{revenueCr.toFixed(2)}</span>
           <span className="text-xs font-normal text-muted-foreground"> Cr</span>
         </Stat>
       </div>
