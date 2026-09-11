@@ -46,9 +46,14 @@ The dashboard is built to **tell a story anyone can read**, not just analysts:
   computed from the data in view — e.g. *"The group delivered 160 of 1,426 target
   cars (11% of plan). Eastside leads at 15%; Lakeside trails at 2%."* — so the
   takeaway lands before any chart.
-- **KPI cards are drill-downs.** Every headline number links straight to the data
-  behind it (attainment/revenue/units → the branch table; conversion → the funnel;
-  pipeline/cold → the Action Center), so a CEO clicks the number they care about.
+- **KPI cards are drill-downs — and carry trend.** Every headline number links
+  straight to the data behind it (attainment/revenue/units → the branch table;
+  conversion → the funnel; pipeline/cold → the Action Center), so a CEO clicks the
+  number they care about. The three delivery-anchored cards also show a monthly
+  **sparkline** and a **month-over-month delta** ("+55% vs Nov"). Conversion and the
+  pipeline snapshots deliberately get neither: a monthly conversion trend is a
+  cohort-immaturity artifact, and a snapshot has no series — a sparkline on either
+  would mislead.
 - **Dense sections collapse.** "Needs attention" on the overview and the four
   Action-Center rule buckets are expandable dropdowns (native `<details>`, zero JS),
   each showing a live count + value while collapsed — the page stays uncluttered but
@@ -124,6 +129,15 @@ next" and "what moved" — the questions an executive actually opens a dashboard
 - **Client-side vs. backend:** the dataset is 622 KB. I parse + Zod-validate it once
   on the **server** (so it never bloats the client bundle) and compute every metric in
   a pure, memoized selector layer. No database earns its keep here.
+- **Performance is measured, not guessed.** A full metrics sweep over the dataset runs
+  in **~0.03 ms**; the one-time parse is ~2 ms and cached. Page latency is framework +
+  network, not computation, so the right levers are caching (module-scope parse, React
+  `cache()`, the Next data cache over the Blob read) and instant client navigation —
+  all of which are in place. The selector layer still uses **single-pass grouping**
+  (`branchComparison`, `monthlyAttainment`) and memoized `scopedLeads` so it stays
+  O(n) as the data grows. A native (Rust/WASM) rewrite would be counter-productive
+  here: the JS↔WASM serialization boundary would cost more than the microseconds of
+  compute it could save.
 - **Import merge is validated and persisted for real.** The Data Import screen reuses
   the same Zod schema to validate a continuation, then merges via a pure `mergeDatasets`
   function (upsert by id) that the metrics layer reads through unchanged. The merged

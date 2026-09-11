@@ -15,6 +15,7 @@ import {
   reachedStages,
   repLeaderboard,
   sourceQuality,
+  type MonthPoint,
 } from "./metrics";
 
 /**
@@ -139,6 +140,53 @@ export function pipelineForecast(
     expectedUnits: byStage.reduce((s, x) => s + x.expectedUnits, 0),
     expectedValue: byStage.reduce((s, x) => s + x.expectedValue, 0),
     byStage,
+  };
+}
+
+// ---- KPI sparklines + month-over-month deltas -------------------------------
+
+export type Spark = {
+  /** Monthly values within the selected range, chronological. */
+  series: number[];
+  /** Latest in-range month value. */
+  curr: number;
+  /** The prior calendar month's value, or null if none exists. */
+  prev: number | null;
+};
+export type KpiSparks = { units: Spark; attainment: Spark; revenue: Spark };
+
+/**
+ * Monthly series + latest/prior values for the three delivery-anchored KPIs
+ * (units, attainment, revenue). Deliberately excludes lead conversion and the
+ * open-pipeline snapshots: a monthly conversion trend is confounded by cohort
+ * immaturity (see periodDigest), and snapshots have no monthly series — a
+ * sparkline on either would mislead. `prev` is the immediately preceding
+ * calendar month (which may fall outside the selected range) to give an honest
+ * month-over-month delta.
+ */
+export function kpiSparks(d: Dataset, idx: Indexes, f: Filter): KpiSparks {
+  const all = monthlyAttainment(d, idx, f);
+  const inRange = f.months?.length
+    ? all.filter((m) => f.months!.includes(m.month))
+    : all;
+  const latest = inRange[inRange.length - 1];
+  const priorMonth = latest
+    ? idx.months[idx.months.indexOf(latest.month) - 1]
+    : undefined;
+  const prior = priorMonth
+    ? all.find((m) => m.month === priorMonth)
+    : undefined;
+
+  const mk = (sel: (m: MonthPoint) => number): Spark => ({
+    series: inRange.map(sel),
+    curr: latest ? sel(latest) : 0,
+    prev: prior ? sel(prior) : null,
+  });
+
+  return {
+    units: mk((m) => m.delivered),
+    attainment: mk((m) => m.attainmentPct),
+    revenue: mk((m) => m.revenue),
   };
 }
 

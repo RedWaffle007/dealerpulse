@@ -8,8 +8,9 @@ import {
   actionItems,
   pipelineByStage,
 } from "@/lib/metrics";
-import { periodDigest } from "@/lib/insights";
+import { periodDigest, kpiSparks, type Spark } from "@/lib/insights";
 import { PeriodDigestPanel } from "@/components/dashboard/period-digest";
+import type { KpiDelta } from "@/components/dashboard/kpi-card";
 import { parseFilter } from "@/lib/filter";
 import {
   formatCrore,
@@ -84,6 +85,14 @@ export default async function OverviewPage(props: PageProps<"/">) {
   const pipeline = pipelineByStage(d, idx, f);
   const pipelineTop = Math.max(1, ...pipeline.map((s) => s.value));
   const digest = periodDigest(d, idx, f);
+
+  // Sparklines + month-over-month deltas for the delivery-anchored KPIs only.
+  const spark = kpiSparks(d, idx, f);
+  const prevLabel = digest.prior ? `vs ${formatMonth(digest.prior)}` : undefined;
+  const pctDelta = (s: Spark): KpiDelta | null =>
+    s.prev ? { value: (100 * (s.curr - s.prev)) / s.prev, kind: "pct" } : null;
+  const ptsDelta = (s: Spark): KpiDelta | null =>
+    s.prev != null ? { value: s.curr - s.prev, kind: "pts" } : null;
 
   // Plain-language story headline, computed from the data in view.
   const withTargets = branches.filter((b) => b.targetUnits > 0);
@@ -183,6 +192,9 @@ export default async function OverviewPage(props: PageProps<"/">) {
           tone={attainmentTone(k.unitAttainmentPct)}
           href="#branch-performance"
           drillLabel="by branch"
+          spark={spark.units.series}
+          delta={pctDelta(spark.units)}
+          deltaLabel={prevLabel}
         />
         <KpiCard
           label="Unit attainment"
@@ -191,6 +203,9 @@ export default async function OverviewPage(props: PageProps<"/">) {
           tone={attainmentTone(k.unitAttainmentPct)}
           href="#attainment"
           drillLabel="monthly trend"
+          spark={spark.attainment.series}
+          delta={ptsDelta(spark.attainment)}
+          deltaLabel={prevLabel}
         />
         <KpiCard
           label="Revenue"
@@ -199,6 +214,9 @@ export default async function OverviewPage(props: PageProps<"/">) {
           tone={attainmentTone(k.revenueAttainmentPct)}
           href="#branch-performance"
           drillLabel="by branch"
+          spark={spark.revenue.series}
+          delta={pctDelta(spark.revenue)}
+          deltaLabel={prevLabel}
         />
         <KpiCard
           label="Lead conversion"

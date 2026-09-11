@@ -28,8 +28,10 @@ const spaceGrotesk = Space_Grotesk({
   weight: ["400", "500", "600", "700"],
 });
 
+import { Suspense } from "react";
 import { AppHeader } from "@/components/layout/app-header";
 import { IntroSplash } from "@/components/layout/intro-splash";
+import { RouteProgress } from "@/components/layout/route-progress";
 
 // Runs before paint: on a same-tab refresh (flag already set) it stamps
 // data-intro-seen so the splash never flashes; on a fresh tab it sets the flag
@@ -58,6 +60,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-full flex flex-col bg-muted/30">
         <script dangerouslySetInnerHTML={{ __html: INTRO_GATE }} />
+        <Suspense fallback={null}>
+          <RouteProgress />
+        </Suspense>
         <IntroSplash />
         <AppHeader />
         {children}

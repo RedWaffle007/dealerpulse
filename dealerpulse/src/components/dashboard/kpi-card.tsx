@@ -2,9 +2,41 @@
 
 import Link from "next/link";
 import type { MouseEvent } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ArrowUp, ArrowDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Sparkline } from "@/components/ui/sparkline";
 import { cn } from "@/lib/utils";
+
+/** A month-over-month change: a percent change, or a percentage-point change. */
+export type KpiDelta = { value: number; kind: "pct" | "pts" };
+
+function DeltaChip({ delta, label }: { delta: KpiDelta; label?: string }) {
+  const up = delta.value > 0.05;
+  const down = delta.value < -0.05;
+  const mag =
+    delta.kind === "pts"
+      ? `${Math.abs(delta.value).toFixed(1)} pts`
+      : `${Math.abs(delta.value).toFixed(0)}%`;
+  return (
+    <span className="inline-flex items-center gap-1">
+      <span
+        className={cn(
+          "inline-flex items-center gap-0.5 rounded px-1 py-0.5 text-[10px] font-semibold tabular-nums",
+          up && "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+          down && "bg-red-500/10 text-red-600 dark:text-red-400",
+          !up && !down && "bg-muted text-muted-foreground",
+        )}
+      >
+        {up && <ArrowUp className="size-2.5" aria-hidden />}
+        {down && <ArrowDown className="size-2.5" aria-hidden />}
+        {mag}
+      </span>
+      {label && (
+        <span className="text-[10px] text-muted-foreground">{label}</span>
+      )}
+    </span>
+  );
+}
 
 export type KpiTone = "neutral" | "good" | "warn" | "bad";
 
@@ -30,6 +62,9 @@ export function KpiCard({
   tone = "neutral",
   href,
   drillLabel,
+  spark,
+  delta,
+  deltaLabel,
 }: {
   label: string;
   value: string;
@@ -39,6 +74,12 @@ export function KpiCard({
   href?: string;
   /** Short caption for what clicking reveals, e.g. "by branch". */
   drillLabel?: string;
+  /** Monthly series for an inline trend sparkline. */
+  spark?: number[];
+  /** Month-over-month change chip. */
+  delta?: KpiDelta | null;
+  /** Caption for the delta, e.g. "vs Nov". */
+  deltaLabel?: string;
 }) {
   const card = (
     <Card
@@ -71,6 +112,12 @@ export function KpiCard({
           {value}
         </div>
         {sub && <div className="mt-1.5 text-xs text-muted-foreground">{sub}</div>}
+        {(delta || (spark && spark.length > 1)) && (
+          <div className="mt-2 flex items-center justify-between gap-2">
+            {delta ? <DeltaChip delta={delta} label={deltaLabel} /> : <span />}
+            {spark && <Sparkline values={spark} />}
+          </div>
+        )}
         {href && drillLabel && (
           <div className="mt-2 text-[10px] font-medium uppercase tracking-wide text-brand/80">
             {drillLabel} →

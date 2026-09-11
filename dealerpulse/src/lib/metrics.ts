@@ -68,14 +68,32 @@ function deliveryInScope(leadId: string, idx: Indexes, f: Filter): boolean {
   );
 }
 
+// Per-dataset memo of scoped-lead results. scopedLeads is pure and called many
+// times with the same filter within a single render (kpis, funnel, source, rep,
+// loss, velocity, ...); memoizing collapses those repeated full scans into one.
+// Keyed on the dataset via a WeakMap, so a merged dataset gets a fresh cache and
+// the old one is garbage-collected. Returned arrays are only ever read, never
+// mutated, so sharing them is safe.
+const scopedCache = new WeakMap<Dataset, Map<string, Lead[]>>();
+
 /** Leads scoped by branch + rep + created_at month (for volume/funnel/source). */
 export function scopedLeads(d: Dataset, f: Filter): Lead[] {
-  return d.leads.filter(
+  const key = `${f.branchId ?? ""}|${f.repId ?? ""}|${(f.months ?? []).join(",")}`;
+  let byKey = scopedCache.get(d);
+  if (!byKey) {
+    byKey = new Map();
+    scopedCache.set(d, byKey);
+  }
+  const cached = byKey.get(key);
+  if (cached) return cached;
+  const result = d.leads.filter(
     (l) =>
       branchMatch(l.branch_id, f) &&
       repMatch(l.assigned_to, f) &&
       monthMatch(l.created_at, f),
   );
+  byKey.set(key, result);
+  return result;
 }
 
 // ---- statistics helpers -----------------------------------------------------
@@ -179,26 +197,36 @@ export function monthlyAttainment(
   idx: Indexes,
   f: Filter,
 ): MonthPoint[] {
+  // Group in-scope deliveries and branch-scoped targets by month in one pass
+  // each, then read them per month (was a full re-scan of both arrays per month).
+  const delBy = new Map<string, { count: number; revenue: number }>();
+  for (const x of d.deliveries) {
+    if (!deliveryInScope(x.lead_id, idx, f)) continue;
+    const m = monthOf(x.delivery_date);
+    const e = delBy.get(m) ?? { count: 0, revenue: 0 };
+    e.count += 1;
+    e.revenue += idx.leadById.get(x.lead_id)?.deal_value ?? 0;
+    delBy.set(m, e);
+  }
+  const tgtBy = new Map<string, { units: number; revenue: number }>();
+  for (const t of d.targets) {
+    if (!branchMatch(t.branch_id, f)) continue;
+    const e = tgtBy.get(t.month) ?? { units: 0, revenue: 0 };
+    e.units += t.target_units;
+    e.revenue += t.target_revenue;
+    tgtBy.set(t.month, e);
+  }
+
   return idx.months.map((month) => {
-    const dels = d.deliveries.filter(
-      (x) =>
-        deliveryInScope(x.lead_id, idx, f) && monthOf(x.delivery_date) === month,
-    );
-    const tgts = d.targets.filter(
-      (t) => branchMatch(t.branch_id, f) && t.month === month,
-    );
-    const target = tgts.reduce((s, t) => s + t.target_units, 0);
-    const revenue = dels.reduce(
-      (s, x) => s + (idx.leadById.get(x.lead_id)?.deal_value ?? 0),
-      0,
-    );
+    const del = delBy.get(month) ?? { count: 0, revenue: 0 };
+    const tgt = tgtBy.get(month) ?? { units: 0, revenue: 0 };
     return {
       month,
-      delivered: dels.length,
-      target,
-      attainmentPct: target ? (100 * dels.length) / target : 0,
-      revenue,
-      targetRevenue: tgts.reduce((s, t) => s + t.target_revenue, 0),
+      delivered: del.count,
+      target: tgt.units,
+      attainmentPct: tgt.units ? (100 * del.count) / tgt.units : 0,
+      revenue: del.revenue,
+      targetRevenue: tgt.revenue,
     };
   });
 }
@@ -222,32 +250,48 @@ export function branchComparison(
   idx: Indexes,
   f: Filter,
 ): BranchRow[] {
+  // Bucket the in-scope inputs by branch in single passes, instead of re-scanning
+  // the full arrays once per branch. Semantics are identical to the per-branch
+  // filters this replaces: leads use created-month + rep scope; deliveries use
+  // delivery-month scope via the parent lead's branch; targets use branch scope.
+  const leadsBy = new Map<string, { total: number; delivered: number }>();
+  for (const l of d.leads) {
+    if (!repMatch(l.assigned_to, f) || !monthMatch(l.created_at, f)) continue;
+    const e = leadsBy.get(l.branch_id) ?? { total: 0, delivered: 0 };
+    e.total += 1;
+    if (l.status === "delivered") e.delivered += 1;
+    leadsBy.set(l.branch_id, e);
+  }
+  const delsBy = new Map<string, { count: number; revenue: number }>();
+  for (const x of d.deliveries) {
+    if (!monthMatch(x.delivery_date, f)) continue;
+    const lead = idx.leadById.get(x.lead_id);
+    if (!lead) continue;
+    const e = delsBy.get(lead.branch_id) ?? { count: 0, revenue: 0 };
+    e.count += 1;
+    e.revenue += lead.deal_value;
+    delsBy.set(lead.branch_id, e);
+  }
+  const targetsBy = new Map<string, number>();
+  for (const t of d.targets) {
+    if (!monthMatch(t.month + "-01", f)) continue;
+    targetsBy.set(t.branch_id, (targetsBy.get(t.branch_id) ?? 0) + t.target_units);
+  }
+
   return d.branches.map((b) => {
-    const bf: Filter = { ...f, branchId: b.id };
-    const leads = scopedLeads(d, bf);
-    const delivered = leads.filter((l) => l.status === "delivered");
-    const dels = d.deliveries.filter((x) => {
-      const lead = idx.leadById.get(x.lead_id);
-      return lead && lead.branch_id === b.id && monthMatch(x.delivery_date, f);
-    });
-    const targetUnits = d.targets
-      .filter((t) => t.branch_id === b.id && monthMatch(t.month + "-01", f))
-      .reduce((s, t) => s + t.target_units, 0);
+    const leads = leadsBy.get(b.id) ?? { total: 0, delivered: 0 };
+    const dels = delsBy.get(b.id) ?? { count: 0, revenue: 0 };
+    const targetUnits = targetsBy.get(b.id) ?? 0;
     return {
       branchId: b.id,
       name: b.name,
       city: b.city,
-      leads: leads.length,
-      delivered: delivered.length,
-      conversionPct: leads.length
-        ? (100 * delivered.length) / leads.length
-        : 0,
+      leads: leads.total,
+      delivered: leads.delivered,
+      conversionPct: leads.total ? (100 * leads.delivered) / leads.total : 0,
       targetUnits,
-      attainmentPct: targetUnits ? (100 * dels.length) / targetUnits : 0,
-      revenue: dels.reduce(
-        (s, x) => s + (idx.leadById.get(x.lead_id)?.deal_value ?? 0),
-        0,
-      ),
+      attainmentPct: targetUnits ? (100 * dels.count) / targetUnits : 0,
+      revenue: dels.revenue,
     };
   });
 }
