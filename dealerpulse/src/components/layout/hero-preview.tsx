@@ -3,15 +3,11 @@
 import { useEffect, useRef } from "react";
 
 /**
- * A self-contained, looping "product preview" for the hero — a mini dashboard
- * whose KPIs count up and whose bars grow, on a ~3s loop. Pure decoration built
- * in code (no video asset), animated via refs + rAF so it never re-renders the
- * React tree, and it holds its final frame under prefers-reduced-motion.
+ * A self-contained, looping "product preview" for the hero — a mini live-metrics
+ * panel whose KPIs count up on a ~3s loop. Pure decoration built in code (no
+ * video asset), animated via refs + rAF so it never re-renders the React tree,
+ * and it holds its final frame under prefers-reduced-motion.
  */
-const BARS = [8, 15, 22, 30, 26, 34, 41]; // illustrative monthly deliveries
-const BAR_MAX = Math.max(...BARS);
-
-// Target KPI values shown counting up.
 const UNITS = 176;
 const ATTAIN = 12; // %
 const REVENUE = 42.5; // ₹ Cr
@@ -24,7 +20,6 @@ export function HeroPreview() {
   const unitsRef = useRef<HTMLSpanElement>(null);
   const attainRef = useRef<HTMLSpanElement>(null);
   const revRef = useRef<HTMLSpanElement>(null);
-  const barRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -47,9 +42,6 @@ export function HeroPreview() {
         attainRef.current.textContent = `${Math.round(ATTAIN * t)}%`;
       if (revRef.current)
         revRef.current.textContent = `₹${(REVENUE * t).toFixed(1)}`;
-      barRefs.current.forEach((bar, i) => {
-        if (bar) bar.style.height = `${(BARS[i] / BAR_MAX) * 100 * t}%`;
-      });
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
@@ -72,58 +64,28 @@ export function HeroPreview() {
       </div>
 
       <div className="grid grid-cols-3 gap-2">
-        <Stat label="Units" prefix="">
+        <Stat label="Units">
           <span ref={unitsRef}>{UNITS}</span>
         </Stat>
-        <Stat label="Attainment" prefix="">
+        <Stat label="Attainment">
           <span ref={attainRef}>{ATTAIN}%</span>
         </Stat>
-        <Stat label="Revenue" prefix="">
+        <Stat label="Revenue">
           <span ref={revRef}>₹{REVENUE.toFixed(1)}</span>
           <span className="text-xs font-normal text-muted-foreground"> Cr</span>
         </Stat>
-      </div>
-
-      <div className="mt-4 flex h-24 gap-1.5">
-        {BARS.map((v, i) => (
-          <div
-            key={i}
-            className="relative flex-1 overflow-hidden rounded-sm bg-muted"
-          >
-            <div
-              ref={(el) => {
-                barRefs.current[i] = el;
-              }}
-              className="absolute bottom-0 w-full rounded-sm bg-gradient-to-t from-brand to-brand/60"
-              style={{ height: `${(v / BAR_MAX) * 100}%` }}
-            />
-          </div>
-        ))}
-      </div>
-      <div className="mt-2 flex justify-between text-[9px] text-muted-foreground">
-        <span>Jun</span>
-        <span>Dec</span>
       </div>
     </div>
   );
 }
 
-function Stat({
-  label,
-  prefix,
-  children,
-}: {
-  label: string;
-  prefix: string;
-  children: React.ReactNode;
-}) {
+function Stat({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="rounded-lg bg-background/60 p-2 ring-1 ring-foreground/5">
       <div className="text-[9px] font-medium uppercase tracking-wide text-muted-foreground">
         {label}
       </div>
       <div className="mt-0.5 font-heading text-base font-semibold tabular-nums leading-none">
-        {prefix}
         {children}
       </div>
     </div>
