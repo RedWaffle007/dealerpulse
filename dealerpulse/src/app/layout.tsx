@@ -34,8 +34,10 @@ import { IntroSplash } from "@/components/layout/intro-splash";
 // Runs before paint: on a same-tab refresh (flag already set) it stamps
 // data-intro-seen so the splash never flashes; on a fresh tab it sets the flag
 // so the splash shows this once. sessionStorage is cleared when the tab closes,
-// so reopening a closed tab greets again — but a refresh does not.
-const INTRO_GATE = `try{if(sessionStorage.getItem('dp-intro-seen')){document.documentElement.setAttribute('data-intro-seen','1')}else{sessionStorage.setItem('dp-intro-seen','1')}}catch(e){}`;
+// so reopening a closed tab greets again — but a refresh does not. A `?intro=1`
+// query param forces the reveal (and its sound) regardless — handy for testing
+// or demoing without opening a brand-new tab.
+const INTRO_GATE = `try{if(location.search.indexOf('intro=1')>-1){sessionStorage.removeItem('dp-intro-seen')}else if(sessionStorage.getItem('dp-intro-seen')){document.documentElement.setAttribute('data-intro-seen','1')}else{sessionStorage.setItem('dp-intro-seen','1')}}catch(e){}`;
 
 export const metadata: Metadata = {
   title: "DealerPulse — Feel your data",

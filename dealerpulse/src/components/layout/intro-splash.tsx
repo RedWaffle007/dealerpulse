@@ -23,27 +23,39 @@ const OUTRO_MS = 550;
 const RING_AT_MS = 480;
 const TICK_SRC = "/tick.mp3";
 
-// --- Sound: decode once, up front, so the strike is instant when it fires ------
+// --- Sound: decode once, up front, and defeat autoplay with a gesture unlock ---
 //
-// The old approach (`new Audio(src).play()` at mount) was unreliable in two ways:
-// the 300KB WAV was fetched+decoded only at play time, so the strike lagged the
-// reveal by however long that took; and a rejected autoplay retried the *same*
-// already-late element. Here we decode a tiny MP3 into a Web Audio buffer as soon
-// as the splash mounts, then start a fresh buffer source at a precise moment —
-// zero fetch/decode latency at fire time. Autoplay policy is the only remaining
-// gate, and we unlock it on the first gesture (see armTick).
+// Two hard facts shape this:
+//  1. Browsers block audio until the page has a user activation. On a cold tab
+//     there is none, so an auto-playing splash sound is gated no matter what.
+//  2. A tiny pre-decoded Web Audio buffer removes all fetch/decode latency, so
+//     when we *are* allowed to play, the strike is instant.
+//
+// So we do both: try to play the moment the splash mounts (works when the click
+// that opened the app still counts as activation), and — installed at mount, not
+// only during the 3s splash — a persistent set of capture-phase gesture listeners
+// that resume the AudioContext and ring on the very first interaction. The strike
+// therefore lands on load when the browser allows it, otherwise on the user's
+// first click/key/tap. That first-gesture path is the reliable one.
 let audioCtx: AudioContext | null = null;
 let bufferPromise: Promise<AudioBuffer> | null = null;
+let armed = false;
+let wantRing = false;
+let didRing = false;
 
 function getCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
-  const Ctor =
-    window.AudioContext ??
-    (window as unknown as { webkitAudioContext?: typeof AudioContext })
-      .webkitAudioContext;
-  if (!Ctor) return null;
-  if (!audioCtx) audioCtx = new Ctor();
-  return audioCtx;
+  try {
+    const Ctor =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext })
+        .webkitAudioContext;
+    if (!Ctor) return null;
+    if (!audioCtx) audioCtx = new Ctor();
+    return audioCtx;
+  } catch {
+    return null;
+  }
 }
 
 function loadBuffer(ctx: AudioContext): Promise<AudioBuffer> {
@@ -55,69 +67,60 @@ function loadBuffer(ctx: AudioContext): Promise<AudioBuffer> {
   return bufferPromise;
 }
 
-/** Kick off fetch+decode immediately; safe to call before any playback. */
-function warmTick() {
-  try {
-    const ctx = getCtx();
-    if (ctx) void loadBuffer(ctx);
-  } catch {
-    /* sound is a nicety — never let it disturb the reveal */
-  }
+/** Start the strike once, but only when the buffer is ready and the ctx runs. */
+function startSound(ctx: AudioContext) {
+  if (didRing || !wantRing || ctx.state !== "running") return;
+  void loadBuffer(ctx).then((buffer) => {
+    if (didRing || ctx.state !== "running") return;
+    try {
+      didRing = true;
+      const src = ctx.createBufferSource();
+      src.buffer = buffer;
+      const gain = ctx.createGain();
+      gain.gain.value = 0.7;
+      src.connect(gain).connect(ctx.destination);
+      src.start();
+    } catch {
+      /* never let sound failure disturb the reveal */
+    }
+  });
 }
 
 /**
- * Ring the strike once. If the context is already unlocked, plays immediately;
- * otherwise resumes it (a prior navigation gesture often counts) and, failing
- * that, arms one-shot listeners so it still rings on the first interaction.
+ * Install capture-phase listeners once. The first real interaction resumes the
+ * (otherwise suspended) context and rings — this is what makes the sound
+ * reliable under autoplay policy. Listeners clear themselves once it has rung.
  */
+function armGestures() {
+  if (armed || typeof window === "undefined") return;
+  armed = true;
+  const events = ["pointerdown", "mousedown", "keydown", "touchstart", "click"];
+  const handler = () => {
+    const ctx = getCtx();
+    if (!ctx) return;
+    void ctx.resume().then(() => startSound(ctx));
+    if (didRing) remove();
+  };
+  const remove = () =>
+    events.forEach((e) => window.removeEventListener(e, handler, true));
+  events.forEach((e) => window.addEventListener(e, handler, true));
+  window.setTimeout(remove, 60_000); // guard: don't leak listeners forever
+}
+
+/** Preload + decode and arm the gesture unlock, as early as the splash mounts. */
+function warmTick() {
+  const ctx = getCtx();
+  if (ctx) void loadBuffer(ctx);
+  armGestures();
+}
+
+/** Ask to ring: play now if we already have activation, else the gesture rings. */
 function ringTick() {
+  wantRing = true;
   const ctx = getCtx();
   if (!ctx) return;
-  let fired = false;
-  const play = () => {
-    if (fired) return;
-    fired = true;
-    void loadBuffer(ctx).then((buffer) => {
-      try {
-        const src = ctx.createBufferSource();
-        src.buffer = buffer;
-        const gain = ctx.createGain();
-        gain.gain.value = 0.7;
-        src.connect(gain).connect(ctx.destination);
-        src.start();
-      } catch {
-        /* ignore */
-      }
-    });
-  };
-
-  const cleanup = () => {
-    window.removeEventListener("pointerdown", onGesture);
-    window.removeEventListener("keydown", onGesture);
-    window.removeEventListener("touchstart", onGesture);
-  };
-  const onGesture = () => {
-    void ctx.resume().finally(play);
-    cleanup();
-  };
-
-  const attempt = ctx.state === "suspended" ? ctx.resume() : Promise.resolve();
-  attempt
-    .then(() => {
-      if (ctx.state === "running") {
-        play();
-      } else {
-        arm();
-      }
-    })
-    .catch(arm);
-
-  function arm() {
-    window.addEventListener("pointerdown", onGesture, { once: true });
-    window.addEventListener("keydown", onGesture, { once: true });
-    window.addEventListener("touchstart", onGesture, { once: true });
-    setTimeout(cleanup, 10000);
-  }
+  if (ctx.state === "running") startSound(ctx);
+  else void ctx.resume().then(() => startSound(ctx));
 }
 
 export function IntroSplash() {
