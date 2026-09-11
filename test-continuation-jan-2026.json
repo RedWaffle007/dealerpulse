@@ -1,0 +1,1913 @@
+{
+  "metadata": {
+    "note": "January 2026 continuation \u2014 test merge (generated for QA)",
+    "generated_for": "DealerPulse upload/merge demo"
+  },
+  "leads": [
+    {
+      "id": "L0511",
+      "customer_name": "Isha Khan",
+      "phone": "+91 92008879747",
+      "source": "phone_enquiry",
+      "model_interested": "Camry",
+      "assigned_to": "SR4",
+      "branch_id": "B1",
+      "created_at": "2026-01-05T10:02:00Z",
+      "deal_value": 5310000,
+      "status": "contacted",
+      "last_activity_at": "2026-01-06T12:18:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-05T14:00:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-06T12:18:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-26"
+    },
+    {
+      "id": "L0512",
+      "customer_name": "Nikhil Iyer",
+      "phone": "+91 94030302109",
+      "source": "social_media",
+      "model_interested": "Hilux",
+      "assigned_to": "SR5",
+      "branch_id": "B1",
+      "created_at": "2026-01-09T10:01:00Z",
+      "deal_value": 3920000,
+      "status": "lost",
+      "last_activity_at": "2026-01-13T11:43:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-09T14:42:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-11T10:31:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-13T11:43:00Z"
+        }
+      ],
+      "lost_reason": "Financing not approved"
+    },
+    {
+      "id": "L0513",
+      "customer_name": "Saanvi Khan",
+      "phone": "+91 93626293563",
+      "source": "referral",
+      "model_interested": "Hilux",
+      "assigned_to": "SR7",
+      "branch_id": "B1",
+      "created_at": "2026-01-02T10:17:00Z",
+      "deal_value": 3750000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-18T14:00:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-02T17:53:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-06T10:22:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-10T15:26:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-13T17:39:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-15T17:16:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-18T14:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0514",
+      "customer_name": "Riya Iyer",
+      "phone": "+91 99296484665",
+      "source": "auto_expo",
+      "model_interested": "Hilux",
+      "assigned_to": "SR4",
+      "branch_id": "B1",
+      "created_at": "2026-01-07T10:06:00Z",
+      "deal_value": 3830000,
+      "status": "negotiation",
+      "last_activity_at": "2026-01-14T15:21:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-07T17:44:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T15:49:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-13T10:35:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-14T15:21:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-25"
+    },
+    {
+      "id": "L0515",
+      "customer_name": "Sai Bhat",
+      "phone": "+91 99111705453",
+      "source": "phone_enquiry",
+      "model_interested": "Glanza",
+      "assigned_to": "SR7",
+      "branch_id": "B1",
+      "created_at": "2026-01-08T10:05:00Z",
+      "deal_value": 870000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-16T16:15:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-08T12:41:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-10T15:32:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-11T13:21:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-14T10:42:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-15T13:42:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-16T16:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0516",
+      "customer_name": "Pari Reddy",
+      "phone": "+91 95001409958",
+      "source": "social_media",
+      "model_interested": "Urban Cruiser Hyryder",
+      "assigned_to": "SR7",
+      "branch_id": "B1",
+      "created_at": "2026-01-08T10:05:00Z",
+      "deal_value": 1770000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-16T12:37:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-08T12:26:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-11T15:35:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-12T11:17:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-13T15:14:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-14T09:22:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-16T12:37:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0517",
+      "customer_name": "Meera Das",
+      "phone": "+91 94646473160",
+      "source": "referral",
+      "model_interested": "Innova Crysta",
+      "assigned_to": "SR4",
+      "branch_id": "B1",
+      "created_at": "2026-01-03T10:58:00Z",
+      "deal_value": 2680000,
+      "status": "new",
+      "last_activity_at": "2026-01-03T12:28:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-03T12:28:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-09"
+    },
+    {
+      "id": "L0518",
+      "customer_name": "Aditya Patel",
+      "phone": "+91 94854191736",
+      "source": "phone_enquiry",
+      "model_interested": "Innova Hycross",
+      "assigned_to": "SR2",
+      "branch_id": "B1",
+      "created_at": "2026-01-02T10:15:00Z",
+      "deal_value": 2610000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-15T17:43:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-02T13:05:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-04T12:18:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-07T15:44:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-10T17:55:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-12T13:09:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-15T17:43:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0519",
+      "customer_name": "Aditya Sharma",
+      "phone": "+91 91090726801",
+      "source": "social_media",
+      "model_interested": "Hilux",
+      "assigned_to": "SR3",
+      "branch_id": "B1",
+      "created_at": "2026-01-10T10:19:00Z",
+      "deal_value": 3690000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-18T18:38:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-10T09:27:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-12T17:37:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-13T15:40:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-14T16:47:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-17T10:17:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-18T18:38:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0520",
+      "customer_name": "Meera Reddy",
+      "phone": "+91 91860723056",
+      "source": "website",
+      "model_interested": "Hilux",
+      "assigned_to": "SR7",
+      "branch_id": "B1",
+      "created_at": "2026-01-07T10:02:00Z",
+      "deal_value": 3660000,
+      "status": "new",
+      "last_activity_at": "2026-01-07T17:59:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-07T17:59:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-18"
+    },
+    {
+      "id": "L0521",
+      "customer_name": "Myra Shetty",
+      "phone": "+91 96238563841",
+      "source": "walk_in",
+      "model_interested": "Urban Cruiser Hyryder",
+      "assigned_to": "SR4",
+      "branch_id": "B1",
+      "created_at": "2026-01-09T10:04:00Z",
+      "deal_value": 1840000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-21T10:06:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-09T13:47:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-10T14:35:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-14T15:08:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-18T12:33:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-19T11:16:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-21T10:06:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0522",
+      "customer_name": "Diya Kapoor",
+      "phone": "+91 95277116274",
+      "source": "auto_expo",
+      "model_interested": "Innova Crysta",
+      "assigned_to": "SR2",
+      "branch_id": "B1",
+      "created_at": "2026-01-08T10:53:00Z",
+      "deal_value": 2660000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-20T09:19:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-08T17:42:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T11:25:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-13T16:36:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-17T09:38:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-18T12:48:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-20T09:19:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0523",
+      "customer_name": "Aarav Gupta",
+      "phone": "+91 95810896771",
+      "source": "auto_expo",
+      "model_interested": "Urban Cruiser Hyryder",
+      "assigned_to": "SR6",
+      "branch_id": "B1",
+      "created_at": "2026-01-05T10:43:00Z",
+      "deal_value": 1610000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-22T15:01:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-05T14:44:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T14:33:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-12T14:08:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-16T12:08:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-20T16:07:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-22T15:01:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0524",
+      "customer_name": "Neha Verma",
+      "phone": "+91 97108830834",
+      "source": "auto_expo",
+      "model_interested": "Glanza",
+      "assigned_to": "SR4",
+      "branch_id": "B1",
+      "created_at": "2026-01-06T10:21:00Z",
+      "deal_value": 920000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-22T12:51:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-06T13:41:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-10T12:47:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-13T12:11:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-17T14:25:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-18T16:39:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-22T12:51:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0525",
+      "customer_name": "Riya Nair",
+      "phone": "+91 92746755481",
+      "source": "phone_enquiry",
+      "model_interested": "Hilux",
+      "assigned_to": "SR10",
+      "branch_id": "B2",
+      "created_at": "2026-01-05T10:56:00Z",
+      "deal_value": 3980000,
+      "status": "order_placed",
+      "last_activity_at": "2026-01-14T15:08:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-05T12:47:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-07T14:44:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-10T13:15:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-12T18:32:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-14T15:08:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-12"
+    },
+    {
+      "id": "L0526",
+      "customer_name": "Anika Bose",
+      "phone": "+91 99466080133",
+      "source": "website",
+      "model_interested": "Hilux",
+      "assigned_to": "SR13",
+      "branch_id": "B2",
+      "created_at": "2026-01-07T10:10:00Z",
+      "deal_value": 3610000,
+      "status": "test_drive",
+      "last_activity_at": "2026-01-11T16:49:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-07T18:23:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T13:53:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-11T16:49:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-20"
+    },
+    {
+      "id": "L0527",
+      "customer_name": "Nikhil Gupta",
+      "phone": "+91 99349077313",
+      "source": "phone_enquiry",
+      "model_interested": "Hilux",
+      "assigned_to": "SR12",
+      "branch_id": "B2",
+      "created_at": "2026-01-05T10:34:00Z",
+      "deal_value": 3500000,
+      "status": "new",
+      "last_activity_at": "2026-01-05T13:55:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-05T13:55:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-04"
+    },
+    {
+      "id": "L0528",
+      "customer_name": "Navya Bose",
+      "phone": "+91 95563725867",
+      "source": "social_media",
+      "model_interested": "Urban Cruiser Hyryder",
+      "assigned_to": "SR10",
+      "branch_id": "B2",
+      "created_at": "2026-01-09T10:28:00Z",
+      "deal_value": 1320000,
+      "status": "contacted",
+      "last_activity_at": "2026-01-10T11:12:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-09T18:11:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-10T11:12:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-14"
+    },
+    {
+      "id": "L0529",
+      "customer_name": "Rohan Joshi",
+      "phone": "+91 92040391276",
+      "source": "website",
+      "model_interested": "Camry",
+      "assigned_to": "SR9",
+      "branch_id": "B2",
+      "created_at": "2026-01-08T10:47:00Z",
+      "deal_value": 5590000,
+      "status": "order_placed",
+      "last_activity_at": "2026-01-15T11:32:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-08T12:50:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T15:12:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-11T10:44:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-14T15:41:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-15T11:32:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-09"
+    },
+    {
+      "id": "L0530",
+      "customer_name": "Navya Pillai",
+      "phone": "+91 94100162384",
+      "source": "referral",
+      "model_interested": "Innova Hycross",
+      "assigned_to": "SR11",
+      "branch_id": "B2",
+      "created_at": "2026-01-09T10:47:00Z",
+      "deal_value": 2890000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-20T13:08:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-09T14:09:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-10T18:58:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-13T18:05:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-17T11:59:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-18T11:29:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-20T13:08:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0531",
+      "customer_name": "Aadhya Mehta",
+      "phone": "+91 97131378004",
+      "source": "referral",
+      "model_interested": "Innova Hycross",
+      "assigned_to": "SR13",
+      "branch_id": "B2",
+      "created_at": "2026-01-10T10:32:00Z",
+      "deal_value": 2570000,
+      "status": "test_drive",
+      "last_activity_at": "2026-01-17T17:35:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-10T10:53:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-13T17:21:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-17T17:35:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-21"
+    },
+    {
+      "id": "L0532",
+      "customer_name": "Pari Rao",
+      "phone": "+91 98758582406",
+      "source": "phone_enquiry",
+      "model_interested": "Urban Cruiser Hyryder",
+      "assigned_to": "SR13",
+      "branch_id": "B2",
+      "created_at": "2026-01-02T10:01:00Z",
+      "deal_value": 1660000,
+      "status": "new",
+      "last_activity_at": "2026-01-02T11:12:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-02T11:12:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-23"
+    },
+    {
+      "id": "L0533",
+      "customer_name": "Saanvi Malhotra",
+      "phone": "+91 99542860844",
+      "source": "website",
+      "model_interested": "Innova Crysta",
+      "assigned_to": "SR10",
+      "branch_id": "B2",
+      "created_at": "2026-01-07T10:07:00Z",
+      "deal_value": 2280000,
+      "status": "test_drive",
+      "last_activity_at": "2026-01-11T09:42:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-07T09:07:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T13:13:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-11T09:42:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-18"
+    },
+    {
+      "id": "L0534",
+      "customer_name": "Arjun Mehta",
+      "phone": "+91 93607445490",
+      "source": "social_media",
+      "model_interested": "Innova Hycross",
+      "assigned_to": "SR11",
+      "branch_id": "B2",
+      "created_at": "2026-01-05T10:30:00Z",
+      "deal_value": 2830000,
+      "status": "lost",
+      "last_activity_at": "2026-01-14T17:16:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-05T13:22:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-08T15:06:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-12T09:26:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-14T17:16:00Z"
+        }
+      ],
+      "lost_reason": "Not ready to purchase"
+    },
+    {
+      "id": "L0535",
+      "customer_name": "Aadhya Rao",
+      "phone": "+91 93044557455",
+      "source": "website",
+      "model_interested": "Hilux",
+      "assigned_to": "SR11",
+      "branch_id": "B2",
+      "created_at": "2026-01-06T10:40:00Z",
+      "deal_value": 3980000,
+      "status": "new",
+      "last_activity_at": "2026-01-06T15:16:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-06T15:16:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-24"
+    },
+    {
+      "id": "L0536",
+      "customer_name": "Dev Das",
+      "phone": "+91 92850100819",
+      "source": "auto_expo",
+      "model_interested": "Innova Hycross",
+      "assigned_to": "SR19",
+      "branch_id": "B3",
+      "created_at": "2026-01-06T10:00:00Z",
+      "deal_value": 2900000,
+      "status": "contacted",
+      "last_activity_at": "2026-01-08T13:52:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-06T09:46:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-08T13:52:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-21"
+    },
+    {
+      "id": "L0537",
+      "customer_name": "Krishna Menon",
+      "phone": "+91 96248901738",
+      "source": "social_media",
+      "model_interested": "Urban Cruiser Hyryder",
+      "assigned_to": "SR18",
+      "branch_id": "B3",
+      "created_at": "2026-01-04T10:59:00Z",
+      "deal_value": 1810000,
+      "status": "lost",
+      "last_activity_at": "2026-01-10T18:49:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-04T15:03:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-06T17:52:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-07T15:47:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-08T18:55:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-10T18:49:00Z"
+        }
+      ],
+      "lost_reason": "Chose competitor brand"
+    },
+    {
+      "id": "L0538",
+      "customer_name": "Meera Rao",
+      "phone": "+91 94748451743",
+      "source": "walk_in",
+      "model_interested": "Urban Cruiser Hyryder",
+      "assigned_to": "SR19",
+      "branch_id": "B3",
+      "created_at": "2026-01-09T10:33:00Z",
+      "deal_value": 1890000,
+      "status": "new",
+      "last_activity_at": "2026-01-09T09:43:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-09T09:43:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-08"
+    },
+    {
+      "id": "L0539",
+      "customer_name": "Meera Gupta",
+      "phone": "+91 92071336355",
+      "source": "phone_enquiry",
+      "model_interested": "Glanza",
+      "assigned_to": "SR19",
+      "branch_id": "B3",
+      "created_at": "2026-01-10T10:58:00Z",
+      "deal_value": 940000,
+      "status": "new",
+      "last_activity_at": "2026-01-10T13:20:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-10T13:20:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-13"
+    },
+    {
+      "id": "L0540",
+      "customer_name": "Priya Patel",
+      "phone": "+91 96581621045",
+      "source": "social_media",
+      "model_interested": "Innova Crysta",
+      "assigned_to": "SR17",
+      "branch_id": "B3",
+      "created_at": "2026-01-05T10:30:00Z",
+      "deal_value": 2110000,
+      "status": "lost",
+      "last_activity_at": "2026-01-19T14:56:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-05T12:32:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T16:42:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-13T11:07:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-15T14:42:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-17T15:53:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-19T14:56:00Z"
+        }
+      ],
+      "lost_reason": "Better offer elsewhere"
+    },
+    {
+      "id": "L0541",
+      "customer_name": "Diya Chopra",
+      "phone": "+91 97143957196",
+      "source": "auto_expo",
+      "model_interested": "Hilux",
+      "assigned_to": "SR19",
+      "branch_id": "B3",
+      "created_at": "2026-01-04T10:49:00Z",
+      "deal_value": 3880000,
+      "status": "negotiation",
+      "last_activity_at": "2026-01-08T18:22:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-04T16:57:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-06T15:50:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-07T10:06:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-08T18:22:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-07"
+    },
+    {
+      "id": "L0542",
+      "customer_name": "Vivaan Rao",
+      "phone": "+91 97572616856",
+      "source": "walk_in",
+      "model_interested": "Innova Hycross",
+      "assigned_to": "SR17",
+      "branch_id": "B3",
+      "created_at": "2026-01-03T10:56:00Z",
+      "deal_value": 2810000,
+      "status": "new",
+      "last_activity_at": "2026-01-03T17:08:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-03T17:08:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-23"
+    },
+    {
+      "id": "L0543",
+      "customer_name": "Ananya Sharma",
+      "phone": "+91 96819888038",
+      "source": "website",
+      "model_interested": "Camry",
+      "assigned_to": "SR19",
+      "branch_id": "B3",
+      "created_at": "2026-01-10T10:31:00Z",
+      "deal_value": 4870000,
+      "status": "lost",
+      "last_activity_at": "2026-01-16T14:09:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-10T15:10:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-12T12:39:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-14T16:17:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-16T14:09:00Z"
+        }
+      ],
+      "lost_reason": "Financing not approved"
+    },
+    {
+      "id": "L0544",
+      "customer_name": "Diya Menon",
+      "phone": "+91 93964020608",
+      "source": "referral",
+      "model_interested": "Hilux",
+      "assigned_to": "SR17",
+      "branch_id": "B3",
+      "created_at": "2026-01-09T10:24:00Z",
+      "deal_value": 3600000,
+      "status": "negotiation",
+      "last_activity_at": "2026-01-15T13:01:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-09T09:51:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-11T15:56:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-14T09:30:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-15T13:01:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-20"
+    },
+    {
+      "id": "L0545",
+      "customer_name": "Aadhya Iyer",
+      "phone": "+91 97510903969",
+      "source": "auto_expo",
+      "model_interested": "Hilux",
+      "assigned_to": "SR17",
+      "branch_id": "B3",
+      "created_at": "2026-01-06T10:27:00Z",
+      "deal_value": 3650000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-19T13:54:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-06T17:30:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-07T10:15:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-11T13:55:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-13T12:59:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-17T10:11:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-19T13:54:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0546",
+      "customer_name": "Karan Pillai",
+      "phone": "+91 96164428209",
+      "source": "phone_enquiry",
+      "model_interested": "Hilux",
+      "assigned_to": "SR16",
+      "branch_id": "B3",
+      "created_at": "2026-01-09T10:14:00Z",
+      "deal_value": 3850000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-26T13:48:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-09T14:11:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-13T12:15:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-16T15:34:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-20T11:16:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-22T17:05:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-26T13:48:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0547",
+      "customer_name": "Kiara Kapoor",
+      "phone": "+91 93031437125",
+      "source": "phone_enquiry",
+      "model_interested": "Innova Hycross",
+      "assigned_to": "SR16",
+      "branch_id": "B3",
+      "created_at": "2026-01-03T10:12:00Z",
+      "deal_value": 2140000,
+      "status": "test_drive",
+      "last_activity_at": "2026-01-08T14:52:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-03T12:51:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-04T15:33:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-08T14:52:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-12"
+    },
+    {
+      "id": "L0548",
+      "customer_name": "Navya Joshi",
+      "phone": "+91 99221800879",
+      "source": "referral",
+      "model_interested": "Innova Crysta",
+      "assigned_to": "SR23",
+      "branch_id": "B4",
+      "created_at": "2026-01-06T10:40:00Z",
+      "deal_value": 2000000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-14T13:25:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-06T10:11:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T16:49:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-10T10:48:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-12T10:52:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-13T09:24:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-14T13:25:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0549",
+      "customer_name": "Pari Malhotra",
+      "phone": "+91 95372196192",
+      "source": "social_media",
+      "model_interested": "Urban Cruiser Hyryder",
+      "assigned_to": "SR23",
+      "branch_id": "B4",
+      "created_at": "2026-01-09T10:02:00Z",
+      "deal_value": 1610000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-25T14:15:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-09T18:04:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-11T11:52:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-15T11:06:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-19T11:17:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-23T17:46:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-25T14:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0550",
+      "customer_name": "Riya Patel",
+      "phone": "+91 94916229373",
+      "source": "walk_in",
+      "model_interested": "Glanza",
+      "assigned_to": "SR21",
+      "branch_id": "B4",
+      "created_at": "2026-01-03T10:11:00Z",
+      "deal_value": 780000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-16T10:47:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-03T09:40:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-07T09:19:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-09T15:20:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-13T11:20:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-15T18:20:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-16T10:47:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0551",
+      "customer_name": "Kabir Malhotra",
+      "phone": "+91 93885993392",
+      "source": "auto_expo",
+      "model_interested": "Hilux",
+      "assigned_to": "SR24",
+      "branch_id": "B4",
+      "created_at": "2026-01-06T10:21:00Z",
+      "deal_value": 3950000,
+      "status": "test_drive",
+      "last_activity_at": "2026-01-11T17:00:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-06T16:11:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-07T10:47:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-11T17:00:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-20"
+    },
+    {
+      "id": "L0552",
+      "customer_name": "Reyansh Bose",
+      "phone": "+91 93322207807",
+      "source": "walk_in",
+      "model_interested": "Innova Crysta",
+      "assigned_to": "SR24",
+      "branch_id": "B4",
+      "created_at": "2026-01-06T10:28:00Z",
+      "deal_value": 2680000,
+      "status": "new",
+      "last_activity_at": "2026-01-06T16:19:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-06T16:19:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-14"
+    },
+    {
+      "id": "L0553",
+      "customer_name": "Navya Gupta",
+      "phone": "+91 99825859080",
+      "source": "phone_enquiry",
+      "model_interested": "Fortuner",
+      "assigned_to": "SR21",
+      "branch_id": "B4",
+      "created_at": "2026-01-08T10:37:00Z",
+      "deal_value": 4310000,
+      "status": "lost",
+      "last_activity_at": "2026-01-17T15:37:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-08T18:13:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T17:18:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-13T09:36:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-15T11:22:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-17T15:37:00Z"
+        }
+      ],
+      "lost_reason": "Financing not approved"
+    },
+    {
+      "id": "L0554",
+      "customer_name": "Priya Kapoor",
+      "phone": "+91 93224524478",
+      "source": "walk_in",
+      "model_interested": "Glanza",
+      "assigned_to": "SR21",
+      "branch_id": "B4",
+      "created_at": "2026-01-08T10:18:00Z",
+      "deal_value": 820000,
+      "status": "lost",
+      "last_activity_at": "2026-01-20T13:43:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-08T14:34:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-11T12:30:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-15T16:42:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-18T12:00:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-20T13:43:00Z"
+        }
+      ],
+      "lost_reason": "Better offer elsewhere"
+    },
+    {
+      "id": "L0555",
+      "customer_name": "Ishaan Kapoor",
+      "phone": "+91 92993828333",
+      "source": "phone_enquiry",
+      "model_interested": "Camry",
+      "assigned_to": "SR24",
+      "branch_id": "B4",
+      "created_at": "2026-01-07T10:01:00Z",
+      "deal_value": 5320000,
+      "status": "new",
+      "last_activity_at": "2026-01-07T11:13:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-07T11:13:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-09"
+    },
+    {
+      "id": "L0556",
+      "customer_name": "Kabir Bose",
+      "phone": "+91 94814252124",
+      "source": "auto_expo",
+      "model_interested": "Glanza",
+      "assigned_to": "SR23",
+      "branch_id": "B4",
+      "created_at": "2026-01-08T10:03:00Z",
+      "deal_value": 900000,
+      "status": "lost",
+      "last_activity_at": "2026-01-16T14:33:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-08T14:34:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-11T10:02:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-13T13:01:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-14T12:57:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-16T14:33:00Z"
+        }
+      ],
+      "lost_reason": "Unresponsive after follow-up"
+    },
+    {
+      "id": "L0557",
+      "customer_name": "Myra Menon",
+      "phone": "+91 98931523315",
+      "source": "referral",
+      "model_interested": "Innova Crysta",
+      "assigned_to": "SR26",
+      "branch_id": "B5",
+      "created_at": "2026-01-03T10:05:00Z",
+      "deal_value": 2310000,
+      "status": "lost",
+      "last_activity_at": "2026-01-14T10:51:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-03T16:16:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-07T09:11:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-08T12:07:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-12T09:31:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-14T10:51:00Z"
+        }
+      ],
+      "lost_reason": "Relocated to another city"
+    },
+    {
+      "id": "L0558",
+      "customer_name": "Navya Kapoor",
+      "phone": "+91 97488682397",
+      "source": "website",
+      "model_interested": "Hilux",
+      "assigned_to": "SR28",
+      "branch_id": "B5",
+      "created_at": "2026-01-08T10:43:00Z",
+      "deal_value": 3800000,
+      "status": "contacted",
+      "last_activity_at": "2026-01-09T12:57:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-08T10:11:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T12:57:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-11"
+    },
+    {
+      "id": "L0559",
+      "customer_name": "Neha Das",
+      "phone": "+91 97413055690",
+      "source": "website",
+      "model_interested": "Innova Crysta",
+      "assigned_to": "SR30",
+      "branch_id": "B5",
+      "created_at": "2026-01-04T10:26:00Z",
+      "deal_value": 2200000,
+      "status": "lost",
+      "last_activity_at": "2026-01-07T18:13:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-04T13:12:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-05T12:20:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-07T18:13:00Z"
+        }
+      ],
+      "lost_reason": "Not ready to purchase"
+    },
+    {
+      "id": "L0560",
+      "customer_name": "Pari Bhat",
+      "phone": "+91 92298854903",
+      "source": "website",
+      "model_interested": "Camry",
+      "assigned_to": "SR28",
+      "branch_id": "B5",
+      "created_at": "2026-01-03T10:37:00Z",
+      "deal_value": 4960000,
+      "status": "new",
+      "last_activity_at": "2026-01-03T17:46:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-03T17:46:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-11"
+    },
+    {
+      "id": "L0561",
+      "customer_name": "Anika Mehta",
+      "phone": "+91 97372194219",
+      "source": "auto_expo",
+      "model_interested": "Glanza",
+      "assigned_to": "SR28",
+      "branch_id": "B5",
+      "created_at": "2026-01-07T10:01:00Z",
+      "deal_value": 870000,
+      "status": "test_drive",
+      "last_activity_at": "2026-01-12T17:44:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-07T09:48:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T09:56:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-12T17:44:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-19"
+    },
+    {
+      "id": "L0562",
+      "customer_name": "Kabir Bose",
+      "phone": "+91 97035465991",
+      "source": "website",
+      "model_interested": "Innova Crysta",
+      "assigned_to": "SR26",
+      "branch_id": "B5",
+      "created_at": "2026-01-08T10:36:00Z",
+      "deal_value": 2190000,
+      "status": "delivered",
+      "last_activity_at": "2026-01-21T18:41:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-08T11:58:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-12T12:14:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-13T11:16:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-15T17:34:00Z"
+        },
+        {
+          "status": "order_placed",
+          "timestamp": "2026-01-17T09:00:00Z"
+        },
+        {
+          "status": "delivered",
+          "timestamp": "2026-01-21T18:41:00Z"
+        }
+      ]
+    },
+    {
+      "id": "L0563",
+      "customer_name": "Riya Joshi",
+      "phone": "+91 92151946102",
+      "source": "auto_expo",
+      "model_interested": "Innova Hycross",
+      "assigned_to": "SR29",
+      "branch_id": "B5",
+      "created_at": "2026-01-05T10:53:00Z",
+      "deal_value": 2520000,
+      "status": "lost",
+      "last_activity_at": "2026-01-15T11:57:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-05T16:30:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T11:10:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-12T18:10:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-13T10:33:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-15T11:57:00Z"
+        }
+      ],
+      "lost_reason": "Chose competitor brand"
+    },
+    {
+      "id": "L0564",
+      "customer_name": "Ishaan Gupta",
+      "phone": "+91 91283285052",
+      "source": "walk_in",
+      "model_interested": "Hilux",
+      "assigned_to": "SR29",
+      "branch_id": "B5",
+      "created_at": "2026-01-03T10:59:00Z",
+      "deal_value": 3840000,
+      "status": "test_drive",
+      "last_activity_at": "2026-01-07T16:23:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-03T15:54:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-04T14:55:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-07T16:23:00Z"
+        }
+      ],
+      "expected_close_date": "2026-02-16"
+    },
+    {
+      "id": "L0565",
+      "customer_name": "Dev Pillai",
+      "phone": "+91 94444442898",
+      "source": "website",
+      "model_interested": "Innova Crysta",
+      "assigned_to": "SR29",
+      "branch_id": "B5",
+      "created_at": "2026-01-06T10:00:00Z",
+      "deal_value": 2220000,
+      "status": "new",
+      "last_activity_at": "2026-01-06T10:22:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-06T10:22:00Z"
+        }
+      ],
+      "expected_close_date": "2026-01-23"
+    },
+    {
+      "id": "L0566",
+      "customer_name": "Tara Iyer",
+      "phone": "+91 95134589734",
+      "source": "phone_enquiry",
+      "model_interested": "Fortuner",
+      "assigned_to": "SR28",
+      "branch_id": "B5",
+      "created_at": "2026-01-09T10:01:00Z",
+      "deal_value": 3610000,
+      "status": "lost",
+      "last_activity_at": "2026-01-17T11:34:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-09T14:28:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-10T12:18:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-11T17:46:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-15T11:49:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-17T11:34:00Z"
+        }
+      ],
+      "lost_reason": "Relocated to another city"
+    },
+    {
+      "id": "L0567",
+      "customer_name": "Reyansh Sharma",
+      "phone": "+91 93372760226",
+      "source": "auto_expo",
+      "model_interested": "Glanza",
+      "assigned_to": "SR28",
+      "branch_id": "B5",
+      "created_at": "2026-01-05T10:49:00Z",
+      "deal_value": 840000,
+      "status": "lost",
+      "last_activity_at": "2026-01-19T17:03:00Z",
+      "status_history": [
+        {
+          "status": "new",
+          "timestamp": "2026-01-05T16:11:00Z"
+        },
+        {
+          "status": "contacted",
+          "timestamp": "2026-01-09T14:57:00Z"
+        },
+        {
+          "status": "test_drive",
+          "timestamp": "2026-01-13T14:45:00Z"
+        },
+        {
+          "status": "negotiation",
+          "timestamp": "2026-01-17T13:49:00Z"
+        },
+        {
+          "status": "lost",
+          "timestamp": "2026-01-19T17:03:00Z"
+        }
+      ],
+      "lost_reason": "Relocated to another city"
+    }
+  ],
+  "deliveries": [
+    {
+      "lead_id": "L0513",
+      "order_date": "2026-01-09",
+      "delivery_date": "2026-01-18",
+      "days_to_deliver": 9
+    },
+    {
+      "lead_id": "L0515",
+      "order_date": "2026-01-12",
+      "delivery_date": "2026-01-16",
+      "days_to_deliver": 4
+    },
+    {
+      "lead_id": "L0516",
+      "order_date": "2026-01-08",
+      "delivery_date": "2026-01-16",
+      "days_to_deliver": 8
+    },
+    {
+      "lead_id": "L0518",
+      "order_date": "2026-01-09",
+      "delivery_date": "2026-01-15",
+      "days_to_deliver": 6,
+      "delay_reason": "Logistics delay in transit"
+    },
+    {
+      "lead_id": "L0519",
+      "order_date": "2026-01-10",
+      "delivery_date": "2026-01-18",
+      "days_to_deliver": 8
+    },
+    {
+      "lead_id": "L0521",
+      "order_date": "2026-01-17",
+      "delivery_date": "2026-01-21",
+      "days_to_deliver": 4
+    },
+    {
+      "lead_id": "L0522",
+      "order_date": "2026-01-14",
+      "delivery_date": "2026-01-20",
+      "days_to_deliver": 6
+    },
+    {
+      "lead_id": "L0523",
+      "order_date": "2026-01-19",
+      "delivery_date": "2026-01-22",
+      "days_to_deliver": 3
+    },
+    {
+      "lead_id": "L0524",
+      "order_date": "2026-01-13",
+      "delivery_date": "2026-01-22",
+      "days_to_deliver": 9,
+      "delay_reason": "PDI rework required"
+    },
+    {
+      "lead_id": "L0530",
+      "order_date": "2026-01-13",
+      "delivery_date": "2026-01-20",
+      "days_to_deliver": 7
+    },
+    {
+      "lead_id": "L0545",
+      "order_date": "2026-01-15",
+      "delivery_date": "2026-01-19",
+      "days_to_deliver": 4
+    },
+    {
+      "lead_id": "L0546",
+      "order_date": "2026-01-21",
+      "delivery_date": "2026-01-26",
+      "days_to_deliver": 5
+    },
+    {
+      "lead_id": "L0548",
+      "order_date": "2026-01-07",
+      "delivery_date": "2026-01-14",
+      "days_to_deliver": 7
+    },
+    {
+      "lead_id": "L0549",
+      "order_date": "2026-01-17",
+      "delivery_date": "2026-01-25",
+      "days_to_deliver": 8,
+      "delay_reason": "PDI rework required"
+    },
+    {
+      "lead_id": "L0550",
+      "order_date": "2026-01-07",
+      "delivery_date": "2026-01-16",
+      "days_to_deliver": 9
+    },
+    {
+      "lead_id": "L0562",
+      "order_date": "2026-01-16",
+      "delivery_date": "2026-01-21",
+      "days_to_deliver": 5
+    }
+  ],
+  "targets": [
+    {
+      "branch_id": "B1",
+      "month": "2026-01",
+      "target_units": 22,
+      "target_revenue": 57200000
+    },
+    {
+      "branch_id": "B2",
+      "month": "2026-01",
+      "target_units": 18,
+      "target_revenue": 46800000
+    },
+    {
+      "branch_id": "B3",
+      "month": "2026-01",
+      "target_units": 20,
+      "target_revenue": 52000000
+    },
+    {
+      "branch_id": "B4",
+      "month": "2026-01",
+      "target_units": 14,
+      "target_revenue": 36400000
+    },
+    {
+      "branch_id": "B5",
+      "month": "2026-01",
+      "target_units": 18,
+      "target_revenue": 46800000
+    }
+  ]
+}
