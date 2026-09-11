@@ -34,6 +34,7 @@ export function Disclosure({
       open={defaultOpen}
       className={cn(
         "group/disc overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10",
+        "transition-all duration-200 hover:ring-brand/30 hover:shadow-md hover:shadow-brand/10",
         accent,
         className,
       )}

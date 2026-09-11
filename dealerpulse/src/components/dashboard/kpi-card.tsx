@@ -47,7 +47,7 @@ export function KpiCard({
         "before:absolute before:inset-y-0 before:left-0 before:w-1",
         railClasses[tone],
         href &&
-          "cursor-pointer hover:-translate-y-0.5 hover:shadow-md hover:ring-brand/40 focus-within:ring-brand/40",
+          "cursor-pointer hover:-translate-y-0.5 hover:ring-brand/50 hover:shadow-lg hover:shadow-brand/25 focus-within:ring-brand/40",
       )}
     >
       <CardContent className="px-4 pl-5">

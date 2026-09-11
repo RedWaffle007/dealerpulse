@@ -152,31 +152,27 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
       </h2>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {(() => {
-          const firstNonEmpty = RULES.find((r) => byType(r.type).length > 0)?.type;
-          return RULES.map((r) => {
-            const list = byType(r.type);
-            return (
-              <Disclosure
-                key={r.type}
-                id={sectionId(r.type)}
-                accent={r.accent}
-                defaultOpen={r.type === firstNonEmpty}
-                title={r.title}
-                description={r.blurb}
-                meta={
-                  <span className="tabular-nums">
-                    {list.length} · {formatCrore(list.reduce((s, a) => s + a.value, 0))}
-                  </span>
-                }
-              >
-                <div className="max-h-[30rem] overflow-y-auto pr-1">
-                  <ActionList items={list} />
-                </div>
-              </Disclosure>
-            );
-          });
-        })()}
+        {RULES.map((r) => {
+          const list = byType(r.type);
+          return (
+            <Disclosure
+              key={r.type}
+              id={sectionId(r.type)}
+              accent={r.accent}
+              title={r.title}
+              description={r.blurb}
+              meta={
+                <span className="tabular-nums">
+                  {list.length} · {formatCrore(list.reduce((s, a) => s + a.value, 0))}
+                </span>
+              }
+            >
+              <div className="max-h-[30rem] overflow-y-auto pr-1">
+                <ActionList items={list} />
+              </div>
+            </Disclosure>
+          );
+        })}
       </div>
 
       <h2 className="mt-8 mb-3 font-heading text-sm font-semibold uppercase tracking-wide text-muted-foreground">
