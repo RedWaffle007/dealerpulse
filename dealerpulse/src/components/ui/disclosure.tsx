@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
  * it works inside server components. Used for expandable dashboard sections.
  */
 export function Disclosure({
+  id,
   title,
   description,
   meta,
@@ -15,6 +16,8 @@ export function Disclosure({
   className,
   accent,
 }: {
+  /** Optional DOM id so a KPI/link can scroll to (and open) this section. */
+  id?: string;
   title: ReactNode;
   description?: ReactNode;
   /** Right-aligned summary content shown while collapsed (e.g. a count). */
@@ -27,6 +30,7 @@ export function Disclosure({
 }) {
   return (
     <details
+      id={id}
       open={defaultOpen}
       className={cn(
         "group/disc overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10",

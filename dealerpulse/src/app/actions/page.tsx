@@ -10,7 +10,7 @@ import { parseFilter } from "@/lib/filter";
 import { formatCrore, formatDate, formatInt, formatMonth, formatPct } from "@/lib/format";
 import type { Filter } from "@/lib/types";
 import { ActionList } from "@/components/dashboard/action-list";
-import { KpiCard } from "@/components/dashboard/kpi-card";
+import { KpiCard, type KpiTone } from "@/components/dashboard/kpi-card";
 import { PageHero } from "@/components/layout/page-hero";
 import { Disclosure } from "@/components/ui/disclosure";
 import {
@@ -26,32 +26,40 @@ const RULES: {
   title: string;
   blurb: string;
   accent: string;
+  tone: KpiTone;
 }[] = [
   {
     type: "stale_order",
     title: "Order placed, going stale",
     blurb: "Committed buyers with no activity for 7+ days — highest urgency.",
     accent: "border-t-2 border-t-red-500",
+    tone: "bad",
   },
   {
     type: "overdue",
     title: "Past expected close",
     blurb: "Expected-close date has passed but the lead is still open.",
     accent: "border-t-2 border-t-amber-500",
+    tone: "warn",
   },
   {
     type: "high_value_late",
     title: "Late-stage idle",
     blurb: "Negotiation-or-deeper leads with no movement for 7+ days.",
     accent: "border-t-2 border-t-orange-500",
+    tone: "warn",
   },
   {
     type: "cold",
     title: "Cold leads",
     blurb: "Early-stage leads with no activity for 7+ days.",
     accent: "border-t-2 border-t-brand",
+    tone: "neutral",
   },
 ];
+
+/** DOM id for a category's detail section, used by its tile to scroll + expand. */
+const sectionId = (t: ActionType) => `alert-${t}`;
 
 export default async function ActionsPage(props: PageProps<"/actions">) {
   const d = await getDataset();
@@ -80,15 +88,9 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
         title="Action Center"
         period={`${formatMonth(base.from)} – ${formatMonth(base.to)}`}
         lead={
-          items.length > 0 ? (
-            <>
-              <span className="text-brand">{formatInt(items.length)}</span> open
-              leads need attention — {formatCrore(totalValue)} of pipeline at
-              risk. Expand a category below to work the list.
-            </>
-          ) : (
-            <>Nothing needs attention in this view. 🎉</>
-          )
+          items.length > 0
+            ? "Every open lead that's stalling, ranked so you know who to call first."
+            : "Nothing needs attention in this view. 🎉"
         }
       >
         Deterministic, explainable alerts ·{" "}
@@ -101,13 +103,34 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
         </span>
       </PageHero>
 
-      <section className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
-        <KpiCard
-          label="Needs attention"
-          value={formatInt(items.length)}
-          sub={`${formatCrore(totalValue)} at risk`}
-          tone={items.length ? "warn" : "good"}
-        />
+      {/* Total, framed as the sum of the groups below */}
+      <section className="mb-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 rounded-xl bg-card px-4 py-3.5 ring-1 ring-foreground/10">
+        <div>
+          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            Leads needing action
+          </div>
+          <div
+            className={
+              "mt-1 font-heading text-2xl font-semibold leading-none tabular-nums " +
+              (items.length
+                ? "text-amber-600 dark:text-amber-400"
+                : "text-emerald-600 dark:text-emerald-400")
+            }
+          >
+            {formatInt(items.length)}
+            <span className="ml-2 align-middle text-sm font-normal text-muted-foreground">
+              {formatCrore(totalValue)} at risk
+            </span>
+          </div>
+        </div>
+        <p className="max-w-md text-xs text-muted-foreground">
+          Every open lead that&apos;s stalling, grouped by why. The groups below
+          add up to this total — click one to jump straight to its leads.
+        </p>
+      </section>
+
+      {/* Breakdown — each tile scrolls to and opens its list below */}
+      <section className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
         {RULES.map((r) => {
           const list = byType(r.type);
           return (
@@ -115,13 +138,51 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
               key={r.type}
               label={r.title}
               value={formatInt(list.length)}
-              sub={formatCrore(list.reduce((s, a) => s + a.value, 0))}
+              sub={`${formatCrore(list.reduce((s, a) => s + a.value, 0))} at risk`}
+              tone={list.length ? r.tone : "neutral"}
+              href={`#${sectionId(r.type)}`}
+              drillLabel="view leads"
             />
           );
         })}
       </section>
 
-      <div className="mb-6 grid gap-6 md:grid-cols-2">
+      <h2 className="mb-3 font-heading text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        The worklist — grouped by urgency
+      </h2>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        {(() => {
+          const firstNonEmpty = RULES.find((r) => byType(r.type).length > 0)?.type;
+          return RULES.map((r) => {
+            const list = byType(r.type);
+            return (
+              <Disclosure
+                key={r.type}
+                id={sectionId(r.type)}
+                accent={r.accent}
+                defaultOpen={r.type === firstNonEmpty}
+                title={r.title}
+                description={r.blurb}
+                meta={
+                  <span className="tabular-nums">
+                    {list.length} · {formatCrore(list.reduce((s, a) => s + a.value, 0))}
+                  </span>
+                }
+              >
+                <div className="max-h-[30rem] overflow-y-auto pr-1">
+                  <ActionList items={list} />
+                </div>
+              </Disclosure>
+            );
+          });
+        })()}
+      </div>
+
+      <h2 className="mt-8 mb-3 font-heading text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        Portfolio alerts
+      </h2>
+      <div className="grid gap-6 md:grid-cols-2">
         <Card className="border-t-2 border-t-amber-500">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -207,33 +268,6 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
             )}
           </CardContent>
         </Card>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        {(() => {
-          const firstNonEmpty = RULES.find((r) => byType(r.type).length > 0)?.type;
-          return RULES.map((r) => {
-            const list = byType(r.type);
-            return (
-              <Disclosure
-                key={r.type}
-                accent={r.accent}
-                defaultOpen={r.type === firstNonEmpty}
-                title={r.title}
-                description={r.blurb}
-                meta={
-                  <span className="tabular-nums">
-                    {list.length} · {formatCrore(list.reduce((s, a) => s + a.value, 0))}
-                  </span>
-                }
-              >
-                <div className="max-h-[30rem] overflow-y-auto pr-1">
-                  <ActionList items={list} />
-                </div>
-              </Disclosure>
-            );
-          });
-        })()}
       </div>
 
       <p className="text-muted-foreground mt-6 text-xs">

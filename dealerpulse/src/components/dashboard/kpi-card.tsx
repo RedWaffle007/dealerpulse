@@ -93,6 +93,9 @@ export function KpiCard({
       const el = document.getElementById(href.slice(1));
       if (!el) return; // fall back to default anchor behavior
       e.preventDefault();
+      // If the target is a collapsible section, expand it before scrolling so
+      // the click lands on its data, not a collapsed header.
+      if (el instanceof HTMLDetailsElement) el.open = true;
       el.scrollIntoView({ behavior: "smooth", block: "start" });
       history.replaceState(null, "", href); // keep the hash shareable, no jump
     };
