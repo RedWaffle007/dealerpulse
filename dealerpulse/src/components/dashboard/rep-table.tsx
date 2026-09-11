@@ -83,6 +83,7 @@ export function RepTable({
       serial={ranked}
       rankTiers={ranked}
       emptyMessage="No reps with pipeline in this view."
+      csvFilename="dealerpulse-sales-team"
     />
   );
 }

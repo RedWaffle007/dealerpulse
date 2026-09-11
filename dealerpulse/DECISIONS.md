@@ -83,6 +83,32 @@ leaderboard, and the aging/Action-Center snapshot all move together, and the "as
 date advances with it. A one-click demo continuation lets a reviewer try it without a
 file, and **Reset to original** returns to the bundled data.
 
+### Looking forward: forecast, What-If, and "what changed"
+The Action Center answers "what's wrong right now." Three more views answer "what's
+next" and "what moved" — the questions an executive actually opens a dashboard for.
+
+- **Probability-weighted pipeline forecast.** The open book isn't worth its face
+  value; each live lead is discounted by its **stage's historical close rate**
+  (`P(delivered | reached stage)`, which rises monotonically 31% → 41% → 53% → 68% →
+  81% because every delivered lead passed through the earlier stages). Today's
+  ₹15.15 Cr of open pipeline weights down to an expected **₹9.88 Cr / ~42 units** —
+  the honest, do-nothing baseline. In-flight leads count as not-yet-closed, so the
+  estimate is deliberately conservative.
+- **The What-If Lab.** Four independent levers an exec can size before committing
+  effort: lift conversion (each point is worth ~5 cars on this book), rescue the
+  flagged at-risk pipeline (₹8.25 Cr), coach below-median reps to the team median
+  (a real +30-unit ceiling, led by one rep at 5% on 22 leads), and scale a
+  high-converting channel at *its own* historical quality. Every projection reads
+  the current view's verified baselines; all math is pure and unit-tested. The
+  levers are shown **independently and never summed** — they draw on overlapping
+  leads, so a naive total would double-count. Assumptions are stated on each card.
+- **A "what changed this period" digest** on the overview, generated deterministically
+  from the same metrics. It is **delivery-anchored on purpose**: it reports units,
+  attainment, and revenue (keyed on `delivery_date`) month-over-month, and never
+  month-over-month lead conversion — the newest month's leads are still inside the
+  ~37-day sales cycle, so their conversion always looks near-zero and would read as a
+  false alarm. Ranked tables also export to **CSV** in their current sort order.
+
 ---
 
 ## Key product decisions & tradeoffs
@@ -191,12 +217,13 @@ file, and **Reset to original** returns to the bundled data.
   live dataset, plus optimistic-locking so two concurrent imports can't clobber each other.
 - **Follow-up actions on a lead** — the lead page shows the full journey; logging a
   next action or reassigning from there would close the loop.
-- **Templated natural-language summaries** — a per-branch "what changed and why" written
-  from the same deterministic metrics (trustworthy, reproducible; an optional LLM pass
-  could polish the prose).
+- **Per-branch narrative summaries** — the overview now carries a deterministic "what
+  changed this period" digest; the next step is a per-branch version and an optional
+  LLM pass to polish the prose (still grounded in the same reproducible metrics).
 - **Created-month cohort view** — leads by created-month cohort to separate cycle lag
-  from genuine decline.
-- **CSV / shareable-view export** and saved filter presets.
+  from genuine decline (the digest already sidesteps this artifact by staying
+  delivery-anchored).
+- **Shareable-view export** and saved filter presets (CSV export on ranked tables ships).
 - **Playwright smoke tests** for the core navigation + filter flows (I prioritized unit
   tests on the analytics layer, where correctness risk is highest).
 

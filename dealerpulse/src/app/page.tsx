@@ -8,6 +8,8 @@ import {
   actionItems,
   pipelineByStage,
 } from "@/lib/metrics";
+import { periodDigest } from "@/lib/insights";
+import { PeriodDigestPanel } from "@/components/dashboard/period-digest";
 import { parseFilter } from "@/lib/filter";
 import {
   formatCrore,
@@ -81,6 +83,7 @@ export default async function OverviewPage(props: PageProps<"/">) {
   const actionsValue = actions.reduce((s, a) => s + a.value, 0);
   const pipeline = pipelineByStage(d, idx, f);
   const pipelineTop = Math.max(1, ...pipeline.map((s) => s.value));
+  const digest = periodDigest(d, idx, f);
 
   // Plain-language story headline, computed from the data in view.
   const withTargets = branches.filter((b) => b.targetUnits > 0);
@@ -221,6 +224,11 @@ export default async function OverviewPage(props: PageProps<"/">) {
         />
       </section>
 
+      {/* What changed this period — a scannable, delivery-anchored digest */}
+      <div className="mt-6">
+        <PeriodDigestPanel digest={digest} />
+      </div>
+
       {/* Needs attention — collapsible so the overview stays uncluttered */}
       <div className="mt-6">
         <Disclosure
@@ -313,6 +321,7 @@ export default async function OverviewPage(props: PageProps<"/">) {
             rows={branchRows}
             initialSort="attainmentPct"
             initialDir="asc"
+            csvFilename={`dealerpulse-branches-${f.from}_${f.to}`}
           />
         </CardContent>
       </Card>
@@ -324,7 +333,13 @@ export default async function OverviewPage(props: PageProps<"/">) {
           <CardDescription>
             The {formatInt(k.openPipelineCount)} live leads worth{" "}
             {formatCrore(k.openPipelineValue)}, by current stage. (The Action Center
-            works the {actions.length} of these that are stalling.)
+            works the {actions.length} of these that are stalling.){" "}
+            <Link
+              href={`/scenarios?${qs}${branchQs}`}
+              className="font-medium text-brand hover:underline"
+            >
+              See the probability-weighted forecast →
+            </Link>
           </CardDescription>
         </CardHeader>
         <CardContent>

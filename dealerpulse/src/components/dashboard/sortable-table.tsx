@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
-import { ChevronDown, ChevronsUpDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronsUpDown, ChevronUp, Download } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -33,6 +33,34 @@ export type SortRow = {
   sort: Record<string, string | number | null | undefined>;
 };
 
+/** Escape one field for CSV (RFC 4180: quote when it holds a comma/quote/newline). */
+function csvCell(v: string | number | null | undefined): string {
+  if (v == null) return "";
+  const s = String(v);
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+/** Serialize the given rows (in current sort order) to a CSV string. */
+function toCsv(columns: SortColumn[], rows: SortRow[]): string {
+  const header = columns.map((c) => csvCell(c.label)).join(",");
+  const body = rows.map((r) =>
+    columns.map((c) => csvCell(r.sort[c.key])).join(","),
+  );
+  return [header, ...body].join("\n");
+}
+
+function downloadCsv(filename: string, csv: string) {
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename.endsWith(".csv") ? filename : `${filename}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 /** Tailwind classes for the top-3 / top-5 / top-10 "medal" tiers (by row position). */
 function tierClass(i: number): string {
   if (i < 3) return "bg-amber-400/15 hover:bg-amber-400/25";
@@ -61,6 +89,7 @@ export function SortableTable({
   rankTiers = false,
   serial = false,
   emptyMessage = "No rows to show.",
+  csvFilename,
 }: {
   columns: SortColumn[];
   rows: SortRow[];
@@ -69,6 +98,8 @@ export function SortableTable({
   rankTiers?: boolean;
   serial?: boolean;
   emptyMessage?: string;
+  /** When set, shows a "Download CSV" button that exports the current sort order. */
+  csvFilename?: string;
 }) {
   const [sortKey, setSortKey] = useState(initialSort ?? columns[0]?.key);
   const [dir, setDir] = useState<SortDir>(initialDir);
@@ -111,7 +142,20 @@ export function SortableTable({
   }
 
   return (
-    <Table>
+    <div className="space-y-2">
+      {csvFilename && (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => downloadCsv(csvFilename, toCsv(columns, sorted))}
+            className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            <Download className="size-3.5" aria-hidden />
+            Download CSV
+          </button>
+        </div>
+      )}
+      <Table>
       <TableHeader>
         <TableRow>
           {serial && (
@@ -197,5 +241,6 @@ export function SortableTable({
         })}
       </TableBody>
     </Table>
+    </div>
   );
 }

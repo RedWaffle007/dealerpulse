@@ -8,6 +8,7 @@ const LINKS = [
   { href: "/", label: "Overview" },
   { href: "/reps", label: "Sales Team" },
   { href: "/actions", label: "Action Center" },
+  { href: "/scenarios", label: "What-If Lab" },
   { href: "/upload", label: "Data Import" },
 ];
 

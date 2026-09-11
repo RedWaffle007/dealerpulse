@@ -1,0 +1,102 @@
+import type { PipelineForecast } from "@/lib/insights";
+import { formatCrore, formatInt, formatPct, stageLabel } from "@/lib/format";
+
+/**
+ * Probability-weighted pipeline forecast: the open book discounted by each
+ * lead's stage close rate. The do-nothing baseline — "what lands if the team
+ * works today's pipeline at its usual effectiveness."
+ */
+export function PipelineForecastPanel({
+  forecast,
+}: {
+  forecast: PipelineForecast;
+}) {
+  const { openCount, openValue, expectedUnits, expectedValue, byStage } =
+    forecast;
+  const confidence = openValue ? (100 * expectedValue) / openValue : 0;
+
+  if (openCount === 0) {
+    return (
+      <p className="py-4 text-center text-sm text-muted-foreground">
+        No open pipeline to forecast in this view.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Headline: expected vs face value */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="rounded-lg bg-brand/[0.06] p-3 ring-1 ring-brand/15">
+          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            Expected to deliver
+          </div>
+          <div className="mt-1 font-heading text-2xl font-semibold leading-none tabular-nums text-brand">
+            {expectedUnits.toFixed(1)}
+            <span className="ml-1 text-sm font-normal text-muted-foreground">
+              units
+            </span>
+          </div>
+          <div className="mt-1.5 text-sm font-medium tabular-nums">
+            {formatCrore(expectedValue)}
+          </div>
+        </div>
+        <div className="rounded-lg bg-muted/40 p-3 ring-1 ring-foreground/10">
+          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            Open pipeline (face)
+          </div>
+          <div className="mt-1 font-heading text-2xl font-semibold leading-none tabular-nums">
+            {formatInt(openCount)}
+            <span className="ml-1 text-sm font-normal text-muted-foreground">
+              leads
+            </span>
+          </div>
+          <div className="mt-1.5 text-sm font-medium tabular-nums text-muted-foreground">
+            {formatCrore(openValue)}
+          </div>
+        </div>
+      </div>
+
+      <p className="text-xs text-muted-foreground">
+        Weighting each open lead by its stage&apos;s historical close rate
+        discounts the {formatCrore(openValue)} face value to an expected{" "}
+        <span className="font-medium text-foreground">
+          {formatCrore(expectedValue)}
+        </span>{" "}
+        ({formatPct(confidence, 0)} of face).
+      </p>
+
+      {/* Per-stage breakdown */}
+      <div className="space-y-1.5">
+        {byStage.map((s) => (
+          <div key={s.stage} className="flex items-center gap-3 text-sm">
+            <span className="w-28 shrink-0 font-medium">
+              {stageLabel(s.stage)}
+            </span>
+            <span className="w-32 shrink-0 tabular-nums text-muted-foreground">
+              {formatInt(s.count)} × {formatPct(s.p * 100, 0)}
+            </span>
+            <div className="h-2 flex-1 rounded-full bg-muted">
+              <div
+                className="h-2 rounded-full bg-gradient-to-r from-brand to-brand/55"
+                style={{
+                  width: `${expectedUnits ? (100 * s.expectedUnits) / expectedUnits : 0}%`,
+                }}
+              />
+            </div>
+            <span className="w-20 shrink-0 text-right tabular-nums font-medium">
+              {s.expectedUnits.toFixed(1)}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <p className="text-[11px] leading-relaxed text-muted-foreground">
+        Method: close rate = share of leads that ever reached a stage which have
+        been delivered to date (in-flight leads count as not-yet-closed, so the
+        estimate is conservative). Rates rise with stage depth, so late-stage
+        leads carry more of the forecast.
+      </p>
+    </div>
+  );
+}
