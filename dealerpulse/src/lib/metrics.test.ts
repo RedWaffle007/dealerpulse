@@ -11,6 +11,7 @@ import {
   velocity,
   actionItems,
   branchComparison,
+  branchesBehindTarget,
   repLeaderboard,
 } from "./metrics";
 import { STAGES } from "./types";
@@ -130,6 +131,20 @@ describe("branch comparison", () => {
     const rows = branchComparison(d, idx, ALL);
     const lakeside = rows.find((r) => r.name.includes("Lakeside"))!;
     expect(lakeside.conversionPct).toBeCloseTo(7.6, 0);
+  });
+});
+
+describe("branches behind target", () => {
+  const behind = branchesBehindTarget(d, idx, ALL);
+  it("only flags branches below group attainment, ranked by shortfall", () => {
+    const rows = branchComparison(d, idx, ALL).filter((b) => b.targetUnits > 0);
+    const groupAttain =
+      (100 * rows.reduce((s, b) => s + b.delivered, 0)) /
+      rows.reduce((s, b) => s + b.targetUnits, 0);
+    expect(behind.every((b) => b.attainmentPct < groupAttain)).toBe(true);
+    for (let i = 1; i < behind.length; i++) {
+      expect(behind[i - 1].unitGap).toBeGreaterThanOrEqual(behind[i].unitGap);
+    }
   });
 });
 

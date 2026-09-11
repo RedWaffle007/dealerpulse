@@ -1,7 +1,13 @@
+import Link from "next/link";
 import { getDataset, getIndexes } from "@/lib/data";
-import { actionItems, type ActionType } from "@/lib/metrics";
+import {
+  actionItems,
+  branchesBehindTarget,
+  deliverySLA,
+  type ActionType,
+} from "@/lib/metrics";
 import { parseFilter } from "@/lib/filter";
-import { formatCrore, formatInt, formatMonth } from "@/lib/format";
+import { formatCrore, formatInt, formatMonth, formatPct } from "@/lib/format";
 import type { Filter } from "@/lib/types";
 import { ActionList } from "@/components/dashboard/action-list";
 import { KpiCard } from "@/components/dashboard/kpi-card";
@@ -64,6 +70,9 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
   const items = actionItems(d, idx, f);
   const totalValue = items.reduce((s, a) => s + a.value, 0);
   const byType = (t: ActionType) => items.filter((a) => a.type === t);
+  const behind = branchesBehindTarget(d, idx, f);
+  const sla = deliverySLA(d, idx, f);
+  const qs = new URLSearchParams({ from: base.from, to: base.to }).toString();
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 md:py-8">
@@ -97,6 +106,94 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
           );
         })}
       </section>
+
+      <div className="mb-6 grid gap-6 md:grid-cols-2">
+        <Card className="border-t-2 border-t-amber-500">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Branches behind the group</span>
+              <span className="text-muted-foreground text-sm font-normal tabular-nums">
+                {behind.length}
+              </span>
+            </CardTitle>
+            <CardDescription>
+              Below group attainment for this period, by unit shortfall
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {behind.length === 0 ? (
+              <p className="text-muted-foreground py-4 text-center text-sm">
+                No branch is below the group average. 🎉
+              </p>
+            ) : (
+              <ul className="space-y-2">
+                {behind.map((b) => (
+                  <li
+                    key={b.branchId}
+                    className="flex items-center justify-between rounded-md border border-l-2 border-border/60 border-l-amber-500/60 p-2.5 text-sm"
+                  >
+                    <Link
+                      href={`/branches/${b.branchId}?${qs}`}
+                      className="font-medium text-brand hover:underline"
+                    >
+                      {b.name}
+                    </Link>
+                    <span className="tabular-nums text-muted-foreground">
+                      {formatPct(b.attainmentPct, 0)} attained ·{" "}
+                      <span className="font-medium text-foreground">
+                        {formatInt(b.unitGap)} units short
+                      </span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="border-t-2 border-t-orange-500">
+          <CardHeader>
+            <CardTitle>Delivery delays</CardTitle>
+            <CardDescription>
+              Fulfilment slipping against the order-to-delivery clock
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div className="flex items-baseline justify-between">
+              <span className="text-muted-foreground">Delayed deliveries</span>
+              <span className="tabular-nums font-medium">
+                {formatInt(sla.delayed)} / {formatInt(sla.total)}
+              </span>
+            </div>
+            <div className="flex items-baseline justify-between">
+              <span className="text-muted-foreground">
+                Avg days to deliver (delayed vs on-time)
+              </span>
+              <span className="tabular-nums font-medium">
+                {sla.avgDelayed.toFixed(1)} vs {sla.avgOnTime.toFixed(1)}
+              </span>
+            </div>
+            {sla.reasons.length > 0 && (
+              <div>
+                <div className="text-muted-foreground mb-1">Top delay reasons</div>
+                <ul className="space-y-1">
+                  {sla.reasons.slice(0, 4).map((r) => (
+                    <li
+                      key={r.reason}
+                      className="flex items-baseline justify-between"
+                    >
+                      <span>{r.reason}</span>
+                      <span className="tabular-nums text-muted-foreground">
+                        {r.count}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         {RULES.map((r) => {

@@ -261,6 +261,42 @@ export type FunnelStep = {
   leakPct: number | null;
 };
 
+export type BehindTargetRow = {
+  branchId: string;
+  name: string;
+  delivered: number;
+  targetUnits: number;
+  attainmentPct: number;
+  unitGap: number;
+};
+
+/**
+ * Branches dragging the group: those below the group's overall attainment,
+ * ranked by unit shortfall. Time-scoped; always evaluated across all branches
+ * (it's a portfolio alert), so it ignores any single-branch filter.
+ */
+export function branchesBehindTarget(
+  d: Dataset,
+  idx: Indexes,
+  f: Filter,
+): BehindTargetRow[] {
+  const rows = branchComparison(d, idx, f).filter((b) => b.targetUnits > 0);
+  const totDel = rows.reduce((s, b) => s + b.delivered, 0);
+  const totTgt = rows.reduce((s, b) => s + b.targetUnits, 0);
+  const groupAttain = totTgt ? (100 * totDel) / totTgt : 0;
+  return rows
+    .filter((b) => b.attainmentPct < groupAttain)
+    .map((b) => ({
+      branchId: b.branchId,
+      name: b.name,
+      delivered: b.delivered,
+      targetUnits: b.targetUnits,
+      attainmentPct: b.attainmentPct,
+      unitGap: Math.max(0, b.targetUnits - b.delivered),
+    }))
+    .sort((a, b) => b.unitGap - a.unitGap);
+}
+
 export function funnel(d: Dataset, f: Filter): FunnelStep[] {
   const leads = scopedLeads(d, f);
   const reached: Record<string, number> = {};
