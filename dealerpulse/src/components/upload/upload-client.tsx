@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -107,6 +107,10 @@ export function UploadClient({ seed, merged }: { seed: UploadSeed; merged: boole
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [summary, setSummary] = useState<Summary | null>(null);
+  // Track live merge state on the client so the Reset control flips instantly,
+  // not only after a server prop refresh settles.
+  const [mergedNow, setMergedNow] = useState(merged);
+  useEffect(() => setMergedNow(merged), [merged]);
 
   const loadFile = async (file: File) => {
     setError(null);
@@ -150,6 +154,7 @@ export function UploadClient({ seed, merged }: { seed: UploadSeed; merged: boole
       setSummary(body.summary as Summary);
       setPayload(null);
       setFileName(null);
+      setMergedNow(true);
       router.refresh();
     } catch {
       setError("Network error while merging.");
@@ -164,6 +169,7 @@ export function UploadClient({ seed, merged }: { seed: UploadSeed; merged: boole
     setSummary(null);
     try {
       await fetch("/api/dataset", { method: "DELETE" });
+      setMergedNow(false);
       router.refresh();
     } finally {
       setBusy(false);
@@ -269,15 +275,27 @@ export function UploadClient({ seed, merged }: { seed: UploadSeed; merged: boole
         <CardHeader>
           <CardTitle>Live dataset</CardTitle>
           <CardDescription>
-            {merged
+            {mergedNow
               ? "Showing a merged dataset. Reset to return to the original bundled data."
               : "Showing the original bundled dataset."}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant="outline" size="sm" onClick={reset} disabled={busy}>
-            Reset to original
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              variant={mergedNow ? "destructive" : "outline"}
+              size="sm"
+              onClick={reset}
+              disabled={busy || !mergedNow}
+            >
+              {busy ? "Resetting…" : "Reset to original"}
+            </Button>
+            {!mergedNow && (
+              <span className="text-xs text-muted-foreground">
+                Nothing to reset — merge some data first.
+              </span>
+            )}
+          </div>
           <p className="mt-3 text-xs text-muted-foreground">
             Merges are held in server memory for the running instance: they persist
             while the app is warm and reset on restart or redeploy. Production would
