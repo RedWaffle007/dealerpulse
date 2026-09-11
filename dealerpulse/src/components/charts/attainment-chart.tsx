@@ -24,36 +24,62 @@ function healthColor(pct: number): string {
 export function AttainmentChart({ data }: { data: MonthPoint[] }) {
   const rows = data.map((d) => ({
     ...d,
-    label: formatMonth(d.month).replace(" 2025", ""),
+    label: formatMonth(d.month).replace(/ 20\d\d/, ""),
   }));
   return (
-    <ResponsiveContainer width="100%" height={260}>
-      <BarChart data={rows} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
-        <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={12} />
-        <YAxis tickLine={false} axisLine={false} fontSize={12} />
-        <Tooltip
-          cursor={{ opacity: 0.06 }}
-          contentStyle={{
-            borderRadius: 8,
-            border: "1px solid var(--border)",
-            background: "var(--popover)",
-            color: "var(--popover-foreground)",
-            fontSize: 12,
-          }}
-          formatter={(value, name) => [
-            String(value),
-            name === "delivered" ? "Delivered" : "Target",
-          ]}
-          labelFormatter={(l) => `${l} 2025`}
-        />
-        <Bar dataKey="target" fill="var(--muted)" radius={[3, 3, 0, 0]} />
-        <Bar dataKey="delivered" radius={[3, 3, 0, 0]}>
-          {rows.map((r, i) => (
-            <Cell key={i} fill={healthColor(r.attainmentPct)} />
-          ))}
-        </Bar>
-      </BarChart>
-    </ResponsiveContainer>
+    <div>
+      {/* Explicit legend: target vs delivered, and what the delivered color means. */}
+      <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-3 rounded-sm bg-muted-foreground/30" aria-hidden />
+          Target
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-3 rounded-sm bg-[var(--chart-2)]" aria-hidden />
+          Delivered — on target (≥90%)
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-3 rounded-sm bg-[var(--chart-3)]" aria-hidden />
+          lagging (≥50%)
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-3 rounded-sm bg-[var(--chart-4)]" aria-hidden />
+          well behind (&lt;50%)
+        </span>
+      </div>
+      <ResponsiveContainer width="100%" height={260}>
+        <BarChart data={rows} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
+          <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={12} />
+          <YAxis tickLine={false} axisLine={false} fontSize={12} />
+          <Tooltip
+            cursor={{ opacity: 0.06 }}
+            contentStyle={{
+              borderRadius: 8,
+              border: "1px solid var(--border)",
+              background: "var(--popover)",
+              color: "var(--popover-foreground)",
+              fontSize: 12,
+            }}
+            formatter={(value, name) => [
+              String(value),
+              name === "delivered" ? "Delivered" : "Target",
+            ]}
+          />
+          <Bar
+            dataKey="target"
+            name="Target"
+            fill="var(--muted-foreground)"
+            fillOpacity={0.28}
+            radius={[3, 3, 0, 0]}
+          />
+          <Bar dataKey="delivered" name="Delivered" radius={[3, 3, 0, 0]}>
+            {rows.map((r, i) => (
+              <Cell key={i} fill={healthColor(r.attainmentPct)} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

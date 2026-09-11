@@ -6,6 +6,7 @@ import {
   branchComparison,
   funnel,
   actionItems,
+  pipelineByStage,
 } from "@/lib/metrics";
 import { parseFilter } from "@/lib/filter";
 import {
@@ -75,6 +76,9 @@ export default async function OverviewPage(props: PageProps<"/">) {
   );
   const steps = funnel(d, f);
   const actions = actionItems(d, idx, f);
+  const actionsValue = actions.reduce((s, a) => s + a.value, 0);
+  const pipeline = pipelineByStage(d, idx, f);
+  const pipelineTop = Math.max(1, ...pipeline.map((s) => s.value));
 
   // Plain-language story headline, computed from the data in view.
   const withTargets = branches.filter((b) => b.targetUnits > 0);
@@ -157,7 +161,7 @@ export default async function OverviewPage(props: PageProps<"/">) {
         <KpiCard
           label="Unit attainment"
           value={formatPct(k.unitAttainmentPct)}
-          sub="vs target"
+          sub="delivered ÷ target"
           tone={attainmentTone(k.unitAttainmentPct)}
           href="#attainment"
           drillLabel="monthly trend"
@@ -180,15 +184,15 @@ export default async function OverviewPage(props: PageProps<"/">) {
         <KpiCard
           label="Open pipeline"
           value={formatCrore(k.openPipelineValue)}
-          sub={`${formatInt(k.openPipelineCount)} active leads`}
-          href={actionsHref}
-          drillLabel="in Action Center"
+          sub={`${formatInt(k.openPipelineCount)} live leads`}
+          href="#pipeline"
+          drillLabel="by stage"
         />
         <KpiCard
-          label="Cold leads"
-          value={formatInt(k.coldCount)}
-          sub={`${formatCrore(k.coldValue)} at risk`}
-          tone={k.coldCount > 0 ? "warn" : "neutral"}
+          label="Needs attention"
+          value={formatInt(actions.length)}
+          sub={`${formatCrore(actionsValue)} at risk`}
+          tone={actions.length > 0 ? "warn" : "good"}
           href={actionsHref}
           drillLabel="in Action Center"
         />
@@ -287,6 +291,47 @@ export default async function OverviewPage(props: PageProps<"/">) {
             initialSort="attainmentPct"
             initialDir="asc"
           />
+        </CardContent>
+      </Card>
+
+      {/* Open pipeline by stage — where the live pipeline (KPI above) actually sits */}
+      <Card id="pipeline" className="mt-6">
+        <CardHeader>
+          <CardTitle>Open pipeline by stage</CardTitle>
+          <CardDescription>
+            The {formatInt(k.openPipelineCount)} live leads worth{" "}
+            {formatCrore(k.openPipelineValue)}, by current stage. (The Action Center
+            works the {actions.length} of these that are stalling.)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {pipeline.length === 0 ? (
+            <p className="py-4 text-center text-sm text-muted-foreground">
+              No open leads in this view.
+            </p>
+          ) : (
+            <div className="space-y-2.5">
+              {pipeline.map((s) => (
+                <div key={s.stage}>
+                  <div className="flex items-baseline justify-between text-sm">
+                    <span className="font-medium">{stageLabel(s.stage)}</span>
+                    <span className="tabular-nums text-muted-foreground">
+                      {formatInt(s.count)} leads ·{" "}
+                      <span className="font-medium text-foreground">
+                        {formatCrore(s.value)}
+                      </span>
+                    </span>
+                  </div>
+                  <div className="mt-1 h-2.5 rounded-full bg-muted">
+                    <div
+                      className="h-2.5 rounded-full bg-gradient-to-r from-brand to-brand/55"
+                      style={{ width: `${(100 * s.value) / pipelineTop}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </main>

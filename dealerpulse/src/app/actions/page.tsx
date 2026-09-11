@@ -103,7 +103,7 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
 
       <section className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
         <KpiCard
-          label="Flagged leads"
+          label="Needs attention"
           value={formatInt(items.length)}
           sub={`${formatCrore(totalValue)} at risk`}
           tone={items.length ? "warn" : "good"}
