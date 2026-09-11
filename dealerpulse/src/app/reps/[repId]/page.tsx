@@ -48,8 +48,8 @@ const OPEN_LEAD_COLUMNS: SortColumn[] = [
 
 export default async function RepPage(props: PageProps<"/reps/[repId]">) {
   const { repId } = await props.params;
-  const d = getDataset();
-  const idx = getIndexes();
+  const d = await getDataset();
+  const idx = await getIndexes();
   const rep = idx.repById.get(repId);
   if (!rep) notFound();
   const branch = idx.branchById.get(rep.branch_id);

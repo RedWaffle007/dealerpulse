@@ -6,10 +6,10 @@ import { UploadClient, type UploadSeed } from "@/components/upload/upload-client
 // Reads the in-memory merge overlay, so it must render fresh on every request.
 export const dynamic = "force-dynamic";
 
-export default function UploadPage() {
-  const d = getDataset();
-  const idx = getIndexes();
-  const merged = isMerged();
+export default async function UploadPage() {
+  const d = await getDataset();
+  const idx = await getIndexes();
+  const merged = await isMerged();
 
   const months = idx.months;
   const lastMonth = months[months.length - 1]; // e.g. "2025-12"

@@ -1,4 +1,6 @@
 import "server-only";
+import { cache } from "react";
+import { del, list, put } from "@vercel/blob";
 import raw from "@/data/dealership_data.json";
 import { DatasetSchema, type Dataset } from "./types";
 import { buildIndexes, type Indexes } from "./indexes";
@@ -24,54 +26,98 @@ function getBase(): Dataset {
 }
 
 /**
- * Optional in-memory overlay produced by an upload merge (see /upload and
- * /api/dataset). NOTE: this lives in server memory only — it survives while the
- * server instance is warm, resets on restart/redeploy, and is not shared across
- * serverless instances. Real persistence would back this with a store (e.g.
- * Vercel KV/Blob or a database). Documented as a deliberate take-home tradeoff.
+ * Merge-overlay persistence.
  *
- * It is held on `globalThis` on purpose: Next.js can load route handlers and
- * page components in separate module instances, so a plain module-level `let`
- * would not be shared between the /api/dataset writer and the page readers.
+ * The overlay is the result of an uploaded continuation merged onto the base
+ * dataset (see /upload and /api/dataset). Two backends:
+ *
+ * 1. **Vercel Blob** (when `BLOB_READ_WRITE_TOKEN` is set) — the merged dataset
+ *    is stored as a single JSON blob, so it is shared across every serverless
+ *    instance and survives redeploys. This is what makes a merge reflect on the
+ *    hosted deployment, not just a single warm process.
+ * 2. **In-memory on `globalThis`** (local dev without a token) — kept as a
+ *    zero-setup fallback so the flow works out of the box with `npm run dev`.
+ *    It is held on `globalThis` because Next can load the route handler and the
+ *    page components in separate module instances within one process.
+ *
+ * Reads are memoized per request with React `cache()`, so a single render that
+ * touches the dataset several times hits the backend once.
  */
-type OverlayStore = { overlay: Dataset | null; idx: Indexes | null };
+const BLOB_PATH = "dealerpulse-overlay.json";
+const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
+
+type OverlayStore = { overlay: Dataset | null };
 const globalForOverlay = globalThis as unknown as {
   __dealerpulseOverlay?: OverlayStore;
 };
-const store: OverlayStore = (globalForOverlay.__dealerpulseOverlay ??= {
+const memStore: OverlayStore = (globalForOverlay.__dealerpulseOverlay ??= {
   overlay: null,
-  idx: null,
 });
 
-export function getDataset(): Dataset {
-  return store.overlay ?? getBase();
-}
+/** Read the current overlay from the active backend, or null if none. */
+const getOverlay = cache(async (): Promise<Dataset | null> => {
+  if (!blobToken) return memStore.overlay;
+  try {
+    const { blobs } = await list({ prefix: BLOB_PATH, token: blobToken, limit: 1 });
+    const hit = blobs.find((b) => b.pathname === BLOB_PATH) ?? blobs[0];
+    if (!hit) return null;
+    const res = await fetch(hit.url, { cache: "no-store" });
+    if (!res.ok) return null;
+    const parsed = DatasetSchema.safeParse(await res.json());
+    return parsed.success ? parsed.data : null;
+  } catch {
+    // Never let a storage hiccup take down the dashboard — fall back to base.
+    return null;
+  }
+});
+
+export const getDataset = cache(async (): Promise<Dataset> => {
+  return (await getOverlay()) ?? getBase();
+});
 
 /** The pristine bundled dataset, ignoring any merge overlay. */
 export function getBaseDataset(): Dataset {
   return getBase();
 }
 
-export function getIndexes(): Indexes {
-  if (!store.idx) store.idx = buildIndexes(getDataset());
-  return store.idx;
-}
+export const getIndexes = cache(async (): Promise<Indexes> => {
+  return buildIndexes(await getDataset());
+});
 
 /** True when an uploaded continuation has been merged into the live dataset. */
-export function isMerged(): boolean {
-  return store.overlay !== null;
-}
+export const isMerged = cache(async (): Promise<boolean> => {
+  return (await getOverlay()) !== null;
+});
 
-/** Replace the live dataset with a merged result and drop the index cache. */
-export function setMergedDataset(ds: Dataset): void {
-  store.overlay = ds;
-  store.idx = null;
+/** Replace the live dataset with a merged result. */
+export async function setMergedDataset(ds: Dataset): Promise<void> {
+  if (!blobToken) {
+    memStore.overlay = ds;
+    return;
+  }
+  await put(BLOB_PATH, JSON.stringify(ds), {
+    access: "public",
+    token: blobToken,
+    addRandomSuffix: false,
+    contentType: "application/json",
+    allowOverwrite: true,
+    cacheControlMaxAge: 0,
+  });
 }
 
 /** Discard any merge and return to the pristine bundled dataset. */
-export function resetDataset(): void {
-  store.overlay = null;
-  store.idx = null;
+export async function resetDataset(): Promise<void> {
+  if (!blobToken) {
+    memStore.overlay = null;
+    return;
+  }
+  try {
+    const { blobs } = await list({ prefix: BLOB_PATH, token: blobToken, limit: 1 });
+    const hit = blobs.find((b) => b.pathname === BLOB_PATH) ?? blobs[0];
+    if (hit) await del(hit.url, { token: blobToken });
+  } catch {
+    // A missing blob is already "reset" — nothing to do.
+  }
 }
 
 export type { Indexes } from "./indexes";

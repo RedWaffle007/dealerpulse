@@ -15,8 +15,8 @@ import {
 
 /** Company-wide sales-officer leaderboard — every rep across all branches, one screen. */
 export default async function RepsIndexPage(props: PageProps<"/reps">) {
-  const d = getDataset();
-  const idx = getIndexes();
+  const d = await getDataset();
+  const idx = await getIndexes();
   const sp = await props.searchParams;
   const base = parseFilter(
     {

@@ -5,7 +5,7 @@ CEO to grasp the state of the business in 30 seconds, and for branch managers to
 drill into the exact leads and reps behind the numbers.
 
 **Live:** _https://dealerpulse-sooty.vercel.app/_ · **Stack:** Next.js 16 (App Router) · TypeScript ·
-Tailwind + shadcn/ui · Recharts · Zod · Vitest
+Tailwind + shadcn/ui · Recharts · Zod · Vercel Blob · Vitest
 
 ---
 
@@ -98,15 +98,17 @@ file, and **Reset to original** returns to the bundled data.
 - **Client-side vs. backend:** the dataset is 622 KB. I parse + Zod-validate it once
   on the **server** (so it never bloats the client bundle) and compute every metric in
   a pure, memoized selector layer. No database earns its keep here.
-- **Import merge is validated and honest about persistence.** The Data Import screen reuses
+- **Import merge is validated and persisted for real.** The Data Import screen reuses
   the same Zod schema to validate a continuation, then merges via a pure `mergeDatasets`
   function (upsert by id) that the metrics layer reads through unchanged. The merged
-  result is held **in server memory** (on `globalThis`, so the API writer and the page
-  readers share one instance): it persists while the server is warm and resets on
-  restart/redeploy, and is not shared across serverless instances. I chose this over a
-  half-built database so the flow works end-to-end and stays truthful about its limits;
-  production would swap the in-memory store for Vercel KV/Blob or a database behind the
-  same interface. The tradeoff is stated in the UI.
+  dataset is stored in **Vercel Blob** (a single JSON blob) when `BLOB_READ_WRITE_TOKEN`
+  is present, so a merge is **shared across every serverless instance and survives
+  redeploys** — it reflects on the hosted deployment, not just one warm process. With no
+  token (plain local dev) it falls back to in-memory state on `globalThis` so the flow
+  still works zero-config. The data layer is async and memoized per request with React
+  `cache()`, and never lets a storage hiccup take down the dashboard (it falls back to
+  the bundled data). A store swap (KV, a database) is a one-file change behind the same
+  interface.
 - **Correctness is a feature, so I tested it.** The analytics + merge layers have a
   24-test Vitest suite asserting the exact figures I verified in `../analysis/eda.ipynb`
   (160 delivered,
@@ -184,9 +186,9 @@ file, and **Reset to original** returns to the bundled data.
 
 ## What I'd build next with more time
 
-- **Durable upload storage** — the upload/merge flow works end-to-end but keeps the
-  merged dataset in server memory; backing it with Vercel KV/Blob or a database (behind
-  the same interface) would make merges persist and be shared across instances.
+- **Concurrency + history on imports** — imports now persist in Vercel Blob; next would
+  be per-user/versioned overlays (an import log you can roll back) rather than one shared
+  live dataset, plus optimistic-locking so two concurrent imports can't clobber each other.
 - **Follow-up actions on a lead** — the lead page shows the full journey; logging a
   next action or reassigning from there would close the loop.
 - **Templated natural-language summaries** — a per-branch "what changed and why" written

@@ -52,8 +52,8 @@ const BRANCH_COLUMNS: SortColumn[] = [
 ];
 
 export default async function OverviewPage(props: PageProps<"/">) {
-  const d = getDataset();
-  const idx = getIndexes();
+  const d = await getDataset();
+  const idx = await getIndexes();
   const sp = await props.searchParams;
   const f = parseFilter(
     {

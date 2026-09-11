@@ -5,9 +5,9 @@ import { FilterBar } from "@/components/filters/filter-bar";
 import { MainNav } from "@/components/layout/main-nav";
 
 /** Sticky top bar: brand, primary nav, and the global filter. */
-export function AppHeader() {
-  const d = getDataset();
-  const idx = getIndexes();
+export async function AppHeader() {
+  const d = await getDataset();
+  const idx = await getIndexes();
   const branches = d.branches.map((b) => ({ id: b.id, name: b.name }));
 
   return (

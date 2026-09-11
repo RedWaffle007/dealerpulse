@@ -54,8 +54,8 @@ const RULES: {
 ];
 
 export default async function ActionsPage(props: PageProps<"/actions">) {
-  const d = getDataset();
-  const idx = getIndexes();
+  const d = await getDataset();
+  const idx = await getIndexes();
   const sp = await props.searchParams;
   const base = parseFilter(
     {

@@ -36,7 +36,7 @@ function Row({ label, value }: { label: string; value: ReactNode }) {
 
 export default async function LeadPage(props: PageProps<"/leads/[leadId]">) {
   const { leadId } = await props.params;
-  const idx = getIndexes();
+  const idx = await getIndexes();
   const lead = idx.leadById.get(leadId);
   if (!lead) notFound();
 

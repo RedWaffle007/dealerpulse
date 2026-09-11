@@ -50,8 +50,8 @@ export default async function BranchPage(
   props: PageProps<"/branches/[branchId]">,
 ) {
   const { branchId } = await props.params;
-  const d = getDataset();
-  const idx = getIndexes();
+  const d = await getDataset();
+  const idx = await getIndexes();
   const branch = idx.branchById.get(branchId);
   if (!branch) notFound();
   const manager = d.sales_reps.find(

@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   }
 
   // Merge onto the current dataset so successive uploads accumulate.
-  const { merged, summary } = mergeDatasets(getDataset(), parsed.data);
+  const { merged, summary } = mergeDatasets(await getDataset(), parsed.data);
 
   // Re-validate the merged whole before committing it.
   const check = DatasetSchema.safeParse(merged);
@@ -32,14 +32,14 @@ export async function POST(request: Request) {
     );
   }
 
-  setMergedDataset(check.data);
+  await setMergedDataset(check.data);
   revalidatePath("/", "layout");
   return Response.json({ ok: true, summary });
 }
 
 /** Reset back to the pristine bundled dataset. */
 export async function DELETE() {
-  resetDataset();
+  await resetDataset();
   revalidatePath("/", "layout");
   return Response.json({ ok: true });
 }

@@ -303,9 +303,10 @@ export function UploadClient({ seed, merged }: { seed: UploadSeed; merged: boole
             )}
           </div>
           <p className="mt-3 text-xs text-muted-foreground">
-            Merges are held in server memory for the running instance: they persist
-            while the app is warm and reset on restart or redeploy. Production would
-            back this with a datastore.
+            Merges persist in <strong>Vercel Blob</strong> when configured
+            (<code>BLOB_READ_WRITE_TOKEN</code>), so they are shared across every
+            serverless instance and survive redeploys. Without a token (e.g. plain
+            local dev) they fall back to in-memory state for the running process.
           </p>
         </CardContent>
       </Card>
