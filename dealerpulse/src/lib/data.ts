@@ -80,6 +80,15 @@ export function getBaseDataset(): Dataset {
   return getBase();
 }
 
+/**
+ * Which persistence backend is live in this environment — surfaced in the UI so
+ * a deployment can confirm at a glance whether the Blob token actually reached
+ * the running app (a connected store with no redeploy shows "memory").
+ */
+export function storageBackend(): "blob" | "memory" {
+  return blobToken ? "blob" : "memory";
+}
+
 export const getIndexes = cache(async (): Promise<Indexes> => {
   return buildIndexes(await getDataset());
 });
