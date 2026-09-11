@@ -32,11 +32,36 @@ notes), owner, value, and delivery or loss detail, so an alert always resolves t
 specific record and its story.
 
 ### Design & UX
-The look is deliberately restrained — a neutral, data-dense base (Linear/Vercel-style)
-with a single indigo brand accent, so **color carries meaning rather than decoration**:
-attainment and alerts read green/amber/red by health, and the accent marks only
-navigation, links, and the active view. Every page shares one headline band, the nav
-always shows where you are, and each filter is captioned so nothing is a mystery.
+The look is a **crisp, modern-SaaS** system: a distinctive display typeface
+(Space Grotesk) for headings and big tabular numbers over a neutral, data-dense
+base, with a single indigo brand accent so **color carries meaning rather than
+decoration** — attainment and alerts read green/amber/red by health, and the accent
+marks only navigation, links, and the active view. Every page shares one headline
+band, the nav always shows where you are, and each filter is captioned so nothing
+is a mystery.
+
+The dashboard is built to **tell a story anyone can read**, not just analysts:
+
+- **A plain-language headline on every screen.** Each page opens with one sentence
+  computed from the data in view — e.g. *"The group delivered 160 of 1,426 target
+  cars (11% of plan). Eastside leads at 15%; Lakeside trails at 2%."* — so the
+  takeaway lands before any chart.
+- **KPI cards are drill-downs.** Every headline number links straight to the data
+  behind it (attainment/revenue/units → the branch table; conversion → the funnel;
+  pipeline/cold → the Action Center), so a CEO clicks the number they care about.
+- **Dense sections collapse.** "Needs attention" on the overview and the four
+  Action-Center rule buckets are expandable dropdowns (native `<details>`, zero JS),
+  each showing a live count + value while collapsed — the page stays uncluttered but
+  nothing is hidden.
+- **Every ranked/tabular view is sortable.** One reusable table component lets you
+  re-rank by any column (A–Z for text, high/low for numbers, newest/oldest for
+  dates), sorting on raw values so ₹ and % order by magnitude.
+- **The leaderboard is legible at a glance.** The Sales Team table carries serial
+  numbers and **top-3 / top-5 / top-10 medal tiers** (gold/silver/bronze) that track
+  whatever you sort by.
+- **The funnel reads top-to-bottom in words.** Each stage names how many leads
+  reached it and how many *dropped off* to the next ("118 dropped off (23%)"),
+  instead of leaving the reader to decode bar widths.
 
 ### The differentiator: the Action Center
 Most dashboards stop at "social media converts at 14%." This one ends at a ranked,
@@ -48,24 +73,32 @@ and linking straight to that lead's journey. Above the lead-level buckets sits a
 shortfall) and a delivery-delay summary, so the queue covers both "which deals to
 chase" and "which parts of the business are slipping".
 
-### Uploading more data
-Real dealership data arrives continuously, so there's an **Upload** screen: drop in a
-JSON continuation (new months, leads, deliveries) and it is Zod-validated and merged
-into the live dashboard, upserting each record by id (new records added, existing ones
-updated). A one-click demo continuation lets a reviewer try it without a file, and a
-Reset returns to the bundled data.
+### Data Import
+Real dealership data arrives continuously, so there's a **Data Import** screen: drop
+in a JSON continuation (new months, leads, deliveries) and it is Zod-validated and
+merged into the live dashboard, upserting each record by id (new records added,
+existing ones updated). Because "now" is derived from the data (see below), a merged
+month **reflects across every screen** — KPIs, the attainment trend, the funnel, the
+leaderboard, and the aging/Action-Center snapshot all move together, and the "as of"
+date advances with it. A one-click demo continuation lets a reviewer try it without a
+file, and **Reset to original** returns to the bundled data.
 
 ---
 
 ## Key product decisions & tradeoffs
 
-- **"Now" = the dataset cutoff (2025-12-31), not the wall clock.** Aging and the
-  action queue are meaningless against today's date (the data is historical). This
-  is stated in the UI so nobody mistakes it for live data.
+- **"Now" is derived from the data, not the wall clock.** Aging and the action queue
+  are meaningless against today's date (the data is historical), so the analytical
+  cutoff is the **last day of the latest reporting month** — 2025-12-31 for the
+  bundled data, and it advances automatically when a new month is imported. This
+  keeps every baseline number identical while making a merged continuation move the
+  aging/staleness metrics too (a hardcoded cutoff had silently hidden any imported
+  month from the snapshot views). The "as of" date is shown in the UI so nobody
+  mistakes it for live data.
 - **Client-side vs. backend:** the dataset is 622 KB. I parse + Zod-validate it once
   on the **server** (so it never bloats the client bundle) and compute every metric in
   a pure, memoized selector layer. No database earns its keep here.
-- **Upload merge is validated and honest about persistence.** The Upload screen reuses
+- **Import merge is validated and honest about persistence.** The Data Import screen reuses
   the same Zod schema to validate a continuation, then merges via a pure `mergeDatasets`
   function (upsert by id) that the metrics layer reads through unchanged. The merged
   result is held **in server memory** (on `globalThis`, so the API writer and the page
@@ -113,7 +146,7 @@ Reset returns to the bundled data.
 | Lead volume / conversion / funnel / sources | Keyed on `created_at` |
 | Funnel "reached stage" | From `status_history`, not current status |
 | Targets | Summed over selected months only; no partial-month proration |
-| Staleness / open pipeline | Snapshot as of the cutoff, branch/rep-scoped |
+| Staleness / open pipeline | Snapshot as of the cutoff (last day of the latest reporting month), branch/rep-scoped |
 
 ---
 
