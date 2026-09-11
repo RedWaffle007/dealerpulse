@@ -29,12 +29,22 @@ function getBase(): Dataset {
  * server instance is warm, resets on restart/redeploy, and is not shared across
  * serverless instances. Real persistence would back this with a store (e.g.
  * Vercel KV/Blob or a database). Documented as a deliberate take-home tradeoff.
+ *
+ * It is held on `globalThis` on purpose: Next.js can load route handlers and
+ * page components in separate module instances, so a plain module-level `let`
+ * would not be shared between the /api/dataset writer and the page readers.
  */
-let overlay: Dataset | null = null;
-let cachedIdx: Indexes | null = null;
+type OverlayStore = { overlay: Dataset | null; idx: Indexes | null };
+const globalForOverlay = globalThis as unknown as {
+  __dealerpulseOverlay?: OverlayStore;
+};
+const store: OverlayStore = (globalForOverlay.__dealerpulseOverlay ??= {
+  overlay: null,
+  idx: null,
+});
 
 export function getDataset(): Dataset {
-  return overlay ?? getBase();
+  return store.overlay ?? getBase();
 }
 
 /** The pristine bundled dataset, ignoring any merge overlay. */
@@ -43,25 +53,25 @@ export function getBaseDataset(): Dataset {
 }
 
 export function getIndexes(): Indexes {
-  if (!cachedIdx) cachedIdx = buildIndexes(getDataset());
-  return cachedIdx;
+  if (!store.idx) store.idx = buildIndexes(getDataset());
+  return store.idx;
 }
 
 /** True when an uploaded continuation has been merged into the live dataset. */
 export function isMerged(): boolean {
-  return overlay !== null;
+  return store.overlay !== null;
 }
 
 /** Replace the live dataset with a merged result and drop the index cache. */
 export function setMergedDataset(ds: Dataset): void {
-  overlay = ds;
-  cachedIdx = null;
+  store.overlay = ds;
+  store.idx = null;
 }
 
 /** Discard any merge and return to the pristine bundled dataset. */
 export function resetDataset(): void {
-  overlay = null;
-  cachedIdx = null;
+  store.overlay = null;
+  store.idx = null;
 }
 
 export type { Indexes } from "./indexes";

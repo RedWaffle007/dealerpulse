@@ -275,12 +275,7 @@ export function UploadClient({ seed, merged }: { seed: UploadSeed; merged: boole
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={reset}
-            disabled={busy || !merged}
-          >
+          <Button variant="outline" size="sm" onClick={reset} disabled={busy}>
             Reset to original
           </Button>
           <p className="mt-3 text-xs text-muted-foreground">
