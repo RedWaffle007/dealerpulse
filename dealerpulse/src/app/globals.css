@@ -149,3 +149,62 @@
     @apply font-heading;
   }
 }
+
+/* Intro splash gating: on a same-tab refresh the inline script stamps
+   data-intro-seen before paint, so the splash never flashes. */
+[data-intro-seen] .dp-intro {
+  display: none !important;
+}
+
+/* Branded loading screen: a heartbeat mark + a sweeping ECG line. */
+@keyframes dp-beat {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.12);
+    opacity: 0.92;
+  }
+}
+@keyframes dp-ecg {
+  from {
+    stroke-dashoffset: 340;
+  }
+  to {
+    stroke-dashoffset: -340;
+  }
+}
+@keyframes dp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Cold-start reveal (ported from the reference "MJQ" splash): the wordmark +
+   bars emerge together out of black — one eased fade + a subtle scale-up — then
+   hold; the whole layer fades into the app after the 3s hold. */
+@keyframes dp-splash-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes dp-splash-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { Anton, Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+
+// Anton — heavy, condensed, uppercase — the closest free match to a Supercell
+// wordmark, used only on the cold-start intro splash (ported from the reference).
+const anton = Anton({
+  variable: "--font-anton",
+  subsets: ["latin"],
+  weight: "400",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,20 +29,29 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 import { AppHeader } from "@/components/layout/app-header";
+import { IntroSplash } from "@/components/layout/intro-splash";
+
+// Runs before paint: on a same-tab refresh (flag already set) it stamps
+// data-intro-seen so the splash never flashes; on a fresh tab it sets the flag
+// so the splash shows this once. sessionStorage is cleared when the tab closes,
+// so reopening a closed tab greets again — but a refresh does not.
+const INTRO_GATE = `try{if(sessionStorage.getItem('dp-intro-seen')){document.documentElement.setAttribute('data-intro-seen','1')}else{sessionStorage.setItem('dp-intro-seen','1')}}catch(e){}`;
 
 export const metadata: Metadata = {
-  title: "DealerPulse — Dealership Performance",
+  title: "DealerPulse — Feel your data",
   description:
-    "Real-time dealership performance dashboard: overview, drill-down, and an action center for a 5-branch dealer group.",
+    "DealerPulse reads the vital signs of your dealership group — the pulse of every branch, rep, and deal — so you can see what's healthy, what's at risk, and act on it.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${anton.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-muted/30">
+        <script dangerouslySetInnerHTML={{ __html: INTRO_GATE }} />
+        <IntroSplash />
         <AppHeader />
         {children}
       </body>
