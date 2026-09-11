@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import type { MouseEvent } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -78,12 +81,31 @@ export function KpiCard({
   );
 
   if (!href) return card;
+
+  const wrapperClass =
+    "group/card block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-brand/50";
+  const ariaLabel = `${label}: ${value}. ${drillLabel ?? "View details"}`;
+
+  // On-page anchors (#section): scroll on every click, even when the hash is
+  // already set or shared by several cards — a plain hash link would no-op.
+  if (href.startsWith("#")) {
+    const onClick = (e: MouseEvent<HTMLAnchorElement>) => {
+      const el = document.getElementById(href.slice(1));
+      if (!el) return; // fall back to default anchor behavior
+      e.preventDefault();
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      history.replaceState(null, "", href); // keep the hash shareable, no jump
+    };
+    return (
+      <a href={href} onClick={onClick} className={wrapperClass} aria-label={ariaLabel}>
+        {card}
+      </a>
+    );
+  }
+
+  // Cross-page drill-downs use client navigation.
   return (
-    <Link
-      href={href}
-      className="group/card block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
-      aria-label={`${label}: ${value}. ${drillLabel ?? "View details"}`}
-    >
+    <Link href={href} className={wrapperClass} aria-label={ariaLabel}>
       {card}
     </Link>
   );

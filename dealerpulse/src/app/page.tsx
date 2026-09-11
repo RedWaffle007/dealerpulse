@@ -159,8 +159,8 @@ export default async function OverviewPage(props: PageProps<"/">) {
           value={formatPct(k.unitAttainmentPct)}
           sub="vs target"
           tone={attainmentTone(k.unitAttainmentPct)}
-          href="#branch-performance"
-          drillLabel="by branch"
+          href="#attainment"
+          drillLabel="monthly trend"
         />
         <KpiCard
           label="Revenue"
