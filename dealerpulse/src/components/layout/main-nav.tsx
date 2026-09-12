@@ -14,13 +14,13 @@ const LINKS = [
 
 /**
  * Primary nav with an explicit "you are here" state. The active route reads
- * as a solid pill so there's never ambiguity about which view you're on.
+ * as a solid tab so there's never ambiguity about which view you're on.
  */
 export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex items-center gap-1 text-sm">
+    <nav className="flex flex-wrap items-center gap-1 text-sm">
       {LINKS.map((l) => {
         const active =
           l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
@@ -30,7 +30,7 @@ export function MainNav() {
             href={l.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "rounded-full px-3 py-1 font-medium transition-colors",
+              "rounded-md px-3 py-1.5 font-medium transition-colors duration-150 ease-out",
               active
                 ? "bg-foreground text-background"
                 : "text-muted-foreground hover:bg-secondary hover:text-foreground",

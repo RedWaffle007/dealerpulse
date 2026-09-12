@@ -33,15 +33,15 @@ export function Disclosure({
       id={id}
       open={defaultOpen}
       className={cn(
-        "group/disc overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10",
-        "transition-all duration-200 hover:ring-brand/30 hover:shadow-md hover:shadow-brand/10",
+        "group/disc overflow-hidden rounded-xl bg-card border border-border",
+        "transition-[border-color,box-shadow] duration-150 ease-out hover:ring-1 hover:ring-brand/30",
         accent,
         className,
       )}
     >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-muted/40 [&::-webkit-details-marker]:hidden">
         <div className="min-w-0">
-          <div className="font-heading text-base font-medium leading-snug">
+          <div className="font-heading text-base font-semibold leading-snug">
             {title}
           </div>
           {description && (

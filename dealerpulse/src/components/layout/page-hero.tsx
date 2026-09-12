@@ -37,11 +37,11 @@ export function PageHero({
   visual?: ReactNode;
 }) {
   return (
-    <header className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-br from-brand/12 via-brand/[0.05] to-transparent p-5 ring-1 ring-brand/15 md:p-7">
+    <header className="relative mb-6 overflow-hidden rounded-xl border border-border bg-gradient-to-br from-brand/[0.06] via-card to-card p-5 md:p-6">
       {/* Brand glow */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-24 -right-16 size-72 rounded-full bg-brand/25 blur-3xl"
+        className="pointer-events-none absolute -top-24 -right-16 size-72 rounded-full bg-brand/10 blur-3xl"
       />
       {/* Grain */}
       <div
@@ -82,7 +82,7 @@ export function PageHero({
             </p>
           )}
           {children && (
-            <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+            <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
               {children}
             </p>
           )}
@@ -93,7 +93,7 @@ export function PageHero({
           <div className="relative">
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-0 -m-6 rounded-full bg-brand/15 blur-3xl"
+              className="pointer-events-none absolute inset-0 -m-6 rounded-full bg-brand/5 blur-3xl"
             />
             <div className="relative">{visual}</div>
           </div>

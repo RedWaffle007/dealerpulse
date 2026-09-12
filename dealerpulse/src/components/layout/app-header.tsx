@@ -11,8 +11,8 @@ export async function AppHeader() {
   const branches = d.branches.map((b) => ({ id: b.id, name: b.name }));
 
   return (
-    <header className="sticky top-0 z-20 border-b border-border/60 bg-background/85 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2.5">
+    <header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-3 px-4 py-2.5">
         <Link href="/" className="flex items-center gap-2 font-semibold">
           <span className="grid h-6 w-6 place-items-center rounded bg-brand text-xs font-bold text-brand-foreground">
             DP

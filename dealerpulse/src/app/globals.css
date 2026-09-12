@@ -67,13 +67,13 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
+  --border: oklch(0.88 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.55 0.17 264);
-  /* Signature brand accent (indigo) — used for nav, links, funnel, focus. */
-  --brand: oklch(0.52 0.19 264);
+  /* DealerPulse green; burnt orange remains the secondary wordmark accent. */
+  --brand: #1B7A3D;
   --brand-foreground: oklch(0.985 0 0);
-  --brand-muted: oklch(0.95 0.03 264);
+  --brand-muted: oklch(0.96 0.025 150);
   /* Semantic categorical chart palette (real chroma). */
   --chart-1: oklch(0.55 0.19 264); /* brand indigo */
   --chart-2: oklch(0.62 0.15 155); /* healthy green */
@@ -107,12 +107,12 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
+  --border: oklch(1 0 0 / 16%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.7 0.16 264);
-  --brand: oklch(0.72 0.16 264);
-  --brand-foreground: oklch(0.16 0.02 264);
-  --brand-muted: oklch(0.3 0.07 264 / 35%);
+  --brand: oklch(0.75 0.15 150);
+  --brand-foreground: oklch(0.16 0.02 150);
+  --brand-muted: oklch(0.3 0.07 150 / 35%);
   --chart-1: oklch(0.72 0.16 264);
   --chart-2: oklch(0.72 0.15 155);
   --chart-3: oklch(0.8 0.14 80);
@@ -146,7 +146,7 @@
   h1,
   h2,
   h3 {
-    @apply font-heading;
+    @apply font-heading font-semibold tracking-tight;
   }
 }
 

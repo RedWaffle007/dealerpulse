@@ -55,7 +55,7 @@ export function HeroPreview({
 
   return (
     <div
-      className="w-full rounded-2xl border border-white/60 bg-card/80 p-4 shadow-xl ring-1 ring-brand/10 backdrop-blur dark:border-white/10"
+      className="w-full rounded-xl border border-border bg-card p-4 shadow-sm"
       aria-hidden
     >
       <div className="mb-3 flex items-center justify-between gap-2">

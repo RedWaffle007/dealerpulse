@@ -84,11 +84,11 @@ export function KpiCard({
   const card = (
     <Card
       className={cn(
-        "relative h-full gap-0 overflow-hidden py-4 transition-all",
+        "relative h-full gap-0 overflow-hidden py-4",
         "before:absolute before:inset-y-0 before:left-0 before:w-1",
         railClasses[tone],
         href &&
-          "cursor-pointer hover:-translate-y-0.5 hover:ring-brand/50 hover:shadow-lg hover:shadow-brand/25 focus-within:ring-brand/40",
+          "cursor-pointer hover:ring-brand/50 focus-within:ring-brand/40",
       )}
     >
       <CardContent className="px-4 pl-5">
@@ -98,20 +98,20 @@ export function KpiCard({
           </div>
           {href && (
             <ArrowUpRight
-              className="size-3.5 text-muted-foreground/50 transition-colors group-hover/card:text-brand"
+              className="size-3.5 text-muted-foreground transition-colors duration-150 group-hover/card:text-brand"
               aria-hidden
             />
           )}
         </div>
         <div
           className={cn(
-            "mt-1.5 font-heading text-[1.6rem] font-semibold tabular-nums leading-none",
+            "mt-2 font-heading text-[1.6rem] tracking-tight font-semibold tabular-nums leading-none",
             valueClasses[tone],
           )}
         >
           {value}
         </div>
-        {sub && <div className="mt-1.5 text-xs text-muted-foreground">{sub}</div>}
+        {sub && <div className="mt-2 text-xs leading-relaxed text-muted-foreground">{sub}</div>}
         {(delta || (spark && spark.length > 1)) && (
           <div className="mt-2 flex items-center justify-between gap-2">
             {delta ? <DeltaChip delta={delta} label={deltaLabel} /> : <span />}
