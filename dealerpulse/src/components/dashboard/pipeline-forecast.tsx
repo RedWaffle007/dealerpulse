@@ -18,7 +18,7 @@ export function PipelineForecastPanel({
   if (openCount === 0) {
     return (
       <p className="py-4 text-center text-sm text-muted-foreground">
-        No open pipeline to forecast in this view.
+        No open deals to forecast.
       </p>
     );
   }
@@ -43,7 +43,7 @@ export function PipelineForecastPanel({
         </div>
         <div className="rounded-lg bg-muted/40 p-3 ring-1 ring-foreground/10">
           <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-            Open pipeline (face)
+            Open pipeline
           </div>
           <div className="mt-1 font-heading text-2xl font-semibold leading-none tabular-nums">
             {formatInt(openCount)}
@@ -58,12 +58,11 @@ export function PipelineForecastPanel({
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Weighting each open lead by its stage&apos;s historical close rate
-        discounts the {formatCrore(openValue)} face value to an expected{" "}
+        Expected revenue: {" "}
         <span className="font-medium text-foreground">
           {formatCrore(expectedValue)}
         </span>{" "}
-        ({formatPct(confidence, 0)} of face).
+        ({formatPct(confidence, 0)} of open pipeline).
       </p>
 
       {/* Per-stage breakdown */}
@@ -91,12 +90,6 @@ export function PipelineForecastPanel({
         ))}
       </div>
 
-      <p className="text-[11px] leading-relaxed text-muted-foreground">
-        Method: close rate = share of leads that ever reached a stage which have
-        been delivered to date (in-flight leads count as not-yet-closed, so the
-        estimate is conservative). Rates rise with stage depth, so late-stage
-        leads carry more of the forecast.
-      </p>
     </div>
   );
 }

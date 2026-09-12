@@ -7,10 +7,10 @@ export default function NotFound() {
       <div>
         <p className="text-muted-foreground text-sm font-medium">404</p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight">
-          That branch or rep doesn&apos;t exist
+          Record not found
         </h1>
         <p className="text-muted-foreground mt-2 text-sm">
-          The record you&apos;re looking for isn&apos;t in this dataset.
+          Return to the overview to find a branch, rep, or lead.
         </p>
         <Link href="/" className={buttonVariants({ className: "mt-6" })}>
           Back to overview

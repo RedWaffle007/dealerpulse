@@ -29,6 +29,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 import { Suspense } from "react";
+import { THEME_INIT } from "@/components/layout/theme";
+import { AutomotiveBackdrop } from "@/components/layout/automotive-backdrop";
 import { AppHeader } from "@/components/layout/app-header";
 import { IntroSplash } from "@/components/layout/intro-splash";
 import { RouteProgress } from "@/components/layout/route-progress";
@@ -56,9 +58,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${anton.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-muted/30">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+      </head>
+      <body className="relative isolate min-h-full flex flex-col bg-background">
+        <AutomotiveBackdrop />
         <script dangerouslySetInnerHTML={{ __html: INTRO_GATE }} />
         <Suspense fallback={null}>
           <RouteProgress />

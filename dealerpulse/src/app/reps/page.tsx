@@ -40,8 +40,8 @@ export default async function RepsIndexPage(props: PageProps<"/reps">) {
         lead={
           topRep ? (
             <>
-              {reps.length} officers carried pipeline this period.{" "}
-              <span className="text-brand">{topRep.name}</span> tops the board at{" "}
+              {reps.length} reps.{" "}
+              <span className="text-brand">{topRep.name}</span> leads at{" "}
               {topRep.conversionPct.toFixed(0)}% conversion.
             </>
           ) : undefined
@@ -50,16 +50,14 @@ export default async function RepsIndexPage(props: PageProps<"/reps">) {
         {base.branchId
           ? idx.branchById.get(base.branchId)?.name
           : "All branches"}{" "}
-        · sort by any column to re-rank
+        · select a rep to review
       </PageHero>
 
       <Card>
         <CardHeader>
           <CardTitle>Rep leaderboard</CardTitle>
           <CardDescription>
-            Every officer with leads in range. Click a column heading to re-rank;
-            the medal tiers follow the top rows. Reps under 5 leads are flagged —
-            too small a sample to rank reliably.
+            Compare conversion, deliveries, and revenue.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -68,11 +66,6 @@ export default async function RepsIndexPage(props: PageProps<"/reps">) {
         </CardContent>
       </Card>
 
-      <p className="mt-6 text-xs text-muted-foreground">
-        Branch managers don&apos;t carry individual pipeline in this dataset —
-        their accountability unit is the branch, so a manager&apos;s scorecard is
-        their branch page.
-      </p>
     </main>
   );
 }

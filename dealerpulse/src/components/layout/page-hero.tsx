@@ -37,7 +37,7 @@ export function PageHero({
   visual?: ReactNode;
 }) {
   return (
-    <header className="relative mb-6 overflow-hidden rounded-xl border border-border bg-gradient-to-br from-brand/[0.06] via-card to-card p-5 md:p-6">
+    <header className="relative mb-6 overflow-hidden rounded-xl border border-border border-t-2 border-t-brand/60 bg-gradient-to-br from-brand/10 via-card to-brand-secondary/[0.06] p-5 md:p-6">
       {/* Brand glow */}
       <div
         aria-hidden

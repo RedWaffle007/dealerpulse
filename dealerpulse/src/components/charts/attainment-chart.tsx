@@ -52,8 +52,8 @@ export function AttainmentChart({ data }: { data: MonthPoint[] }) {
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={rows} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
-              <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={12} />
-              <YAxis tickLine={false} axisLine={false} fontSize={12} />
+              <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={12} tick={{ fill: "var(--muted-foreground)" }} />
+              <YAxis tickLine={false} axisLine={false} fontSize={12} tick={{ fill: "var(--muted-foreground)" }} />
               <Tooltip
                 cursor={{ opacity: 0.06 }}
                 contentStyle={{

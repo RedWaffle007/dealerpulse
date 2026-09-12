@@ -41,7 +41,7 @@ export function Disclosure({
     >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-muted/40 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring [&::-webkit-details-marker]:hidden">
         <div className="min-w-0">
-          <div className="font-heading text-base font-semibold leading-snug">
+          <div className="font-heading text-base font-semibold leading-snug text-brand">
             {title}
           </div>
           {description && (

@@ -186,12 +186,9 @@ export function UploadClient({ seed, merged }: { seed: UploadSeed; merged: boole
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Add a continuation</CardTitle>
+          <CardTitle>Import data</CardTitle>
           <CardDescription>
-            A JSON object with any of: <code>leads</code>, <code>deliveries</code>,{" "}
-            <code>targets</code>, <code>branches</code>, <code>sales_reps</code>.
-            Records are upserted by id, so new records are added and existing ones
-            are updated.
+            Add or update leads, deliveries, targets, branches, and reps with a JSON file.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -209,7 +206,7 @@ export function UploadClient({ seed, merged }: { seed: UploadSeed; merged: boole
               />
             </label>
             <Button variant="outline" size="sm" onClick={loadDemo} disabled={busy}>
-              Generate demo continuation
+              Try sample data
             </Button>
           </div>
 
@@ -282,8 +279,8 @@ export function UploadClient({ seed, merged }: { seed: UploadSeed; merged: boole
           <CardTitle>Live dataset</CardTitle>
           <CardDescription>
             {mergedNow
-              ? "Showing a merged dataset. Reset to return to the original bundled data."
-              : "Showing the original bundled dataset."}
+              ? "Imported data is active. Reset removes imported changes."
+              : "Original data is active."}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -298,16 +295,10 @@ export function UploadClient({ seed, merged }: { seed: UploadSeed; merged: boole
             </Button>
             {!mergedNow && (
               <span className="text-xs text-muted-foreground">
-                Nothing to reset — merge some data first.
+                No imported changes.
               </span>
             )}
           </div>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Merges persist in <strong>Vercel Blob</strong> when configured
-            (<code>BLOB_READ_WRITE_TOKEN</code>), so they are shared across every
-            serverless instance and survive redeploys. Without a token (e.g. plain
-            local dev) they fall back to in-memory state for the running process.
-          </p>
         </CardContent>
       </Card>
     </div>

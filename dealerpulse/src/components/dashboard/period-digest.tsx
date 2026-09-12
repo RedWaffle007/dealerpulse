@@ -84,8 +84,8 @@ export function PeriodDigestPanel({ digest }: { digest: PeriodDigest }) {
   return (
     <section className="rounded-xl bg-card p-4 ring-1 ring-foreground/10 md:p-5">
       <div className="mb-3 flex items-baseline justify-between gap-3">
-        <h2 className="font-heading text-base font-medium">
-          What changed this period
+        <h2 className="font-heading text-base font-semibold text-brand-secondary">
+          What changed
         </h2>
         {digest.prior && (
           <span className="text-xs text-muted-foreground tabular-nums">

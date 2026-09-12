@@ -90,9 +90,9 @@ export default async function RepPage(props: PageProps<"/reps/[repId]">) {
         }
         lead={
           <>
-            Worked <span className="text-brand">{formatInt(k.leadsCreated)}</span>{" "}
-            leads, delivering {formatInt(k.convertedLeads)} (
-            {formatPct(k.conversionPct, 0)}) for {formatCrore(k.revenue)}.
+            <span className="text-brand">{formatInt(k.leadsCreated)}</span>{" "}
+            leads · {formatInt(k.convertedLeads)} delivered (
+            {formatPct(k.conversionPct, 0)}) · {formatCrore(k.revenue)} revenue.
           </>
         }
       >
@@ -165,7 +165,7 @@ export default async function RepPage(props: PageProps<"/reps/[repId]">) {
         <CardHeader>
           <CardTitle>Open leads</CardTitle>
           <CardDescription>
-            Every active lead assigned to {rep.name}, most advanced first
+            {rep.name}&apos;s active deals
           </CardDescription>
         </CardHeader>
         <CardContent>

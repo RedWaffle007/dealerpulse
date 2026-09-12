@@ -31,28 +31,28 @@ const RULES: {
   {
     type: "stale_order",
     title: "Order placed, going stale",
-    blurb: "Committed buyers with no activity for 7+ days — highest urgency.",
+    blurb: "Follow up on orders idle for 7+ days.",
     accent: "border-t-2 border-t-red-500",
     tone: "bad",
   },
   {
     type: "overdue",
     title: "Past expected close",
-    blurb: "Expected-close date has passed but the lead is still open.",
+    blurb: "Reconfirm overdue close dates.",
     accent: "border-t-2 border-t-amber-500",
     tone: "warn",
   },
   {
     type: "high_value_late",
     title: "Late-stage idle",
-    blurb: "Negotiation-or-deeper leads with no movement for 7+ days.",
+    blurb: "Move late-stage deals idle for 7+ days.",
     accent: "border-t-2 border-t-orange-500",
     tone: "warn",
   },
   {
     type: "cold",
     title: "Cold leads",
-    blurb: "Early-stage leads with no activity for 7+ days.",
+    blurb: "Reconnect with leads idle for 7+ days.",
     accent: "border-t-2 border-t-brand",
     tone: "neutral",
   },
@@ -89,11 +89,10 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
         period={`${formatMonth(base.from)} – ${formatMonth(base.to)}`}
         lead={
           items.length > 0
-            ? "Every open lead that's stalling, ranked so you know who to call first."
-            : "Nothing needs attention in this view. 🎉"
+            ? "Your priority follow-ups."
+            : "No urgent follow-ups."
         }
       >
-        Deterministic, explainable alerts ·{" "}
         {base.branchId
           ? idx.branchById.get(base.branchId)?.name
           : "all branches"}{" "}
@@ -124,8 +123,7 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
           </div>
         </div>
         <p className="max-w-md text-xs text-muted-foreground">
-          Every open lead that&apos;s stalling, grouped by why. The groups below
-          add up to this total — click one to jump straight to its leads.
+          Select a category to see who needs a call.
         </p>
       </section>
 
@@ -148,7 +146,7 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
       </section>
 
       <h2 className="mb-3 font-heading text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-        The worklist — grouped by urgency
+        Priority worklist
       </h2>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -188,13 +186,13 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
               </span>
             </CardTitle>
             <CardDescription>
-              Below group attainment for this period, by unit shortfall
+              Below group attainment, largest shortfall first
             </CardDescription>
           </CardHeader>
           <CardContent>
             {behind.length === 0 ? (
               <p className="text-muted-foreground py-4 text-center text-sm">
-                No branch is below the group average. 🎉
+                All branches meet the group average.
               </p>
             ) : (
               <ul className="space-y-2">
@@ -226,7 +224,7 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
           <CardHeader>
             <CardTitle>Delivery delays</CardTitle>
             <CardDescription>
-              Fulfilment slipping against the order-to-delivery clock
+              Orders taking longer to deliver
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
@@ -238,7 +236,7 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
             </div>
             <div className="flex items-baseline justify-between">
               <span className="text-muted-foreground">
-                Avg days to deliver (delayed vs on-time)
+                Average days: delayed / on time
               </span>
               <span className="tabular-nums font-medium">
                 {sla.avgDelayed.toFixed(1)} vs {sla.avgOnTime.toFixed(1)}
@@ -266,11 +264,6 @@ export default async function ActionsPage(props: PageProps<"/actions">) {
         </Card>
       </div>
 
-      <p className="text-muted-foreground mt-6 text-xs">
-        Ranking score = deal value × stage depth × days idle. Staleness measured
-        from the dataset cutoff ({formatMonth(base.to)} data). Filter by branch
-        or time range using the controls above.
-      </p>
     </main>
   );
 }

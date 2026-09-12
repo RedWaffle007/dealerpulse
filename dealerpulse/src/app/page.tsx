@@ -100,10 +100,9 @@ export default async function OverviewPage(props: PageProps<"/">) {
   const best = withTargets[withTargets.length - 1];
   const lead = (
     <>
-      The group delivered{" "}
+      Delivered{" "}
       <span className="text-brand">{formatInt(k.unitsDelivered)}</span> of{" "}
-      {formatInt(k.targetUnits)} target cars ({formatPct(k.unitAttainmentPct, 0)}{" "}
-      of plan).
+      {formatInt(k.targetUnits)} target cars · {formatPct(k.unitAttainmentPct, 0)} of plan.
       {best && worst && best.branchId !== worst.branchId && (
         <>
           {" "}
@@ -177,7 +176,7 @@ export default async function OverviewPage(props: PageProps<"/">) {
         }
       >
         {f.branchId ? idx.branchById.get(f.branchId)?.name : "All branches"} ·
-        pipeline &amp; alerts{" "}
+        {" "}
         <span className="font-medium text-foreground">
           as of {formatDate(idx.cutoff.toISOString())}
         </span>
@@ -199,7 +198,7 @@ export default async function OverviewPage(props: PageProps<"/">) {
         <KpiCard
           label="Unit attainment"
           value={formatPct(k.unitAttainmentPct)}
-          sub="delivered ÷ target"
+          sub="of unit target"
           tone={attainmentTone(k.unitAttainmentPct)}
           href="#attainment"
           drillLabel="monthly trend"
@@ -251,7 +250,7 @@ export default async function OverviewPage(props: PageProps<"/">) {
       <div className="mt-6">
         <Disclosure
           title="Needs attention"
-          description="Top open leads by urgency (value × stage × staleness)"
+          description="Priority follow-ups"
           meta={
             <span className="tabular-nums">
               {actions.length} flagged ·{" "}
@@ -261,7 +260,7 @@ export default async function OverviewPage(props: PageProps<"/">) {
         >
           {actions.length === 0 ? (
             <p className="py-2 text-center text-sm text-muted-foreground">
-              Nothing needs attention in this view. 🎉
+              No urgent follow-ups.
             </p>
           ) : (
             <div className="space-y-2">
@@ -304,8 +303,7 @@ export default async function OverviewPage(props: PageProps<"/">) {
           <CardHeader>
             <CardTitle>Monthly attainment</CardTitle>
             <CardDescription>
-              Units delivered vs target. Early months lag due to the ~37-day
-              sales cycle.
+              Deliveries against target
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -330,7 +328,7 @@ export default async function OverviewPage(props: PageProps<"/">) {
         <CardHeader>
           <CardTitle>Branch performance</CardTitle>
           <CardDescription>
-            Ranked by target attainment (worst first). Click a column to re-sort.
+            Lowest attainment first. Select a branch to act.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -349,21 +347,19 @@ export default async function OverviewPage(props: PageProps<"/">) {
         <CardHeader>
           <CardTitle>Open pipeline by stage</CardTitle>
           <CardDescription>
-            The {formatInt(k.openPipelineCount)} live leads worth{" "}
-            {formatCrore(k.openPipelineValue)}, by current stage. (The Action Center
-            works the {actions.length} of these that are stalling.){" "}
+            {formatInt(k.openPipelineCount)} leads · {formatCrore(k.openPipelineValue)}. {" "}
             <Link
               href={`/scenarios?${qs}${branchQs}`}
               className="font-medium text-brand hover:underline"
             >
-              See the probability-weighted forecast →
+              View forecast →
             </Link>
           </CardDescription>
         </CardHeader>
         <CardContent>
           {pipeline.length === 0 ? (
             <p className="py-4 text-center text-sm text-muted-foreground">
-              No open leads in this view.
+              No open leads.
             </p>
           ) : (
             <div className="space-y-2.5">

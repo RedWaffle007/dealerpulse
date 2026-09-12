@@ -38,8 +38,6 @@ export default async function ScenariosPage(props: PageProps<"/scenarios">) {
         period={`${formatMonth(base.from)} – ${formatMonth(base.to)}`}
         lead={
           <>
-            Size the upside before you commit the effort. Each lever is grounded
-            in this view&apos;s real numbers:{" "}
             <span className="text-brand">{formatInt(inputs.baseUnits)}</span>{" "}
             cars delivered from {formatInt(inputs.leadsInView)} leads (
             {formatPct(inputs.baseConversionPct, 0)} conversion),{" "}
@@ -47,7 +45,6 @@ export default async function ScenariosPage(props: PageProps<"/scenarios">) {
           </>
         }
       >
-        Decision-support scenarios ·{" "}
         {base.branchId ? idx.branchById.get(base.branchId)?.name : "all branches"}{" "}
         ·{" "}
         <span className="font-medium text-foreground">
@@ -55,14 +52,23 @@ export default async function ScenariosPage(props: PageProps<"/scenarios">) {
         </span>
       </PageHero>
 
-      {/* The do-nothing baseline the levers move against */}
-      <Card className="mb-6">
+      <div className="mb-3 flex items-baseline justify-between gap-3">
+        <h2 className="font-heading text-sm font-semibold uppercase tracking-wide text-brand-secondary">
+          Choose a lever
+        </h2>
+        <span className="text-xs text-muted-foreground">
+          Compare one lever at a time
+        </span>
+      </div>
+
+      <ScenarioLab inputs={inputs} />
+
+      {/* Open pipeline forecast */}
+      <Card className="mt-6">
         <CardHeader>
-          <CardTitle>Forecast: the do-nothing baseline</CardTitle>
+          <CardTitle>Pipeline forecast</CardTitle>
           <CardDescription>
-            What today&apos;s open pipeline is expected to deliver if the team
-            works it at its usual effectiveness. The levers below move against
-            this.
+            Expected deliveries from open deals.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -70,23 +76,6 @@ export default async function ScenariosPage(props: PageProps<"/scenarios">) {
         </CardContent>
       </Card>
 
-      <div className="mb-3 flex items-baseline justify-between gap-3">
-        <h2 className="font-heading text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-          Pull a lever
-        </h2>
-        <span className="text-xs text-muted-foreground">
-          Scenarios are independent, not additive
-        </span>
-      </div>
-
-      <ScenarioLab inputs={inputs} />
-
-      <p className="mt-6 text-xs text-muted-foreground">
-        Every projection uses this view&apos;s verified baselines and the metric
-        contract in DECISIONS.md. Levers are modeled independently: because they
-        draw on overlapping leads, their gains should not be summed. Filter by
-        branch or time range using the controls above to re-base every scenario.
-      </p>
     </main>
   );
 }

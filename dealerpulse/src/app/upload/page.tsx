@@ -1,4 +1,4 @@
-import { getDataset, getIndexes, isMerged, storageBackend } from "@/lib/data";
+import { getDataset, getIndexes, isMerged } from "@/lib/data";
 import { formatInt, formatMonth } from "@/lib/format";
 import { PageHero } from "@/components/layout/page-hero";
 import { UploadClient, type UploadSeed } from "@/components/upload/upload-client";
@@ -10,7 +10,6 @@ export default async function UploadPage() {
   const d = await getDataset();
   const idx = await getIndexes();
   const merged = await isMerged();
-  const backend = storageBackend();
 
   const months = idx.months;
   const lastMonth = months[months.length - 1]; // e.g. "2025-12"
@@ -51,42 +50,10 @@ export default async function UploadPage() {
       <PageHero
         title="Data Import"
         period={merged ? "merged" : "original"}
-        lead="Bring a new reporting period into the live dashboard."
+        lead="Add the latest sales data."
       >
-        Upload a validated JSON continuation (new months, leads, deliveries). It
-        is merged into the dataset and reflected across every screen — and you
-        can reset to the original at any time.
+        Preview a JSON file, then merge it into your dashboard.
       </PageHero>
-
-      <div
-        className={
-          "mb-6 flex items-center gap-2 rounded-lg px-3 py-2 text-xs ring-1 " +
-          (backend === "blob"
-            ? "bg-emerald-500/10 text-emerald-700 ring-emerald-500/25 dark:text-emerald-400"
-            : "bg-amber-500/10 text-amber-700 ring-amber-500/25 dark:text-amber-400")
-        }
-      >
-        <span
-          className={
-            "size-2 rounded-full " +
-            (backend === "blob" ? "bg-emerald-500" : "bg-amber-500")
-          }
-          aria-hidden
-        />
-        {backend === "blob" ? (
-          <span>
-            <strong>Persistence: Vercel Blob.</strong> Merges are durable and shared
-            across all instances — they persist on the deployed site.
-          </span>
-        ) : (
-          <span>
-            <strong>Persistence: in-memory.</strong> No{" "}
-            <code>BLOB_READ_WRITE_TOKEN</code> is reaching this deployment, so merges
-            only persist within a single warm instance. Connect a Blob store and
-            redeploy for durable, shared merges.
-          </span>
-        )}
-      </div>
 
       <section className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="Leads" value={formatInt(counts.leads)} />

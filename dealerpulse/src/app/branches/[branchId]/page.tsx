@@ -90,8 +90,7 @@ export default async function BranchPage(
         lead={
           <>
             Delivered <span className="text-brand">{formatInt(k.unitsDelivered)}</span>{" "}
-            of {formatInt(k.targetUnits)} target cars (
-            {formatPct(k.unitAttainmentPct, 0)} of plan) on{" "}
+            of {formatInt(k.targetUnits)} target cars · {formatPct(k.unitAttainmentPct, 0)} of plan · {" "}
             {formatPct(k.conversionPct, 0)} lead conversion.
           </>
         }
@@ -99,7 +98,7 @@ export default async function BranchPage(
         {branch.city}
         {manager && (
           <>
-            {" · "}Branch manager:{" "}
+            {" · "}Manager:{" "}
             <span className="font-medium text-foreground">{manager.name}</span>
           </>
         )}
@@ -162,7 +161,7 @@ export default async function BranchPage(
         <Card>
           <CardHeader>
             <CardTitle>Conversion funnel</CardTitle>
-            <CardDescription>Reconstructed from status history</CardDescription>
+            <CardDescription>Lead progress and drop-offs</CardDescription>
           </CardHeader>
           <CardContent>
             <FunnelChart steps={steps} />
@@ -171,7 +170,7 @@ export default async function BranchPage(
         <Card>
           <CardHeader>
             <CardTitle>Where deals are lost</CardTitle>
-            <CardDescription>By stage, weighted by pipeline value</CardDescription>
+            <CardDescription>Lost deals and value by stage</CardDescription>
           </CardHeader>
           <CardContent>
             <LossByStage loss={loss} />
@@ -184,7 +183,7 @@ export default async function BranchPage(
           <CardHeader>
             <CardTitle>Loss reasons by stage</CardTitle>
             <CardDescription>
-              Cross-tab of why deals die and where — the hotspot names the fix
+              Find the biggest reasons for lost sales
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -195,7 +194,7 @@ export default async function BranchPage(
           <CardHeader>
             <CardTitle>Revenue by model</CardTitle>
             <CardDescription>
-              Where realized revenue concentrates across the line-up
+              Sales revenue by vehicle
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -209,7 +208,7 @@ export default async function BranchPage(
           <CardHeader>
             <CardTitle>Rep leaderboard</CardTitle>
             <CardDescription>
-              Click a column to re-rank; medals mark the top rows
+              Select a rep to review
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -219,7 +218,7 @@ export default async function BranchPage(
         <Card>
           <CardHeader>
             <CardTitle>Lead sources</CardTitle>
-            <CardDescription>Value-weighted channel quality</CardDescription>
+            <CardDescription>Conversion and revenue by channel</CardDescription>
           </CardHeader>
           <CardContent>
             <SourceTable rows={sources} />

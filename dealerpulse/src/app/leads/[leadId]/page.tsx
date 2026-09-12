@@ -102,7 +102,7 @@ export default async function LeadPage(props: PageProps<"/leads/[leadId]">) {
           <CardHeader>
             <CardTitle>Journey</CardTitle>
             <CardDescription>
-              Every stage transition, reconstructed from status history
+              Activity and next steps
             </CardDescription>
           </CardHeader>
           <CardContent>

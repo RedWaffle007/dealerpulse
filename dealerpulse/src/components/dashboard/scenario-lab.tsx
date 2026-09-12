@@ -16,7 +16,7 @@ import {
   scaleSource,
   attainmentAfter,
 } from "@/lib/scenario";
-import { formatCrore, formatINR, formatInt, formatPct, stageLabel } from "@/lib/format";
+import { formatCrore, formatInt, formatPct, stageLabel } from "@/lib/format";
 
 /** A number rendered as "+6.3 units" style (one decimal, dropped when whole). */
 function units(n: number): string {
@@ -68,7 +68,6 @@ function Slider({
 function ScenarioCard({
   icon: Icon,
   title,
-  question,
   control,
   primary,
   secondary,
@@ -76,36 +75,35 @@ function ScenarioCard({
 }: {
   icon: typeof TrendingUp;
   title: string;
-  question: string;
   control: ReactNode;
   primary: ReactNode;
   secondary?: ReactNode;
   note: string;
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-4 rounded-xl bg-card p-4 border border-border hover-highlight">
+    <div data-slot="scenario-card" className="flex min-w-0 flex-col gap-5 rounded-xl bg-card p-5 border border-border border-t-2 border-t-brand even:border-t-brand-secondary hover-highlight">
       <div className="flex items-start gap-2.5">
         <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand">
           <Icon className="size-4" aria-hidden />
         </span>
         <div className="min-w-0">
-          <h3 className="font-heading text-sm font-semibold leading-tight">
+          <h3 className="font-heading text-base font-semibold leading-tight">
             {title}
           </h3>
-          <p className="mt-0.5 text-xs text-muted-foreground">{question}</p>
         </div>
       </div>
 
       {control}
 
-      <div className="mt-auto rounded-lg bg-muted/40 p-3">
-        <div className="font-heading text-xl font-semibold leading-none tabular-nums text-foreground">
+      <div className="mt-auto rounded-lg bg-brand/[0.06] p-4">
+        <div className="font-heading text-4xl font-semibold leading-tight tabular-nums text-brand [overflow-wrap:anywhere]">
           {primary}
         </div>
         {secondary && (
-          <div className="mt-1.5 text-sm text-muted-foreground tabular-nums">
-            {secondary}
-          </div>
+          <details className="mt-2 text-xs text-muted-foreground tabular-nums">
+            <summary className="w-fit cursor-pointer rounded-sm focus-visible:outline-2 focus-visible:outline-ring">More detail</summary>
+            <div className="mt-2 leading-relaxed">{secondary}</div>
+          </details>
         )}
       </div>
 
@@ -151,8 +149,7 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
       {/* A: Conversion lift */}
       <ScenarioCard
         icon={TrendingUp}
-        title="Lift lead conversion"
-        question={`What if the team converts more of its ${formatInt(inputs.leadsInView)} leads?`}
+        title="Convert more leads"
         control={
           <Slider
             label={`Conversion ${formatPct(inputs.baseConversionPct, 0)} → ${formatPct(newConv, 0)}`}
@@ -185,18 +182,17 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
             <>+{formatCrore(a.revenue)} revenue</>
           )
         }
-        note={`Each point of conversion is worth ${units(inputs.leadsInView / 100)} cars on this book, at the in-view average deal of ${formatINR(inputs.avgDealValue)}.`}
+        note={`${formatInt(inputs.leadsInView)} leads to work.`}
       />
 
       {/* B: Recover at-risk pipeline */}
       <ScenarioCard
         icon={ShieldCheck}
-        title="Rescue at-risk pipeline"
-        question={`What if you save deals from the ${formatInt(inputs.atRiskCount)} flagged in the Action Center?`}
+        title="Rescue at-risk deals"
         control={
           inputs.atRiskCount > 0 ? (
             <Slider
-              label="Share of at-risk deals recovered"
+              label="Deals recovered"
               value={recoverPct}
               min={0}
               max={100}
@@ -206,7 +202,7 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
             />
           ) : (
             <p className="text-xs text-muted-foreground">
-              Nothing is flagged at risk in this view.
+              No deals need rescue.
             </p>
           )
         }
@@ -219,18 +215,17 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
           </>
         }
         secondary={<>{units(b.deals)} deals saved from slipping</>}
-        note={`The flagged book is ${formatCrore(inputs.atRiskValue)} of open pipeline going stale or overdue. This is revenue protected from loss (future deliveries), so it is shown apart from period attainment.`}
+        note={`${formatInt(inputs.atRiskCount)} at-risk deals · ${formatCrore(inputs.atRiskValue)} pipeline.`}
       />
 
       {/* C: Coaching to median */}
       <ScenarioCard
         icon={GraduationCap}
-        title="Coach laggards to the median"
-        question={`What if below-median reps closed at the team median (${formatPct(inputs.medianConversionPct, 0)})?`}
+        title="Coach the team"
         control={
           inputs.laggards.length > 0 ? (
             <Slider
-              label={`Gap to median closed · ${inputs.laggards.length} reps`}
+              label={`Gap to team median closed · ${inputs.laggards.length} reps`}
               value={closeGapPct}
               min={0}
               max={100}
@@ -240,7 +235,7 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
             />
           ) : (
             <p className="text-xs text-muted-foreground">
-              Not enough rep sample in this view to model coaching.
+              No eligible reps to coach.
             </p>
           )
         }
@@ -268,16 +263,15 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
         }
         note={
           inputs.laggards.length > 0
-            ? `Biggest lever: ${inputs.laggards[0].name} (${formatPct(inputs.laggards[0].conversionPct, 0)} on ${formatInt(inputs.laggards[0].leads)} leads). Only reps above a 5-lead sample floor are counted.`
-            : "Rep rankings need at least 5 leads to be reliable; this view has too few."
+            ? `Start with ${inputs.laggards[0].name}.`
+            : "Choose another branch or period."
         }
       />
 
       {/* D: Scale a source */}
       <ScenarioCard
         icon={Megaphone}
-        title="Grow your best channels"
-        question="What if more leads came through a high-converting source?"
+        title="Grow a channel"
         control={
           inputs.sources.length > 0 ? (
             <div className="space-y-3">
@@ -299,7 +293,7 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
                 </select>
               </div>
               <Slider
-                label="Extra leads added"
+                label="Extra leads"
                 value={newLeads}
                 min={0}
                 max={200}
@@ -310,7 +304,7 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
             </div>
           ) : (
             <p className="text-xs text-muted-foreground">
-              No source data in this view.
+              No channel data available.
             </p>
           )
         }
@@ -332,8 +326,8 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
         }
         note={
           srcOpt
-            ? `Projected at ${stageLabel(source)}'s own history: ${formatPct(srcOpt.conversionPct, 0)} conversion, ${formatINR(srcOpt.revenuePerLead)} per lead. Assumes the channel scales at its observed quality.`
-            : "Pick a source to model added demand at that channel's historical quality."
+            ? `${stageLabel(source)} converts ${formatPct(srcOpt.conversionPct, 0)} of leads.`
+            : "Choose a channel to grow."
         }
       />
     </div>

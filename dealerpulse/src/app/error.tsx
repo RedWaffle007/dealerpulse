@@ -22,8 +22,7 @@ export default function Error({
           Something went wrong
         </h1>
         <p className="text-muted-foreground mt-2 max-w-md text-sm">
-          The dashboard couldn&apos;t render this view. This usually means the
-          dataset failed validation.
+          We couldn&apos;t load this page. Please try again.
         </p>
         <Button onClick={reset} className="mt-6">
           Try again

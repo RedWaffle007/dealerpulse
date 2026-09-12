@@ -11,6 +11,7 @@
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-space-grotesk), var(--font-geist-sans);
   --color-brand: var(--brand);
+  --color-brand-secondary: var(--brand-secondary);
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-muted: var(--brand-muted);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -52,6 +53,7 @@
 }
 
 :root {
+  color-scheme: light;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -72,6 +74,7 @@
   --ring: #176833;
   /* DealerPulse green; burnt orange remains the secondary wordmark accent. */
   --brand: #1B7A3D;
+  --brand-secondary: #C2410C;
   --brand-foreground: oklch(0.985 0 0);
   --brand-muted: oklch(0.96 0.025 150);
   /* Semantic categorical chart palette (real chroma). */
@@ -92,6 +95,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -111,6 +115,7 @@
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.78 0.14 150);
   --brand: oklch(0.75 0.15 150);
+  --brand-secondary: oklch(0.76 0.14 48);
   --brand-foreground: oklch(0.16 0.02 150);
   --brand-muted: oklch(0.3 0.07 150 / 35%);
   --chart-1: var(--brand); /* brand green — follows the theme accent */
@@ -136,6 +141,7 @@
 @layer base {
   * {
     @apply border-border outline-ring;
+    scrollbar-color: var(--muted-foreground) var(--muted);
   }
   body {
     @apply bg-background text-foreground;
