@@ -30,7 +30,7 @@ export function MainNav() {
             href={l.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "rounded-md px-3 py-1.5 font-medium transition-colors duration-150 ease-out",
+              "rounded-md px-3 py-1.5 font-medium hover-highlight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
               active
                 ? "bg-foreground text-background"
                 : "text-muted-foreground hover:bg-secondary hover:text-foreground",

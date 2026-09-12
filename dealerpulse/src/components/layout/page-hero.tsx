@@ -60,7 +60,7 @@ export function PageHero({
           {backHref && (
             <Link
               href={backHref}
-              className="mb-2 inline-flex text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="mb-2 inline-flex rounded-sm text-sm text-muted-foreground hover-highlight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring hover:text-foreground"
             >
               ← {backLabel ?? "Back"}
             </Link>

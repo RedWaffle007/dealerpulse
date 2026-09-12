@@ -58,7 +58,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-brand"
+        className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-brand hover-highlight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         aria-label={label}
       />
     </div>
@@ -83,7 +83,7 @@ function ScenarioCard({
   note: string;
 }) {
   return (
-    <div className="flex flex-col gap-4 rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:ring-brand/30 hover:shadow-md hover:shadow-brand/10">
+    <div className="flex flex-col gap-4 rounded-xl bg-card p-4 border border-border hover-highlight">
       <div className="flex items-start gap-2.5">
         <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand">
           <Icon className="size-4" aria-hidden />
@@ -288,7 +288,7 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
                 <select
                   value={source}
                   onChange={(e) => setSource(e.target.value)}
-                  className="w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm"
+                  className="w-full rounded-md border border-input bg-background hover-highlight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring px-2.5 py-1.5 text-sm"
                   aria-label="Lead source"
                 >
                   {inputs.sources.map((s) => (

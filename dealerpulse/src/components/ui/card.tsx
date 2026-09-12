@@ -13,7 +13,7 @@ function Card({
       className={cn(
         "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground border border-border [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
         // A hairline boundary with a quiet, stationary hover highlight.
-        "transition-[border-color,box-shadow] duration-150 ease-out hover:ring-1 hover:ring-brand/30",
+        "hover-highlight",
         className
       )}
       {...props}

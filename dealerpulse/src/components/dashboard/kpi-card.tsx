@@ -88,7 +88,7 @@ export function KpiCard({
         "before:absolute before:inset-y-0 before:left-0 before:w-1",
         railClasses[tone],
         href &&
-          "cursor-pointer hover:ring-brand/50 focus-within:ring-brand/40",
+          "cursor-pointer",
       )}
     >
       <CardContent className="px-4 pl-5">
@@ -130,7 +130,7 @@ export function KpiCard({
   if (!href) return card;
 
   const wrapperClass =
-    "group/card block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-brand/50";
+    "group/card block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring";
   const ariaLabel = `${label}: ${value}. ${drillLabel ?? "View details"}`;
 
   // On-page anchors (#section): scroll on every click, even when the hash is
