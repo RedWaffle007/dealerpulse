@@ -36,7 +36,7 @@ export function AttainmentChart({ data }: { data: MonthPoint[] }) {
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span className="h-2.5 w-3 rounded-sm bg-[var(--chart-2)]" aria-hidden />
-          Delivered — on target (≥90%)
+                Delivered · on target (≥90%)
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span className="h-2.5 w-3 rounded-sm bg-[var(--chart-3)]" aria-hidden />

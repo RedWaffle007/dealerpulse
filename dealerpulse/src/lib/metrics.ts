@@ -732,7 +732,7 @@ export function actionItems(d: Dataset, idx: Indexes, f: Filter): ActionItem[] {
     let reason = "";
     if (l.status === "order_placed" && stale >= 7) {
       type = "stale_order";
-      reason = `Order placed but no activity for ${stale} days — delivery at risk.`;
+      reason = `Order placed but no activity for ${stale} days; delivery at risk.`;
     } else if (overdue) {
       type = "overdue";
       reason = `Past expected close date (${l.expected_close_date}) and still open.`;

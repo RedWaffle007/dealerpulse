@@ -94,11 +94,11 @@ export function RepTable({
   return (
     <>
       {topRep && (
-        <p className="mb-3 text-sm text-muted-foreground" aria-live="polite">
+        <p className="mb-3 rounded-lg bg-accent-pista/10 px-3 py-2 text-sm font-semibold text-foreground" aria-live="polite">
           {metric === "conversion" || metric === "leads" || metric === "delivered" || metric === "revenue" ? (
             sortState.dir === "desc"
-              ? <><span className="font-medium text-foreground">{topRep.name}</span> leads on {metric} ({value(topRep)}){opposite && opposite.repId !== topRep.repId && <>; {opposite.name} is lowest ({value(opposite)}).</>}</>
-              : <><span className="font-medium text-foreground">{topRep.name}</span> has the lowest {metric} ({value(topRep)}){opposite && opposite.repId !== topRep.repId && <>; {opposite.name} leads ({value(opposite)}).</>}</>
+              ? <><span className="font-medium">{topRep.name}</span> leads on {metric} at {value(topRep)}{opposite && opposite.repId !== topRep.repId && <>; {opposite.name} is lowest at {value(opposite)}.</>}</>
+              : <><span className="font-medium">{topRep.name}</span> has the lowest {metric} at {value(topRep)}{opposite && opposite.repId !== topRep.repId && <>; {opposite.name} leads at {value(opposite)}.</>}</>
           ) : null}
         </p>
       )}

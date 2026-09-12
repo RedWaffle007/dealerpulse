@@ -34,10 +34,10 @@ export function BranchStoryTable({
   return (
     <>
       {top && (
-        <p className="mb-3 text-sm text-muted-foreground" aria-live="polite">
-          {metric && (sortState.dir === "desc" ? <><span className="font-medium text-foreground">{top.name}</span> leads on {metric === "conversionPct" ? "conversion" : metric === "attainmentPct" ? "attainment" : metric} ({display(top)})</> : <><span className="font-medium text-foreground">{top.name}</span> has the lowest {metric === "conversionPct" ? "conversion" : metric === "attainmentPct" ? "attainment" : metric} ({display(top)})</>)}
+        <p className="mb-3 rounded-lg bg-accent-turquoise/10 px-3 py-2 text-sm font-semibold text-foreground" aria-live="polite">
+          {metric && (sortState.dir === "desc" ? <><span className="font-medium">{top.name}</span> leads on {metric === "conversionPct" ? "conversion" : metric === "attainmentPct" ? "attainment" : metric} at {display(top)}</> : <><span className="font-medium">{top.name}</span> has the lowest {metric === "conversionPct" ? "conversion" : metric === "attainmentPct" ? "attainment" : metric} at {display(top)}</>)}
           {bottom && bottom.id !== top.id && (
-            <>; {bottom.name} is the opposite extreme ({display(bottom)}).</>
+            <>; {bottom.name} is the opposite extreme at {display(bottom)}.</>
           )}
         </p>
       )}

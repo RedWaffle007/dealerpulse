@@ -250,7 +250,7 @@ export function periodDigest(
       items.push({
         tone: "warn",
         headline: `${risks.length} open deals need attention`,
-        detail: `${crore(riskValue)} at risk — led by ${risks[0].customer} (${crore(risks[0].value)}).`,
+        detail: `${crore(riskValue)} at risk, led by ${risks[0].customer} (${crore(risks[0].value)}).`,
         href: "/actions",
       });
     }
@@ -317,7 +317,7 @@ export function periodDigest(
     items.push({
       tone: "warn",
       headline: `${risks.length} open deals need attention now`,
-      detail: `${crore(riskValue)} at risk — led by ${risks[0].customer} (${crore(risks[0].value)}).`,
+      detail: `${crore(riskValue)} at risk, led by ${risks[0].customer} (${crore(risks[0].value)}).`,
       href: "/actions",
     });
   }

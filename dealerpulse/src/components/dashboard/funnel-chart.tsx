@@ -24,7 +24,7 @@ export function FunnelChart({
         <p className="mb-4 text-sm leading-relaxed">
           Of <span className="font-semibold">{formatInt(top)}</span> leads,{" "}
           <span className="font-semibold text-brand">{formatInt(delivered)}</span>{" "}
-          reached delivery — a{" "}
+          reached delivery · a{" "}
           <span className="font-semibold">{formatPct(endToEnd, 0)}</span>{" "}
           end-to-end conversion.
         </p>

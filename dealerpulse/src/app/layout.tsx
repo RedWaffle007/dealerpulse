@@ -49,9 +49,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "DealerPulse — Feel your data",
+  title: "DealerPulse · Feel your data",
   description:
-    "DealerPulse reads the vital signs of your dealership group — the pulse of every branch, rep, and deal — so you can see what's healthy, what's at risk, and act on it.",
+    "DealerPulse reads the vital signs of your dealership group · the pulse of every branch, rep, and deal · so you can see what's healthy, what's at risk, and act on it.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
