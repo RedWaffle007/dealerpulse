@@ -18,10 +18,9 @@ import {
 } from "@/lib/scenario";
 import { formatCrore, formatPct, stageLabel } from "@/lib/format";
 
-/** A number rendered as "+6.3 units" style (one decimal, dropped when whole). */
+/** Render cars/deals as a whole, non-negative count. */
 function units(n: number): string {
-  const r = Math.round(n * 10) / 10;
-  return Number.isInteger(r) ? `${r}` : r.toFixed(1);
+  return String(Math.max(0, Math.round(n)));
 }
 
 function Slider({
