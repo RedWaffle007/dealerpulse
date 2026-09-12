@@ -20,7 +20,7 @@ export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex w-full min-w-0 flex-nowrap items-center gap-1 overflow-x-auto p-1 text-sm lg:w-auto lg:p-0">
+    <nav className="flex w-full min-w-0 flex-nowrap items-center gap-1 overflow-x-auto lg:overflow-visible p-1.5 text-sm lg:w-auto">
       {LINKS.map((l) => {
         const active =
           l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);

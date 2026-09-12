@@ -3,8 +3,6 @@ export function AutomotiveBackdrop() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <svg
-        viewBox="0 0 1200 900"
-        preserveAspectRatio="none"
         className="h-full w-full opacity-[0.13] dark:opacity-[0.17]"
         fill="none"
         stroke="currentColor"
