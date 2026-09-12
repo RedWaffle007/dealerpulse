@@ -95,21 +95,11 @@ export default async function OverviewPage(props: PageProps<"/">) {
     s.prev != null ? { value: s.curr - s.prev, kind: "pts" } : null;
 
   // Plain-language story headline, computed from the data in view.
-  const withTargets = branches.filter((b) => b.targetUnits > 0);
-  const worst = withTargets[0];
-  const best = withTargets[withTargets.length - 1];
   const lead = (
     <>
       Delivered{" "}
       <span className="text-brand">{formatInt(k.unitsDelivered)}</span> of{" "}
       {formatInt(k.targetUnits)} target cars · {formatPct(k.unitAttainmentPct, 0)} of plan.
-      {best && worst && best.branchId !== worst.branchId && (
-        <>
-          {" "}
-          {best.name} leads at {formatPct(best.attainmentPct, 0)};{" "}
-          {worst.name} trails at {formatPct(worst.attainmentPct, 0)}.
-        </>
-      )}
     </>
   );
 

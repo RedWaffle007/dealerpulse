@@ -90,6 +90,7 @@ export function SortableTable({
   serial = false,
   emptyMessage = "No rows to show.",
   csvFilename,
+  onSortChange,
 }: {
   columns: SortColumn[];
   rows: SortRow[];
@@ -100,6 +101,8 @@ export function SortableTable({
   emptyMessage?: string;
   /** When set, shows a "Download CSV" button that exports the current sort order. */
   csvFilename?: string;
+  /** Optional observer for stories or summaries that should follow the top row. */
+  onSortChange?: (sortKey: string, dir: SortDir, topRowId: string | undefined) => void;
 }) {
   const [sortKey, setSortKey] = useState(initialSort ?? columns[0]?.key);
   const [dir, setDir] = useState<SortDir>(initialDir);
@@ -126,10 +129,28 @@ export function SortableTable({
   const toggle = (c: SortColumn) => {
     if (c.sortable === false) return;
     if (c.key === sortKey) {
-      setDir((d) => (d === "asc" ? "desc" : "asc"));
+      const nextDir = dir === "asc" ? "desc" : "asc";
+      setDir(nextDir);
+      const nextSorted = [...rows].sort((a, b) => {
+        const av = a.sort[c.key]; const bv = b.sort[c.key];
+        const cmp = typeof av === "number" && typeof bv === "number"
+          ? av - bv
+          : String(av ?? "").localeCompare(String(bv ?? ""), undefined, { numeric: true, sensitivity: "base" });
+        return nextDir === "asc" ? cmp : -cmp;
+      });
+      onSortChange?.(c.key, nextDir, nextSorted[0]?.id);
     } else {
       setSortKey(c.key);
-      setDir(c.type === "text" ? "asc" : "desc");
+      const nextDir = c.type === "text" ? "asc" : "desc";
+      setDir(nextDir);
+      const nextSorted = [...rows].sort((a, b) => {
+        const av = a.sort[c.key]; const bv = b.sort[c.key];
+        const cmp = typeof av === "number" && typeof bv === "number"
+          ? av - bv
+          : String(av ?? "").localeCompare(String(bv ?? ""), undefined, { numeric: true, sensitivity: "base" });
+        return nextDir === "asc" ? cmp : -cmp;
+      });
+      onSortChange?.(c.key, nextDir, nextSorted[0]?.id);
     }
   };
 

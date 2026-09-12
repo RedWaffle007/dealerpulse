@@ -30,22 +30,13 @@ export default async function RepsIndexPage(props: PageProps<"/reps">) {
   const qs = new URLSearchParams({ from: base.from, to: base.to }).toString();
 
   const reps = repLeaderboard(d, idx, f);
-  const topRep = reps[0];
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 md:py-8">
       <PageHero
         title="Sales team"
         period={`${formatMonth(base.from)} – ${formatMonth(base.to)}`}
-        lead={
-          topRep ? (
-            <>
-              {reps.length} reps.{" "}
-              <span className="text-brand">{topRep.name}</span> leads at{" "}
-              {topRep.conversionPct.toFixed(0)}% conversion.
-            </>
-          ) : undefined
-        }
+        lead={`${reps.length} reps across ${base.branchId ? idx.branchById.get(base.branchId)?.name : "all branches"}.`}
       >
         {base.branchId
           ? idx.branchById.get(base.branchId)?.name

@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import type { RepRow } from "@/lib/metrics";
 import { formatCrore, formatPct } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +27,8 @@ export function RepTable({
   showBranch?: boolean;
   ranked?: boolean;
 }) {
+  const [topId, setTopId] = useState<string | undefined>(rows[0]?.repId);
+  const topRep = rows.find((r) => r.repId === topId) ?? rows[0];
   const columns: SortColumn[] = [
     { key: "name", label: "Rep", type: "text" },
     ...(showBranch
@@ -75,15 +80,24 @@ export function RepTable({
   }));
 
   return (
-    <SortableTable
-      columns={columns}
-      rows={tableRows}
+    <>
+      {topRep && (
+        <p className="mb-3 text-sm text-muted-foreground" aria-live="polite">
+          Current leader: <span className="font-medium text-foreground">{topRep.name}</span>{" "}
+          at {formatPct(topRep.conversionPct, 0)} conversion.
+        </p>
+      )}
+      <SortableTable
+        columns={columns}
+        rows={tableRows}
       initialSort="conversionPct"
       initialDir="desc"
       serial={ranked}
       rankTiers={ranked}
       emptyMessage="No reps with pipeline in this view."
-      csvFilename="dealerpulse-sales-team"
-    />
+        csvFilename="dealerpulse-sales-team"
+        onSortChange={(_, __, id) => setTopId(id)}
+      />
+    </>
   );
 }
