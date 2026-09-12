@@ -3,8 +3,8 @@ import { formatDateTime, stageLabel } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 const DOT_TONE: Record<string, string> = {
-  delivered: "bg-emerald-500",
-  lost: "bg-red-500",
+  delivered: "bg-accent-pista",
+  lost: "bg-accent-red",
   order_placed: "bg-brand",
 };
 

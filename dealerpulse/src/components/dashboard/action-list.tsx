@@ -11,9 +11,9 @@ const TYPE_LABEL: Record<ActionType, string> = {
 };
 
 const TYPE_TONE: Record<ActionType, string> = {
-  stale_order: "border-red-500/40 bg-red-500/5",
-  overdue: "border-amber-500/40 bg-amber-500/5",
-  high_value_late: "border-orange-500/40 bg-orange-500/5",
+  stale_order: "border-accent-red/40 bg-accent-red/5",
+  overdue: "border-accent-golden/40 bg-accent-golden/5",
+  high_value_late: "border-accent-orange/40 bg-accent-orange/5",
   cold: "border-border/60",
 };
 

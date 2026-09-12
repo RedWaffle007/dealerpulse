@@ -59,15 +59,17 @@ export function ThemeToggle() {
   const next = theme === "dark" ? "light" : "dark";
   return (
     <div className="flex shrink-0 items-center gap-1" role="group" aria-label="Appearance">
-      <Button variant="ghost" size="icon" onClick={() => chooseTheme(next)}
-        aria-label={`Switch to ${next} mode`} title={`Switch to ${next} mode`}>
+      <Button variant="ghost" size="sm" onClick={() => chooseTheme(next)}
+        aria-label={`Switch to ${next} mode`} title={`Switch to ${next} mode`} className="gap-1.5">
         <Sun className="hidden dark:block" aria-hidden />
         <Moon className="dark:hidden" aria-hidden />
+        <span>{next === "dark" ? "Dark" : "Light"}</span>
       </Button>
-      <Button variant="ghost" size="icon" onClick={() => chooseTheme("system")}
+      <Button variant="ghost" size="sm" onClick={() => chooseTheme("system")}
         aria-label="Use system theme" aria-pressed={preference === "system"}
-        title="Use system theme" className={preference === "system" ? "text-brand" : "text-muted-foreground"}>
+        title="Use system theme" className={preference === "system" ? "gap-1.5 text-brand" : "gap-1.5 text-muted-foreground"}>
         <Monitor aria-hidden />
+        <span>System</span>
       </Button>
     </div>
   );

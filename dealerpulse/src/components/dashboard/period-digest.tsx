@@ -16,21 +16,21 @@ const toneStyles: Record<
 > = {
   good: {
     icon: TrendingUp,
-    dot: "text-emerald-600 dark:text-emerald-400",
-    text: "text-emerald-700 dark:text-emerald-300",
-    ring: "ring-emerald-500/20 bg-emerald-500/[0.04]",
+    dot: "text-accent-pista",
+    text: "text-accent-pista",
+    ring: "ring-accent-pista/25 bg-accent-pista/[0.05]",
   },
   bad: {
     icon: TrendingDown,
-    dot: "text-red-600 dark:text-red-400",
-    text: "text-red-700 dark:text-red-300",
-    ring: "ring-red-500/20 bg-red-500/[0.04]",
+    dot: "text-accent-red",
+    text: "text-accent-red",
+    ring: "ring-accent-red/25 bg-accent-red/[0.05]",
   },
   warn: {
     icon: AlertTriangle,
-    dot: "text-amber-600 dark:text-amber-400",
-    text: "text-amber-700 dark:text-amber-300",
-    ring: "ring-amber-500/20 bg-amber-500/[0.04]",
+    dot: "text-accent-golden",
+    text: "text-accent-golden",
+    ring: "ring-accent-golden/25 bg-accent-golden/[0.05]",
   },
   neutral: {
     icon: Info,

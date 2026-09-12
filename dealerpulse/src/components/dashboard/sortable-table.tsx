@@ -63,15 +63,15 @@ function downloadCsv(filename: string, csv: string) {
 
 /** Tailwind classes for the top-3 / top-5 / top-10 "medal" tiers (by row position). */
 function tierClass(i: number): string {
-  if (i < 3) return "bg-amber-400/15 hover:bg-amber-400/25";
+  if (i < 3) return "bg-accent-golden/15 hover:bg-accent-golden/25";
   if (i < 5) return "bg-zinc-400/12 hover:bg-zinc-400/20";
-  if (i < 10) return "bg-orange-700/10 hover:bg-orange-700/16";
+  if (i < 10) return "bg-accent-orange/10 hover:bg-accent-orange/16";
   return "";
 }
 function tierDot(i: number): string | null {
-  if (i < 3) return "bg-amber-400";
+  if (i < 3) return "bg-accent-golden";
   if (i < 5) return "bg-zinc-400";
-  if (i < 10) return "bg-orange-600";
+  if (i < 10) return "bg-accent-orange";
   return null;
 }
 

@@ -22,8 +22,8 @@ function DeltaChip({ delta, label }: { delta: KpiDelta; label?: string }) {
       <span
         className={cn(
           "inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap rounded px-1 py-0.5 text-[10px] font-semibold tabular-nums",
-          up && "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-          down && "bg-red-500/10 text-red-600 dark:text-red-400",
+          up && "bg-accent-pista/15 text-accent-pista",
+          down && "bg-accent-red/15 text-accent-red",
           !up && !down && "bg-muted text-muted-foreground",
         )}
       >
@@ -42,17 +42,17 @@ export type KpiTone = "neutral" | "good" | "warn" | "bad";
 
 const valueClasses: Record<KpiTone, string> = {
   neutral: "text-foreground",
-  good: "text-emerald-600 dark:text-emerald-400",
-  warn: "text-amber-600 dark:text-amber-400",
-  bad: "text-red-600 dark:text-red-400",
+  good: "text-accent-pista",
+  warn: "text-accent-golden",
+  bad: "text-accent-red",
 };
 
 // A thin colored rail on the left edge cues health at a glance.
 const railClasses: Record<KpiTone, string> = {
   neutral: "before:bg-brand",
-  good: "before:bg-emerald-500",
-  warn: "before:bg-amber-500",
-  bad: "before:bg-red-500",
+  good: "before:bg-accent-pista",
+  warn: "before:bg-accent-golden",
+  bad: "before:bg-accent-red",
 };
 
 export function KpiCard({

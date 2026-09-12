@@ -15,8 +15,8 @@ import { formatInt, formatMonth } from "@/lib/format";
 
 /** Color a delivered bar by how close it is to target. */
 function healthColor(pct: number): string {
-  if (pct >= 90) return "var(--chart-2)"; // green — on/above target
-  if (pct >= 50) return "var(--chart-3)"; // amber — lagging
+  if (pct >= 90) return "var(--chart-2)"; // turquoise — on/above target
+  if (pct >= 50) return "var(--chart-3)"; // golden — lagging
   return "var(--chart-4)"; // red — well below target
 }
 
@@ -63,6 +63,8 @@ export function AttainmentChart({ data }: { data: MonthPoint[] }) {
                   color: "var(--popover-foreground)",
                   fontSize: 12,
                 }}
+                itemStyle={{ color: "var(--popover-foreground)" }}
+                labelStyle={{ color: "var(--popover-foreground)" }}
                 // Each bar sets its own `name` ("Delivered" / "Target"), so the
                 // tooltip labels each row correctly — no custom name mapping needed.
                 formatter={(value) => formatInt(Number(value) || 0)}
