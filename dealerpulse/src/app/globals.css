@@ -75,8 +75,8 @@
   --brand-foreground: oklch(0.985 0 0);
   --brand-muted: oklch(0.96 0.025 150);
   /* Semantic categorical chart palette (real chroma). */
-  --chart-1: oklch(0.55 0.19 264); /* brand indigo */
-  --chart-2: oklch(0.62 0.15 155); /* healthy green */
+  --chart-1: var(--brand); /* brand green — follows the theme accent */
+  --chart-2: oklch(0.58 0.1 195); /* teal — distinct from green and violet */
   --chart-3: oklch(0.75 0.15 75); /* caution amber */
   --chart-4: oklch(0.62 0.2 25); /* alert red */
   --chart-5: oklch(0.6 0.16 300); /* violet */
@@ -113,8 +113,8 @@
   --brand: oklch(0.75 0.15 150);
   --brand-foreground: oklch(0.16 0.02 150);
   --brand-muted: oklch(0.3 0.07 150 / 35%);
-  --chart-1: oklch(0.72 0.16 264);
-  --chart-2: oklch(0.72 0.15 155);
+  --chart-1: var(--brand); /* brand green — follows the theme accent */
+  --chart-2: oklch(0.75 0.11 195); /* teal */
   --chart-3: oklch(0.8 0.14 80);
   --chart-4: oklch(0.68 0.19 25);
   --chart-5: oklch(0.7 0.15 300);
