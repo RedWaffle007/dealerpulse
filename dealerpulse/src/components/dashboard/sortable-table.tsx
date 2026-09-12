@@ -142,7 +142,7 @@ export function SortableTable({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="min-w-0 space-y-2">
       {csvFilename && (
         <div className="flex justify-end">
           <button

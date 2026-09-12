@@ -69,14 +69,14 @@ export function PipelineForecastPanel({
       {/* Per-stage breakdown */}
       <div className="space-y-1.5">
         {byStage.map((s) => (
-          <div key={s.stage} className="flex items-center gap-3 text-sm">
-            <span className="w-28 shrink-0 font-medium">
+          <div key={s.stage} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 text-sm sm:flex sm:gap-3">
+            <span className="min-w-0 font-medium sm:w-28 sm:shrink-0">
               {stageLabel(s.stage)}
             </span>
-            <span className="w-32 shrink-0 tabular-nums text-muted-foreground">
+            <span className="tabular-nums text-muted-foreground sm:w-32 sm:shrink-0">
               {formatInt(s.count)} × {formatPct(s.p * 100, 0)}
             </span>
-            <div className="h-2 flex-1 rounded-full bg-muted">
+            <div className="h-2 min-w-0 rounded-full bg-muted sm:flex-1">
               <div
                 className="h-2 rounded-full bg-gradient-to-r from-brand to-brand/55"
                 style={{
@@ -84,7 +84,7 @@ export function PipelineForecastPanel({
                 }}
               />
             </div>
-            <span className="w-20 shrink-0 text-right tabular-nums font-medium">
+            <span className="text-right tabular-nums font-medium sm:w-20 sm:shrink-0">
               {s.expectedUnits.toFixed(1)}
             </span>
           </div>

@@ -83,7 +83,7 @@ function ScenarioCard({
   note: string;
 }) {
   return (
-    <div className="flex flex-col gap-4 rounded-xl bg-card p-4 border border-border hover-highlight">
+    <div className="flex min-w-0 flex-col gap-4 rounded-xl bg-card p-4 border border-border hover-highlight">
       <div className="flex items-start gap-2.5">
         <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand">
           <Icon className="size-4" aria-hidden />

@@ -140,13 +140,17 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* Flex children must fit the viewport before their own content can scroll. */
+  body > main {
+    @apply w-full min-w-0;
+  }
   html {
     @apply font-sans;
     scroll-behavior: smooth;
   }
   /* Anchored sections (KPI drill-downs) clear the sticky header when jumped to. */
   [id] {
-    scroll-margin-top: 5rem;
+    @apply scroll-mt-60 sm:scroll-mt-44 lg:scroll-mt-32;
   }
   h1,
   h2,

@@ -85,11 +85,11 @@ export function HeroPreview({
 
 function Stat({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg bg-background/60 p-2 ring-1 ring-foreground/5">
+    <div className="min-w-0 rounded-lg bg-background/60 p-2 ring-1 ring-foreground/5">
       <div className="text-[9px] font-medium uppercase tracking-wide text-muted-foreground">
         {label}
       </div>
-      <div className="mt-0.5 font-heading text-base font-semibold tabular-nums leading-none">
+      <div className="mt-0.5 font-heading text-sm [overflow-wrap:anywhere] sm:text-base font-semibold tabular-nums leading-none">
         {children}
       </div>
     </div>

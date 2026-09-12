@@ -21,7 +21,7 @@ function DeltaChip({ delta, label }: { delta: KpiDelta; label?: string }) {
     <span className="inline-flex items-center gap-1">
       <span
         className={cn(
-          "inline-flex items-center gap-0.5 rounded px-1 py-0.5 text-[10px] font-semibold tabular-nums",
+          "inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap rounded px-1 py-0.5 text-[10px] font-semibold tabular-nums",
           up && "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
           down && "bg-red-500/10 text-red-600 dark:text-red-400",
           !up && !down && "bg-muted text-muted-foreground",
@@ -105,7 +105,7 @@ export function KpiCard({
         </div>
         <div
           className={cn(
-            "mt-2 font-heading text-[1.6rem] tracking-tight font-semibold tabular-nums leading-none",
+            "mt-2 font-heading text-[1.4rem] tracking-tight [overflow-wrap:anywhere] sm:text-[1.6rem] font-semibold tabular-nums leading-none",
             valueClasses[tone],
           )}
         >
@@ -113,7 +113,7 @@ export function KpiCard({
         </div>
         {sub && <div className="mt-2 text-xs leading-relaxed text-muted-foreground">{sub}</div>}
         {(delta || (spark && spark.length > 1)) && (
-          <div className="mt-2 flex items-center justify-between gap-2">
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
             {delta ? <DeltaChip delta={delta} label={deltaLabel} /> : <span />}
             {spark && <Sparkline values={spark} />}
           </div>

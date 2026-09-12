@@ -20,7 +20,7 @@ export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-wrap items-center gap-1 text-sm">
+    <nav className="flex w-full min-w-0 flex-nowrap items-center gap-1 overflow-x-auto p-1 text-sm lg:w-auto lg:p-0">
       {LINKS.map((l) => {
         const active =
           l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
@@ -30,7 +30,7 @@ export function MainNav() {
             href={l.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "rounded-md px-3 py-1.5 font-medium hover-highlight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+              "shrink-0 whitespace-nowrap rounded-md px-3 py-1.5 font-medium hover-highlight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
               active
                 ? "bg-foreground text-background"
                 : "text-muted-foreground hover:bg-secondary hover:text-foreground",

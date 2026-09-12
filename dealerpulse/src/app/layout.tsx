@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Anton, Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
@@ -40,6 +40,11 @@ import { RouteProgress } from "@/components/layout/route-progress";
 // query param forces the reveal regardless — handy for testing
 // or demoing without opening a brand-new tab.
 const INTRO_GATE = `try{if(location.search.indexOf('intro=1')>-1){sessionStorage.removeItem('dp-intro-seen')}else if(sessionStorage.getItem('dp-intro-seen')){document.documentElement.setAttribute('data-intro-seen','1')}else{sessionStorage.setItem('dp-intro-seen','1')}}catch(e){}`;
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: "DealerPulse — Feel your data",

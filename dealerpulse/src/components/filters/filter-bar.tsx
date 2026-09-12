@@ -71,10 +71,10 @@ export function FilterBar({
             : "custom";
 
   return (
-    <div className="flex flex-wrap items-end gap-x-2 gap-y-2">
+    <div className="grid grid-cols-2 items-end gap-2 sm:flex sm:flex-wrap">
       <Field label="Period">
         <Select value={presetValue === "custom" ? null : presetValue} onValueChange={applyPreset}>
-          <SelectTrigger size="sm" className="w-[148px]">
+          <SelectTrigger size="sm" className="w-full sm:w-[148px]">
             <SelectValue placeholder="Custom range" />
           </SelectTrigger>
           <SelectContent>
@@ -88,7 +88,7 @@ export function FilterBar({
 
       <Field label="From">
         <Select value={from} onValueChange={setFrom}>
-          <SelectTrigger size="sm" className="w-[116px]">
+          <SelectTrigger size="sm" className="w-full sm:w-[116px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -104,7 +104,7 @@ export function FilterBar({
 
       <Field label="To">
         <Select value={to} onValueChange={setTo}>
-          <SelectTrigger size="sm" className="w-[116px]">
+          <SelectTrigger size="sm" className="w-full sm:w-[116px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -120,7 +120,7 @@ export function FilterBar({
 
       <Field label="Branch">
         <Select value={branch} onValueChange={(v) => v && setParam({ branch: v })}>
-          <SelectTrigger size="sm" className="w-[168px]">
+          <SelectTrigger size="sm" className="w-full sm:w-[168px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -140,7 +140,7 @@ export function FilterBar({
 /** A control with a small caption above it, so no dropdown is a mystery. */
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <label className="flex flex-col gap-1">
+    <label className="flex min-w-0 flex-col gap-1">
       <span className="px-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
         {label}
       </span>

@@ -47,44 +47,48 @@ export function AttainmentChart({ data }: { data: MonthPoint[] }) {
           well behind (&lt;50%)
         </span>
       </div>
-      <ResponsiveContainer width="100%" height={260}>
-        <BarChart data={rows} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
-          <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={12} />
-          <YAxis tickLine={false} axisLine={false} fontSize={12} />
-          <Tooltip
-            cursor={{ opacity: 0.06 }}
-            contentStyle={{
-              borderRadius: 8,
-              border: "1px solid var(--border)",
-              background: "var(--popover)",
-              color: "var(--popover-foreground)",
-              fontSize: 12,
-            }}
-            // Each bar sets its own `name` ("Delivered" / "Target"), so the
-            // tooltip labels each row correctly — no custom name mapping needed.
-            formatter={(value) => formatInt(Number(value) || 0)}
-          />
-          <Bar
-            dataKey="target"
-            name="Target"
-            fill="var(--muted-foreground)"
-            fillOpacity={0.28}
-            radius={[3, 3, 0, 0]}
-            isAnimationActive={false}
-          />
-          <Bar
-            dataKey="delivered"
-            name="Delivered"
-            radius={[3, 3, 0, 0]}
-            isAnimationActive={false}
-          >
-            {rows.map((r) => (
-              <Cell key={r.month} fill={healthColor(r.attainmentPct)} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      <div className="max-w-full overflow-x-auto">
+        <div className="min-w-[32rem]">
+          <ResponsiveContainer width="100%" height={260}>
+            <BarChart data={rows} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
+              <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={12} />
+              <YAxis tickLine={false} axisLine={false} fontSize={12} />
+              <Tooltip
+                cursor={{ opacity: 0.06 }}
+                contentStyle={{
+                  borderRadius: 8,
+                  border: "1px solid var(--border)",
+                  background: "var(--popover)",
+                  color: "var(--popover-foreground)",
+                  fontSize: 12,
+                }}
+                // Each bar sets its own `name` ("Delivered" / "Target"), so the
+                // tooltip labels each row correctly — no custom name mapping needed.
+                formatter={(value) => formatInt(Number(value) || 0)}
+              />
+              <Bar
+                dataKey="target"
+                name="Target"
+                fill="var(--muted-foreground)"
+                fillOpacity={0.28}
+                radius={[3, 3, 0, 0]}
+                isAnimationActive={false}
+              />
+              <Bar
+                dataKey="delivered"
+                name="Delivered"
+                radius={[3, 3, 0, 0]}
+                isAnimationActive={false}
+              >
+                {rows.map((r) => (
+                  <Cell key={r.month} fill={healthColor(r.attainmentPct)} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
     </div>
   );
 }
