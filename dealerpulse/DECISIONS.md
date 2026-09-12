@@ -34,11 +34,24 @@ specific record and its story.
 ### Design & UX
 The look is a **crisp, modern-SaaS** system: a distinctive display typeface
 (Space Grotesk) for headings and big tabular numbers over a neutral, data-dense
-base, with a single indigo brand accent so **color carries meaning rather than
-decoration** — attainment and alerts read green/amber/red by health, and the accent
-marks only navigation, links, and the active view. Every page shares one headline
-band, the nav always shows where you are, and each filter is captioned so nothing
-is a mystery.
+base. Hairline borders, muted table headers, semibold tracking-tight headings, and
+quiet elevation keep surfaces clear; a single stationary, darker outline makes hover
+and focus states easy to read. Green is the primary DealerPulse accent, supported by
+orange, pink, pista, turquoise, golden, red, and violet accents that carry category
+and health meaning without turning the dashboard into decoration. Every page shares
+one headline band, the nav always shows where you are, and each filter is captioned.
+
+The app defaults to the operating system theme and offers persisted light, dark, or
+system control in the header. A pre-paint script applies the class and `color-scheme`
+before the page renders, so dark mode has no flash and native controls follow the
+selected theme. A low-contrast, hand-drawn automotive sketchbook sits behind every
+route: small cars, wheels, gauges, fuel pumps, keys, and speed lines are distributed
+across the viewport and remain behind the data cards.
+
+The chart palette follows the same decision: chart 1 is the brand green and chart 2
+is turquoise, with golden, red, and violet completing five distinct categorical
+series. This keeps charts aligned with the wordmark while the richer accent colors
+separate status, category, and emphasis.
 
 The dashboard is built to **tell a story anyone can read**, not just analysts:
 
@@ -67,6 +80,12 @@ The dashboard is built to **tell a story anyone can read**, not just analysts:
 - **The funnel reads top-to-bottom in words.** Each stage names how many leads
   reached it and how many *dropped off* to the next ("118 dropped off (23%)"),
   instead of leaving the reader to decode bar widths.
+- **Mobile is a first-class layout.** The root viewport is explicit, the header keeps
+  navigation in one horizontally scrollable row, filters stack cleanly, and tables
+  and charts own their horizontal overflow so the document never widens on a phone.
+- **The intro splash is silent.** The visual reveal remains as a lightweight cold-start
+  cue, while the former tick sound was removed because autoplay restrictions added
+  friction without helping an executive understand the dashboard.
 
 ### The differentiator: the Action Center
 Most dashboards stop at "social media converts at 14%." This one ends at a ranked,
@@ -86,7 +105,9 @@ existing ones updated). Because "now" is derived from the data (see below), a me
 month **reflects across every screen** — KPIs, the attainment trend, the funnel, the
 leaderboard, and the aging/Action-Center snapshot all move together, and the "as of"
 date advances with it. A one-click demo continuation lets a reviewer try it without a
-file, and **Reset to original** returns to the bundled data.
+file, and **Reset to original** returns to the bundled data. The workflow stays
+focused on importing and resetting; storage-backend details are deliberately absent
+from the executive UI.
 
 ### Looking forward: forecast, What-If, and "what changed"
 The Action Center answers "what's wrong right now." Three more views answer "what's
@@ -97,8 +118,8 @@ next" and "what moved" — the questions an executive actually opens a dashboard
   (`P(delivered | reached stage)`, which rises monotonically 31% → 41% → 53% → 68% →
   81% because every delivered lead passed through the earlier stages). Today's
   ₹15.15 Cr of open pipeline weights down to an expected **₹9.88 Cr / ~42 units** —
-  the honest, do-nothing baseline. In-flight leads count as not-yet-closed, so the
-  estimate is deliberately conservative.
+  the honest baseline. In-flight leads count as not-yet-closed, so the estimate is
+  deliberately conservative.
 - **The What-If Lab.** Four independent levers an exec can size before committing
   effort: lift conversion (each point is worth ~5 cars on this book), rescue the
   flagged at-risk pipeline (₹8.25 Cr), coach below-median reps to the team median
@@ -106,7 +127,8 @@ next" and "what moved" — the questions an executive actually opens a dashboard
   high-converting channel at *its own* historical quality. Every projection reads
   the current view's verified baselines; all math is pure and unit-tested. The
   levers are shown **independently and never summed** — they draw on overlapping
-  leads, so a naive total would double-count. Assumptions are stated on each card.
+  leads, so a naive total would double-count. The UI puts the decision number first
+  and moves supporting detail behind an explicit disclosure.
 - **A "what changed this period" digest** on the overview, generated deterministically
   from the same metrics. It is **delivery-anchored on purpose**: it reports units,
   attainment, and revenue (keyed on `delivery_date`) month-over-month, and never
@@ -147,10 +169,10 @@ next" and "what moved" — the questions an executive actually opens a dashboard
   token (plain local dev) it falls back to in-memory state on `globalThis` so the flow
   still works zero-config. The data layer is async and memoized per request with React
   `cache()`, and never lets a storage hiccup take down the dashboard (it falls back to
-  the bundled data). A store swap (KV, a database) is a one-file change behind the same
-  interface.
+  the bundled data). The executive UI intentionally omits storage-backend messaging. A
+  store swap (KV, a database) is a one-file change behind the same interface.
 - **Correctness is a feature, so I tested it.** The analytics + merge layers have a
-  24-test Vitest suite asserting the exact figures I verified in `../analysis/eda.ipynb`
+  39-test Vitest suite asserting the exact figures I verified in `../analysis/eda.ipynb`
   (160 delivered,
   11.2% attainment, 35 cold leads, 114 losses at the `new` stage, etc.). The newer
   selectors are checked by *reconciliation* — the loss reason × stage matrix must sum to
@@ -173,9 +195,9 @@ next" and "what moved" — the questions an executive actually opens a dashboard
   invalid months are disabled — the user can't construct a nonsensical timeline.
 - **Anomalies are disclosed, not hidden.** 14 leads are marked `lost` with no closing
   history event or reason; they surface as **"Unknown"** rather than being dropped.
-- **I deliberately did *not* build a forecast.** With targets of ~200 units/month and
-  only 62 open leads across all branches, any "will we hit target?" projection would
-  look impressive and mislead. I show honest pace-to-target instead.
+- **The forecast is deliberately bounded.** With targets of ~200 units/month and only
+  62 open leads across all branches, the UI shows a probability-weighted open-pipeline
+  baseline rather than pretending to predict total target attainment.
 - **I rejected two tempting-but-fake signals** after testing them in the EDA:
   *speed-to-lead* (no clean relationship here; small, noisy sample) and *touch count*
   (circular — delivered leads simply have all six stage entries). Building either would
