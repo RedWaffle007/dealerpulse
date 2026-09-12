@@ -23,6 +23,7 @@ export function RouteProgress() {
   const [visible, setVisible] = useState(false);
   const trickle = useRef<ReturnType<typeof setInterval> | null>(null);
   const hide = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const failsafe = useRef<ReturnType<typeof setTimeout> | null>(null);
   const firstCommit = useRef(true);
 
   useEffect(() => {
@@ -40,6 +41,15 @@ export function RouteProgress() {
       setVisible(true);
       setWidth((w) => (w > 0 && w < 90 ? w : 10));
       stopTrickle();
+      if (failsafe.current) clearTimeout(failsafe.current);
+      failsafe.current = setTimeout(() => {
+        stopTrickle();
+        setWidth(100);
+        hide.current = setTimeout(() => {
+          setVisible(false);
+          setWidth(0);
+        }, 260);
+      }, 5000);
       // Ease toward 90% while we wait, so the bar feels alive but never finishes
       // on its own — the commit effect takes it to 100%.
       trickle.current = setInterval(() => {
@@ -49,14 +59,22 @@ export function RouteProgress() {
 
     const origPush = history.pushState.bind(history);
     const origReplace = history.replaceState.bind(history);
+    const isDifferentUrl = (url: Parameters<typeof history.pushState>[2]) => {
+      if (url == null) return false;
+      const next = new URL(String(url), location.href);
+      return (
+        next.origin === location.origin &&
+        (next.pathname !== location.pathname || next.search !== location.search)
+      );
+    };
     history.pushState = ((...args: Parameters<typeof history.pushState>) => {
-      start();
+      if (isDifferentUrl(args[2])) start();
       return origPush(...args);
     }) as typeof history.pushState;
     history.replaceState = ((
       ...args: Parameters<typeof history.replaceState>
     ) => {
-      start();
+      if (isDifferentUrl(args[2])) start();
       return origReplace(...args);
     }) as typeof history.replaceState;
 
@@ -99,6 +117,7 @@ export function RouteProgress() {
       document.removeEventListener("click", onClick, true);
       stopTrickle();
       if (hide.current) clearTimeout(hide.current);
+      if (failsafe.current) clearTimeout(failsafe.current);
     };
   }, []);
 
@@ -111,6 +130,10 @@ export function RouteProgress() {
     if (trickle.current) {
       clearInterval(trickle.current);
       trickle.current = null;
+    }
+    if (failsafe.current) {
+      clearTimeout(failsafe.current);
+      failsafe.current = null;
     }
     const fill = setTimeout(() => setWidth(100), 0);
     hide.current = setTimeout(() => {
