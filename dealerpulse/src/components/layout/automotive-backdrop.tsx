@@ -4,7 +4,7 @@ export function AutomotiveBackdrop() {
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <svg
         viewBox="0 0 1200 900"
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="none"
         className="h-full w-full opacity-[0.13] dark:opacity-[0.17]"
         fill="none"
         stroke="currentColor"
@@ -43,33 +43,28 @@ export function AutomotiveBackdrop() {
           <symbol id="dp-lines" viewBox="0 0 180 70">
             <path d="M8 58h110M28 36h126M72 14h98" />
           </symbol>
+          <pattern id="dp-pattern" patternUnits="userSpaceOnUse" width="600" height="500">
+            <g className="text-brand">
+              <use href="#dp-car" x="30" y="40" width="220" height="120" />
+              <use href="#dp-wheel" x="430" y="24" width="90" height="90" />
+              <use href="#dp-gauge" x="280" y="250" width="130" height="90" />
+              <use href="#dp-lines" x="20" y="360" width="180" height="70" />
+            </g>
+            <g className="text-brand-secondary">
+              <use href="#dp-pump" x="350" y="40" width="75" height="105" />
+              <use href="#dp-key" x="220" y="120" width="130" height="70" />
+              <use href="#dp-car" x="350" y="330" width="220" height="120" />
+            </g>
+            <g className="text-accent-pink">
+              <use href="#dp-key" x="20" y="220" width="130" height="70" />
+              <use href="#dp-lines" x="400" y="180" width="150" height="58" />
+            </g>
+            <g className="text-accent-turquoise">
+              <use href="#dp-wheel" x="170" y="300" width="90" height="90" />
+            </g>
+          </pattern>
         </defs>
-
-        <g className="text-brand">
-          <use href="#dp-car" x="35" y="80" width="220" height="120" />
-          <use href="#dp-wheel" x="492" y="55" width="90" height="90" />
-          <use href="#dp-gauge" x="920" y="75" width="130" height="90" />
-          <use href="#dp-lines" x="260" y="265" width="180" height="70" />
-          <use href="#dp-car" x="815" y="320" width="220" height="120" />
-          <use href="#dp-wheel" x="80" y="470" width="90" height="90" />
-          <use href="#dp-lines" x="410" y="510" width="180" height="70" />
-          <use href="#dp-gauge" x="1010" y="600" width="130" height="90" />
-          <use href="#dp-car" x="260" y="715" width="220" height="120" />
-        </g>
-        <g className="text-brand-secondary">
-          <use href="#dp-pump" x="700" y="45" width="75" height="105" />
-          <use href="#dp-key" x="285" y="420" width="130" height="70" />
-          <use href="#dp-lines" x="1035" y="255" width="150" height="58" />
-          <use href="#dp-pump" x="25" y="680" width="75" height="105" />
-        </g>
-        <g className="text-accent-pink">
-          <use href="#dp-key" x="930" y="470" width="130" height="70" />
-          <use href="#dp-lines" x="40" y="300" width="150" height="58" />
-        </g>
-        <g className="text-accent-turquoise">
-          <use href="#dp-wheel" x="610" y="720" width="90" height="90" />
-          <use href="#dp-lines" x="760" y="770" width="180" height="70" />
-        </g>
+        <rect width="100%" height="100%" fill="url(#dp-pattern)" />
       </svg>
     </div>
   );
