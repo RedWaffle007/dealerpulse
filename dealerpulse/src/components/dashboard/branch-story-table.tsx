@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { formatCrore, formatInt, formatPct } from "@/lib/format";
-import { SortableTable, type SortColumn, type SortRow } from "./sortable-table";
+import { SortableTable, sortRows, type SortColumn, type SortRow } from "./sortable-table";
 
 type BranchStoryRow = { id: string; name: string; leads: number; delivered: number; conversionPct: number; attainmentPct: number; revenue: number };
 
@@ -21,9 +21,16 @@ export function BranchStoryTable({
   const [topId, setTopId] = useState<string | undefined>(rows[0]?.id);
   const top = storyRows.find((r) => r.id === topId) ?? storyRows[0];
   const metric = ["leads", "delivered", "conversionPct", "attainmentPct", "revenue"].includes(sortState.key) ? sortState.key : "";
-  const display = (r: BranchStoryRow) => sortState.key === "revenue" ? formatCrore(r.revenue) : sortState.key === "conversionPct" || sortState.key === "attainmentPct" ? formatPct(r[sortState.key], 0) : formatInt(r[sortState.key as "leads" | "delivered"]);
-  const ordered = metric ? [...storyRows].sort((a, b) => { const av = a[sortState.key as keyof BranchStoryRow] as number; const bv = b[sortState.key as keyof BranchStoryRow] as number; return sortState.dir === "asc" ? av - bv : bv - av; }) : [];
-  const bottom = ordered[ordered.length - 1];
+  const display = (r: BranchStoryRow) => {
+    if (sortState.key === "revenue") return formatCrore(r.revenue);
+    if (sortState.key === "conversionPct") return formatPct(r.conversionPct, 0);
+    if (sortState.key === "attainmentPct") return formatPct(r.attainmentPct, 0);
+    if (sortState.key === "leads") return formatInt(r.leads);
+    if (sortState.key === "delivered") return formatInt(r.delivered);
+    return "";
+  };
+  const ordered = metric ? sortRows(rows, sortState.key, sortState.dir) : [];
+  const bottom = storyRows.find((r) => r.id === ordered.at(-1)?.id);
   return (
     <>
       {top && (

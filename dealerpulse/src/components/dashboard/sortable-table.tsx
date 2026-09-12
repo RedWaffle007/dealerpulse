@@ -33,6 +33,16 @@ export type SortRow = {
   sort: Record<string, string | number | null | undefined>;
 };
 
+export function sortRows(rows: SortRow[], key: string, dir: SortDir): SortRow[] {
+  return [...rows].sort((a, b) => {
+    const av = a.sort[key]; const bv = b.sort[key];
+    const cmp = typeof av === "number" && typeof bv === "number"
+      ? av - bv
+      : String(av ?? "").localeCompare(String(bv ?? ""), undefined, { numeric: true, sensitivity: "base" });
+    return dir === "asc" ? cmp : -cmp;
+  });
+}
+
 /** Escape one field for CSV (RFC 4180: quote when it holds a comma/quote/newline). */
 function csvCell(v: string | number | null | undefined): string {
   if (v == null) return "";
@@ -108,22 +118,7 @@ export function SortableTable({
   const [dir, setDir] = useState<SortDir>(initialDir);
 
   const sorted = useMemo(() => {
-    const out = [...rows];
-    out.sort((a, b) => {
-      const av = a.sort[sortKey];
-      const bv = b.sort[sortKey];
-      let cmp: number;
-      if (typeof av === "number" && typeof bv === "number") {
-        cmp = av - bv;
-      } else {
-        cmp = String(av ?? "").localeCompare(String(bv ?? ""), undefined, {
-          numeric: true,
-          sensitivity: "base",
-        });
-      }
-      return dir === "asc" ? cmp : -cmp;
-    });
-    return out;
+    return sortRows(rows, sortKey, dir);
   }, [rows, sortKey, dir]);
 
   const toggle = (c: SortColumn) => {
@@ -131,25 +126,13 @@ export function SortableTable({
     if (c.key === sortKey) {
       const nextDir = dir === "asc" ? "desc" : "asc";
       setDir(nextDir);
-      const nextSorted = [...rows].sort((a, b) => {
-        const av = a.sort[c.key]; const bv = b.sort[c.key];
-        const cmp = typeof av === "number" && typeof bv === "number"
-          ? av - bv
-          : String(av ?? "").localeCompare(String(bv ?? ""), undefined, { numeric: true, sensitivity: "base" });
-        return nextDir === "asc" ? cmp : -cmp;
-      });
+      const nextSorted = sortRows(rows, c.key, nextDir);
       onSortChange?.(c.key, nextDir, nextSorted[0]?.id);
     } else {
       setSortKey(c.key);
       const nextDir = c.type === "text" ? "asc" : "desc";
       setDir(nextDir);
-      const nextSorted = [...rows].sort((a, b) => {
-        const av = a.sort[c.key]; const bv = b.sort[c.key];
-        const cmp = typeof av === "number" && typeof bv === "number"
-          ? av - bv
-          : String(av ?? "").localeCompare(String(bv ?? ""), undefined, { numeric: true, sensitivity: "base" });
-        return nextDir === "asc" ? cmp : -cmp;
-      });
+      const nextSorted = sortRows(rows, c.key, nextDir);
       onSortChange?.(c.key, nextDir, nextSorted[0]?.id);
     }
   };

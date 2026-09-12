@@ -7,6 +7,7 @@ import { formatCrore, formatInt, formatPct } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import {
   SortableTable,
+  sortRows,
   type SortColumn,
   type SortRow,
 } from "@/components/dashboard/sortable-table";
@@ -31,13 +32,13 @@ export function RepTable({
   const [topId, setTopId] = useState<string | undefined>(rows[0]?.repId);
   const topRep = rows.find((r) => r.repId === topId) ?? rows[0];
   const metric = sortState.key === "conversionPct" ? "conversion" : sortState.key === "revenue" ? "revenue" : sortState.key;
-  const value = (r: RepRow) => sortState.key === "revenue" ? formatCrore(r.revenue) : sortState.key === "conversionPct" ? formatPct(r.conversionPct, 0) : formatInt(r[sortState.key as "leads" | "delivered"]);
-  const sortedRows = [...rows].sort((a, b) => {
-    const av = a[sortState.key as "leads" | "delivered" | "conversionPct" | "revenue"] as number;
-    const bv = b[sortState.key as "leads" | "delivered" | "conversionPct" | "revenue"] as number;
-    return sortState.dir === "asc" ? av - bv : bv - av;
-  });
-  const opposite = sortedRows[sortedRows.length - 1];
+  const value = (r: RepRow) => {
+    if (sortState.key === "revenue") return formatCrore(r.revenue);
+    if (sortState.key === "conversionPct") return formatPct(r.conversionPct, 0);
+    if (sortState.key === "leads") return formatInt(r.leads);
+    if (sortState.key === "delivered") return formatInt(r.delivered);
+    return "";
+  };
   const columns: SortColumn[] = [
     { key: "name", label: "Rep", type: "text" },
     ...(showBranch
@@ -87,6 +88,8 @@ export function RepTable({
       revenue: formatCrore(r.revenue),
     },
   }));
+  const sortedRows = sortRows(tableRows, sortState.key, sortState.dir);
+  const opposite = rows.find((r) => r.repId === sortedRows.at(-1)?.id);
 
   return (
     <>
