@@ -32,6 +32,7 @@ function Slider({
   onChange,
   label,
   format,
+  hint,
 }: {
   value: number;
   min: number;
@@ -40,6 +41,7 @@ function Slider({
   onChange: (n: number) => void;
   label: string;
   format: (n: number) => string;
+  hint?: string;
 }) {
   return (
     <div>
@@ -51,6 +53,7 @@ function Slider({
           {format(value)}
         </span>
       </div>
+      {hint && <p className="mt-1 text-[10px] text-muted-foreground">{hint}</p>}
       <input
         type="range"
         min={min}
@@ -130,7 +133,6 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
   // Lever A — conversion lift.
   const a = conversionLift(inputs, deltaPts);
   const aAttain = attainmentAfter(inputs, a.units);
-  const newConv = liftedConversionPct(inputs, deltaPts);
 
   // Lever B — recover at-risk pipeline.
   const b = recoverAtRisk(inputs, recoverPct);
@@ -152,13 +154,14 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
         title="Convert more leads"
         control={
           <Slider
-            label={`Conversion ${formatPct(inputs.baseConversionPct, 0)} → ${formatPct(newConv, 0)}`}
+            label="Raise conversion rate"
             value={deltaPts}
             min={0}
             max={15}
-            step={0.5}
+            step={1}
             onChange={setDeltaPts}
-            format={(n) => `+${n} pts`}
+            format={(n) => `+${n} points → ${formatPct(inputs.baseConversionPct, 0)} to ${formatPct(liftedConversionPct(inputs, n), 0)}`}
+            hint="Share of leads that convert, not a lead count."
           />
         }
         primary={
@@ -224,7 +227,7 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
         control={
           inputs.laggards.length > 0 ? (
             <Slider
-              label={`Gap to team median closed · ${inputs.laggards.length} reps`}
+              label={`Bring ${inputs.laggards.length} below-average reps ${closeGapPct}% of the way to the team's median conversion`}
               value={closeGapPct}
               min={0}
               max={100}
