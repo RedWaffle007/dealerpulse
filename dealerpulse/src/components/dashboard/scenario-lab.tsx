@@ -16,7 +16,7 @@ import {
   scaleSource,
   attainmentAfter,
 } from "@/lib/scenario";
-import { formatCrore, formatInt, formatPct, stageLabel } from "@/lib/format";
+import { formatCrore, formatPct, stageLabel } from "@/lib/format";
 
 /** A number rendered as "+6.3 units" style (one decimal, dropped when whole). */
 function units(n: number): string {
@@ -178,7 +178,7 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
               +{formatCrore(a.revenue)} revenue · Unit-target attainment: {formatPct(attainmentAfter(inputs, 0), 0)} →{" "}
               <span className="font-medium text-foreground">
                 {formatPct(aAttain, 0)}
-              </span> (share of this period's car target)
+              </span> (share of this period&apos;s car target)
             </>
           ) : (
             <>+{formatCrore(a.revenue)} revenue</>
