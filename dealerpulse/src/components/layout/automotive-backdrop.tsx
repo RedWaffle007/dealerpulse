@@ -3,7 +3,7 @@ export function AutomotiveBackdrop() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <svg
-        className="h-full w-full opacity-[0.13] dark:opacity-[0.17]"
+        className="h-full w-full opacity-[0.16] dark:opacity-[0.17]"
         fill="none"
         stroke="currentColor"
         strokeWidth="2.2"
