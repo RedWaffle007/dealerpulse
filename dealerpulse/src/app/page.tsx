@@ -322,7 +322,7 @@ export default async function OverviewPage(props: PageProps<"/">) {
           <BranchStoryTable
             columns={BRANCH_COLUMNS}
             rows={branchRows}
-            storyRows={branches.map((b) => ({ id: b.branchId, name: b.name, attainmentPct: b.attainmentPct }))}
+            storyRows={branches.map((b) => ({ id: b.branchId, name: b.name, leads: b.leads, delivered: b.delivered, conversionPct: b.conversionPct, attainmentPct: b.attainmentPct, revenue: b.revenue }))}
             csvFilename={`dealerpulse-branches-${f.from}_${f.to}`}
           />
         </CardContent>

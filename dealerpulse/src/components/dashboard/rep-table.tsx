@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { RepRow } from "@/lib/metrics";
-import { formatCrore, formatPct } from "@/lib/format";
+import { formatCrore, formatInt, formatPct } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import {
   SortableTable,
@@ -27,8 +27,17 @@ export function RepTable({
   showBranch?: boolean;
   ranked?: boolean;
 }) {
+  const [sortState, setSortState] = useState({ key: "conversionPct", dir: "desc" as "asc" | "desc" });
   const [topId, setTopId] = useState<string | undefined>(rows[0]?.repId);
   const topRep = rows.find((r) => r.repId === topId) ?? rows[0];
+  const metric = sortState.key === "conversionPct" ? "conversion" : sortState.key === "revenue" ? "revenue" : sortState.key;
+  const value = (r: RepRow) => sortState.key === "revenue" ? formatCrore(r.revenue) : sortState.key === "conversionPct" ? formatPct(r.conversionPct, 0) : formatInt(r[sortState.key as "leads" | "delivered"]);
+  const sortedRows = [...rows].sort((a, b) => {
+    const av = a[sortState.key as "leads" | "delivered" | "conversionPct" | "revenue"] as number;
+    const bv = b[sortState.key as "leads" | "delivered" | "conversionPct" | "revenue"] as number;
+    return sortState.dir === "asc" ? av - bv : bv - av;
+  });
+  const opposite = sortedRows[sortedRows.length - 1];
   const columns: SortColumn[] = [
     { key: "name", label: "Rep", type: "text" },
     ...(showBranch
@@ -83,8 +92,11 @@ export function RepTable({
     <>
       {topRep && (
         <p className="mb-3 text-sm text-muted-foreground" aria-live="polite">
-          Current leader: <span className="font-medium text-foreground">{topRep.name}</span>{" "}
-          at {formatPct(topRep.conversionPct, 0)} conversion.
+          {metric === "conversion" || metric === "leads" || metric === "delivered" || metric === "revenue" ? (
+            sortState.dir === "desc"
+              ? <><span className="font-medium text-foreground">{topRep.name}</span> leads on {metric} ({value(topRep)}){opposite && opposite.repId !== topRep.repId && <>; {opposite.name} is lowest ({value(opposite)}).</>}</>
+              : <><span className="font-medium text-foreground">{topRep.name}</span> has the lowest {metric} ({value(topRep)}){opposite && opposite.repId !== topRep.repId && <>; {opposite.name} leads ({value(opposite)}).</>}</>
+          ) : null}
         </p>
       )}
       <SortableTable
@@ -96,7 +108,7 @@ export function RepTable({
       rankTiers={ranked}
       emptyMessage="No reps with pipeline in this view."
         csvFilename="dealerpulse-sales-team"
-        onSortChange={(_, __, id) => setTopId(id)}
+        onSortChange={(key, dir, id) => { setSortState({ key, dir }); setTopId(id); }}
       />
     </>
   );

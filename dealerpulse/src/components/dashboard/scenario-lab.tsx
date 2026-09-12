@@ -165,24 +165,23 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
           <>
             +{units(a.units)}{" "}
             <span className="text-sm font-normal text-muted-foreground">
-              cars
+              cars delivered this period
             </span>
           </>
         }
         secondary={
           hasBaseline ? (
             <>
-              +{formatCrore(a.revenue)} revenue · attainment{" "}
-              {formatPct(attainmentAfter(inputs, 0), 0)} →{" "}
+              +{formatCrore(a.revenue)} revenue · Unit-target attainment: {formatPct(attainmentAfter(inputs, 0), 0)} →{" "}
               <span className="font-medium text-foreground">
                 {formatPct(aAttain, 0)}
-              </span>
+              </span> (share of this period's car target)
             </>
           ) : (
             <>+{formatCrore(a.revenue)} revenue</>
           )
         }
-        note={`${formatInt(inputs.leadsInView)} leads to work.`}
+        note={`What this shows: extra conversions become delivered cars.`}
       />
 
       {/* B: Recover at-risk pipeline */}
@@ -210,12 +209,12 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
           <>
             {formatCrore(b.revenue)}{" "}
             <span className="text-sm font-normal text-muted-foreground">
-              protected
+              protected revenue this period
             </span>
           </>
         }
         secondary={<>{units(b.deals)} deals saved from slipping</>}
-        note={`${formatInt(inputs.atRiskCount)} at-risk deals · ${formatCrore(inputs.atRiskValue)} pipeline.`}
+        note={`What this shows: recovering idle deals protects booked revenue.`}
       />
 
       {/* C: Coaching to median */}
@@ -243,7 +242,7 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
           <>
             +{units(c.units)}{" "}
             <span className="text-sm font-normal text-muted-foreground">
-              cars
+              cars delivered this period
             </span>
           </>
         }
@@ -261,11 +260,7 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
             </>
           ) : undefined
         }
-        note={
-          inputs.laggards.length > 0
-            ? `Start with ${inputs.laggards[0].name}.`
-            : "Choose another branch or period."
-        }
+        note="What this shows: closing the team gap adds delivered cars."
       />
 
       {/* D: Scale a source */}
@@ -312,7 +307,7 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
           <>
             +{units(dRes.units)}{" "}
             <span className="text-sm font-normal text-muted-foreground">
-              cars
+              cars delivered this period
             </span>
           </>
         }
@@ -324,11 +319,7 @@ export function ScenarioLab({ inputs }: { inputs: ScenarioInputs }) {
             </>
           ) : undefined
         }
-        note={
-          srcOpt
-            ? `${stageLabel(source)} converts ${formatPct(srcOpt.conversionPct, 0)} of leads.`
-            : "Choose a channel to grow."
-        }
+        note="What this shows: more leads from this channel create expected deliveries."
       />
     </div>
   );
