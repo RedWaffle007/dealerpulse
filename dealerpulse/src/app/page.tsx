@@ -28,11 +28,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { AttainmentChart } from "@/components/charts/attainment-chart";
 import { FunnelChart } from "@/components/dashboard/funnel-chart";
 import { Disclosure } from "@/components/ui/disclosure";
-import {
-  SortableTable,
-  type SortColumn,
-  type SortRow,
-} from "@/components/dashboard/sortable-table";
+import type { SortColumn, SortRow } from "@/components/dashboard/sortable-table";
+import { BranchStoryTable } from "@/components/dashboard/branch-story-table";
 import {
   Card,
   CardContent,
@@ -322,11 +319,10 @@ export default async function OverviewPage(props: PageProps<"/">) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <SortableTable
+          <BranchStoryTable
             columns={BRANCH_COLUMNS}
             rows={branchRows}
-            initialSort="attainmentPct"
-            initialDir="asc"
+            storyRows={branches.map((b) => ({ id: b.branchId, name: b.name, attainmentPct: b.attainmentPct }))}
             csvFilename={`dealerpulse-branches-${f.from}_${f.to}`}
           />
         </CardContent>
