@@ -2,74 +2,67 @@
 
 Performance dashboard for a five-branch Toyota dealer group. Live: https://dealerpulse-sooty.vercel.app/ · Stack: Next.js 16 App Router, TypeScript, Tailwind v4, Base UI, Recharts, Zod, Vercel Blob, Vitest.
 
-## What I chose to build, and why
+This is a record of how the product actually came together, including the decisions I reversed and the ideas I dropped, not a tidy after-the-fact story.
 
-DealerPulse follows an executive overview → diagnosis → action queue flow. It answers whether the group is hitting target, where the funnel leaks, and which leads need action. Every view supports URL-based time and branch filters and drills from company → branch → rep → lead.
+## Where I started
 
-- Overview: delivery KPIs, attainment, branch comparison, funnel, pipeline, and period digest.
-- Diagnosis: loss reasons, stage progression, source quality, model concentration, and pipeline velocity.
-- Comparison: officer leaderboard, branch pages, and individual lead timelines.
-- Import: Zod-validated continuation files are merged by record key and can be reset to the bundled dataset.
-- The overview, Action Center, and What-If Lab read the same dataset and indexes, so their counts and dates move together after an import.
-- Tables sort on raw numeric values and export the current order to CSV; links retain the active filter context.
+I spent the first pass in a notebook (`../analysis/eda.ipynb`) before writing any UI, because I did not want to design around assumptions. The data changed the plan. This is not a healthy business with a few charts to draw; it is a business missing target by a wide margin with a handful of specific, fixable causes. So I stopped planning a chart gallery and built an executive overview to diagnosis to action-queue flow instead. Three questions drive every screen: are we hitting target, where is the funnel leaking, and which leads do I act on today.
 
-The interface keeps one shared page structure, readable tables, responsive navigation, and a low-contrast automotive backdrop. Light and dark themes are available without changing the metric presentation.
+The exploration is also where two "insights" died. I tried speed-to-lead and touch-count as quality signals; speed-to-lead had no clean relationship in this sample, and touch-count turned out circular (delivered leads simply carry all six stage entries). Both looked clever and would have been misleading, so I cut them.
+
+## What I built
+
+- Overview: delivery KPIs, attainment, branch comparison, funnel, pipeline, and a "what changed this period" digest.
+- Diagnosis: loss reasons by stage, source quality, model concentration, and pipeline velocity.
+- Comparison and drill-down: an officer leaderboard, per-branch pages, and individual lead timelines. Every view drills company to branch to rep to lead.
+- Action Center: the differentiator, described below.
+- Data Import: Zod-validated continuation files merge into the live dashboard and can be reset.
+
+Filters (time range and branch) live in the URL so views are shareable and navigation keeps context. The overview, Action Center, and What-If Lab read the same dataset and indexes, so their numbers move together after an import.
 
 ## The differentiator: the Action Center
 
-The Action Center is a pure, deterministic worklist of open leads needing follow-up. Rules classify stale orders, overdue closes, late-stage idle leads, and cold leads. Items are ranked by deal value, stage depth, and days idle, with a reason and link to the lead record; portfolio alerts add branch shortfalls and delivery delays.
+Most dashboards stop at "social media converts at 14%." I wanted mine to end at a worklist. The Action Center is a pure, deterministic set of rules over open leads: stale orders, overdue closes, late-stage idle leads, and cold leads. Each item is ranked by deal value, stage depth, and days idle, carries a plain-language reason, and links to the exact lead. A portfolio band above it flags branches below the group's attainment and delivery delays, so it covers both which deals to chase and which parts of the business are slipping.
 
-## Key product decisions and tradeoffs
+## Decisions I made, revised, or rejected
 
-- **Data-derived now.** The cutoff is the last day of the latest target month, 2025-12-31 for the bundled data. A merged month advances the cutoff and all aging metrics.
-- **Server-side computation.** The 622 KB dataset is parsed and Zod-validated on the server. Pure selectors compute metrics; React cache and memoized selectors avoid repeated scans.
-- **Import merge.** `mergeDatasets` upserts by natural key and the result is persisted in a private Vercel Blob when configured, with an in-memory `globalThis` fallback for local development. Next cache invalidation uses `revalidateTag(tag, { expire: 0 })`.
-- **Filtering.** Time ranges and branch scope live in URL query parameters, so refreshes and links preserve the selected view.
-- **Correctness.** Analytics, insights, and merge behavior are covered by 39 Vitest tests and reconciled against the exploratory EDA.
-- **Ranking floor.** Rep rankings require at least five leads and show a low-sample flag.
-- **Organization honesty.** The 30 reps comprise five managers and 25 sales officers; leads belong to officers, so managers are represented through their branch scorecard.
-- **Rejected signals.** Speed-to-lead has no clean relationship in this sample. Touch count is circular because delivered leads contain all stage entries.
-- **Performance.** Single-pass grouping and memoized lead selectors keep the metric layer O(n); computation is not the limiting latency factor.
-- **Anomalies.** Fourteen lost leads lack a closing history event or reason and are surfaced as `Unknown` rather than dropped.
-- **Presentation.** KPI cards link to the underlying section, and dense worklists use native disclosure controls so the full list remains available.
+- **"Now" is derived from the data, not the clock.** My first cut used the wall clock, which made aging and the action queue nonsensical against historical data. I moved the cutoff to the last day of the latest reporting month (2025-12-31 for the bundled data). Later I found a hardcoded cutoff was silently hiding any imported month from the snapshot views, so I made the cutoff advance automatically on merge. The "as of" date is shown in the UI.
+- **Attainment and conversion are not the same number.** It is easy to conflate 11.2% unit attainment (160 delivered against a 1,426 target) with 31.4% lead conversion (160 delivered of 510 created). I kept them strictly separate everywhere, because mixing them is the most likely way to report a wrong headline.
+- **No manager leaderboard.** I planned one, then saw all 510 leads belong to sales officers and the five branch managers carry zero individual pipeline. Rather than fake it, the leaderboard is honestly an officer leaderboard and each manager is judged by their branch page.
+- **A bounded forecast, not a prediction.** I was tempted to answer "will we hit target." With only 62 open leads across all branches, that projection would look impressive and mislead, so the forecast only discounts the open book by each stage's historical close rate (₹15.15 Cr face to about 42 expected units and ₹9.88 Cr) and says nothing about total attainment.
+- **The What-If Lab got simpler on purpose.** The first version showed too much per lever and was hard to read. I cut each lever down to the one decision number it exists for and moved the rest behind a disclosure. The levers are never summed, because they draw on overlapping leads and a naive total would double-count.
+- **The period digest is delivery-anchored.** An earlier version compared lead conversion month over month; the newest month's leads are still inside the roughly 37-day sales cycle, so their conversion always looked near zero and read as a false alarm. It now compares units, attainment, and revenue only.
+- **Server-side compute, no database.** The dataset is about 622 KB. I parse and Zod-validate it once on the server and compute metrics in a pure, memoized selector layer. I measured before optimizing: a full metrics sweep runs in roughly 0.03 ms, so latency is framework and network, not computation. A Rust or WASM rewrite would cost more at the boundary than it saved, so I did not do it.
+- **Import persistence changed once it had to be real.** In-memory state worked locally but would not survive across serverless instances or redeploys, so the merge persists to a private Vercel Blob when configured and falls back to in-memory for local dev. The data layer never lets a storage hiccup take down the dashboard.
+- **Correctness is tested.** A 39-test Vitest suite asserts the exact figures I verified in the notebook, and the newer selectors are checked by reconciliation (the loss-by-stage matrix must sum to total losses; model revenue shares must sum to 100%) so they cannot silently drift.
+- **Small honesty calls.** Rankings carry a five-lead floor and a low-sample flag. Fourteen lost leads with no closing reason surface as `Unknown` rather than being dropped. Flagged leads are shown in full, never truncated. Filter ranges cannot be set to invert.
 
 ### Metric contract
 
 | Metric | Rule |
 |---|---|
-| Delivery volume and revenue | Keyed on `delivery_date`; revenue is realized only on delivery. |
+| Delivery volume and revenue | Keyed on `delivery_date`; revenue realized only on delivery. |
 | Lead volume, conversion, funnel, sources | Keyed on `created_at`. |
 | Funnel reached stage | Reconstructed from `status_history`, not current status. |
 | Targets | Summed over selected months; no partial-month proration. |
 | Open pipeline and staleness | Snapshot at the data-derived cutoff, scoped by branch and rep. |
 
-### Forecast, What-If, and what changed
+## What the data showed
 
-- **Forecast.** Open leads are discounted by historical `P(delivered | reached stage)`. The base open book is ₹15.15 Cr, yielding about 42 expected units and ₹9.88 Cr.
-- **What-If Lab.** Four independent levers use current-view baselines: conversion lift, at-risk recovery, coaching below-median reps, and source scaling. Results are never summed because the levers overlap.
-- **Period digest.** The overview compares units, attainment, and revenue month over month using deliveries. It does not report lead-conversion trends because recent cohorts are immature.
+- **Systemic shortfall:** 160 delivered against 1,426 target is 11.2% attainment. December is the strongest month at 23.9%; June is 0% from sales-cycle lag. The whole group is behind, not one branch.
+- **Lakeside is the outlier:** 7.6% conversion versus 33 to 41% elsewhere, and its reps fill the bottom of the leaderboard. This emerged from the data; it is not hardcoded.
+- **The leak is early and broad:** of 288 losses, 114 die at `new` and 81 at `contacted`, so 68% are lost before a test drive.
+- **Revenue concentrates:** Fortuner, Innova Hycross, and Camry are 65% of ₹38.88 Cr delivered revenue, Fortuner alone 32%.
+- **Channel quality is lopsided:** walk-ins convert at 45.7% and drive about half of revenue; social media converts at 13.9%.
+- **Financing friction is standing, not late-stage:** "financing not approved" recurs at every funnel stage rather than clustering at the end.
 
-The forecast and What-If views are decision aids, not predictions of total target attainment. Their assumptions and current-view baselines remain visible in the UI.
-
-## Interesting patterns in the data
-
-- **Systemic shortfall:** 160 delivered units against 1,426 target units is 11.2% attainment. December is the strongest month at 23.9%; June is 0% because of sales-cycle lag.
-- **Lakeside outlier:** Lakeside converts at 7.6% versus 33–41% elsewhere and occupies the bottom of the officer leaderboard.
-- **Early funnel leak:** 288 losses include 114 at `new` and 81 at `contacted`, so 68% occur before a test drive.
-- **Revenue concentration:** Fortuner, Innova Hycross, and Camry account for 65% of ₹38.88 Cr delivered revenue; Fortuner contributes 32%.
-- **Channel quality:** `walk_in` converts at 45.7% and contributes about half of revenue; `social_media` converts at 13.9% and has ₹3.5 L revenue per lead.
-- **Organization shape:** Five branches have five managers and 25 officers; only officers carry leads.
-- **Loss reasons:** Financing friction appears at every funnel stage, while early non-engagement is the largest loss pattern.
-
-The base file spans June through December 2025. December is the latest complete month in the data; imported months use the same rules.
-
-## What I'd build next with more time
+## What I would build next
 
 - Versioned, user-scoped imports with optimistic locking and rollback.
-- Lead follow-up logging and reassignment from the lead page.
-- Deterministic per-branch narrative summaries.
-- Created-month cohort analysis to separate cycle lag from performance change.
-- Saved filter presets, shareable exports, and Playwright smoke coverage.
+- Follow-up logging and reassignment from the lead page.
+- Per-branch narrative summaries, with an optional LLM pass over the same reproducible metrics.
+- A created-month cohort view to separate cycle lag from genuine decline.
+- Saved filter presets, shareable exports, and Playwright smoke tests.
 
 ## Running it
 
