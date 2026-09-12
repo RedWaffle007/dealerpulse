@@ -7,7 +7,7 @@ Performance dashboard for a five-branch Toyota dealer group. Live: https://deale
 DealerPulse follows an executive overview → diagnosis → action queue flow. It answers whether the group is hitting target, where the funnel leaks, and which leads need action. Every view supports URL-based time and branch filters and drills from company → branch → rep → lead.
 
 - Overview: delivery KPIs, attainment, branch comparison, funnel, pipeline, and period digest.
-- Diagnosis: loss reasons, stage progression, source quality, model concentration, and delivery velocity.
+- Diagnosis: loss reasons, stage progression, source quality, model concentration, and pipeline velocity.
 - Comparison: officer leaderboard, branch pages, and individual lead timelines.
 - Import: Zod-validated continuation files are merged by record key and can be reset to the bundled dataset.
 - The overview, Action Center, and What-If Lab read the same dataset and indexes, so their counts and dates move together after an import.
@@ -32,7 +32,6 @@ The Action Center is a pure, deterministic worklist of open leads needing follow
 - **Performance.** Single-pass grouping and memoized lead selectors keep the metric layer O(n); computation is not the limiting latency factor.
 - **Anomalies.** Fourteen lost leads lack a closing history event or reason and are surfaced as `Unknown` rather than dropped.
 - **Presentation.** KPI cards link to the underlying section, and dense worklists use native disclosure controls so the full list remains available.
-- **Navigation.** A slim route-progress indicator signals real URL changes and has a timeout failsafe for same-URL refreshes.
 
 ### Metric contract
 
@@ -62,7 +61,7 @@ The forecast and What-If views are decision aids, not predictions of total targe
 - **Organization shape:** Five branches have five managers and 25 officers; only officers carry leads.
 - **Loss reasons:** Financing friction appears at every funnel stage, while early non-engagement is the largest loss pattern.
 
-The base file spans June through December 2025. December delivery metrics are complete for the reporting window; newer imported months use the same rules.
+The base file spans June through December 2025. December is the latest complete month in the data; imported months use the same rules.
 
 ## What I'd build next with more time
 
