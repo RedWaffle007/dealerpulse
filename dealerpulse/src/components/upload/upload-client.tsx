@@ -27,7 +27,7 @@ type Summary = {
 };
 type Diff = { added: number; updated: number };
 
-const SECTIONS = ["branches", "sales_reps", "leads", "targets", "deliveries"] as const;
+const SECTIONS = ["branches", "sales_reps", "leads", "deliveries", "targets"] as const;
 
 /** Build a small, schema-valid continuation so the flow is demoable without a file. */
 function demoContinuation(seed: UploadSeed) {

@@ -52,11 +52,11 @@ export function PageHero({
 
       <div
         className={cn(
-          "relative grid items-center gap-6 md:gap-8",
-          visual && "md:grid-cols-[1.15fr_0.85fr]",
+          "relative grid w-full items-center gap-6 md:gap-8",
+          visual ? "md:grid-cols-[1.15fr_0.85fr]" : "grid-cols-1",
         )}
       >
-        <div>
+        <div className="min-w-0">
           {backHref && (
             <Link
               href={backHref}
