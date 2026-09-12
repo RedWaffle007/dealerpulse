@@ -1,14 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Anton, Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-
-// Anton — heavy, condensed, uppercase — the closest free match to a Supercell
-// wordmark, used only on the cold-start intro splash (ported from the reference).
-const anton = Anton({
-  variable: "--font-anton",
-  subsets: ["latin"],
-  weight: "400",
-});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,7 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${anton.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />

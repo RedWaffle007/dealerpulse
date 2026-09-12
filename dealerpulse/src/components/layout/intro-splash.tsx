@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 
 /**
  * Cold-start reveal — a faithful web port of the reference "MJQ SOFTWARE"
- * Supercell-style splash: a pure-black surface out of which a heavy condensed
- * wordmark (Anton) blooms with a soft baked glow over two brand bars.
+ * Supercell-style splash: a pure-black surface out of which a readable
+ * wordmark blooms with a soft baked glow over two brand bars.
  * Here the wordmark is DEALERPULSE with the tagline beneath.
  *
  * Timing matches the original: ~3s intro (emerge + hold) then a ~0.55s fade into
@@ -51,9 +51,10 @@ export function IntroSplash() {
         <div
           className="text-center leading-none text-white"
           style={{
-            fontFamily: "var(--font-anton), system-ui, sans-serif",
-            fontSize: "clamp(2.25rem, 11vw, 4.25rem)",
-            letterSpacing: "0.06em",
+            fontFamily: "var(--font-space-grotesk), system-ui, sans-serif",
+            fontWeight: 700,
+            fontSize: "clamp(2.2rem, 10vw, 4rem)",
+            letterSpacing: "0.025em",
             // Baked soft bloom (two layers) — matches the reference's text shadows.
             textShadow:
               "0 0 18px rgba(255,255,255,0.35), 0 0 44px rgba(255,255,255,0.2)",
@@ -68,9 +69,10 @@ export function IntroSplash() {
         <div
           className="mt-3 text-center text-white/60"
           style={{
-            fontFamily: "var(--font-anton), system-ui, sans-serif",
-            fontSize: "clamp(0.7rem, 2.4vw, 0.95rem)",
-            letterSpacing: "0.22em",
+            fontFamily: "var(--font-space-grotesk), system-ui, sans-serif",
+            fontWeight: 700,
+            fontSize: "clamp(0.7rem, 2.2vw, 0.95rem)",
+            letterSpacing: "0.14em",
           }}
         >
           FEEL YOUR DATA
