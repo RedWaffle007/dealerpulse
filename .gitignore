@@ -9,3 +9,6 @@ node_modules/
 
 # Internal session handoff (delete this line if you want it in the repo)
 HANDOFF.md
+
+# Internal build brief (not part of the submission)
+CODEX-BRIEF.md

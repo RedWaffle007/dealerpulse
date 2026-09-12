@@ -1,24 +1,31 @@
-# DealerPulse — FDE Take-Home
+# DealerPulse
 
-Real-time performance dashboard for a 5-branch dealer group.
+Performance dashboard for a five-branch Toyota dealer group. It gives a CEO the state of the business at a glance and lets branch managers drill into the exact leads and reps behind the numbers.
 
-| Path | What it is |
+Live: https://dealerpulse-sooty.vercel.app/
+
+## Repository
+
+| Path | Description |
 |---|---|
-| [`dealerpulse/`](./dealerpulse) | The Next.js web app (the deliverable). See [`dealerpulse/DECISIONS.md`](./dealerpulse/DECISIONS.md). |
-| [`analysis/eda.ipynb`](./analysis/eda.ipynb) | Exploratory data analysis that grounds every metric and figure. |
-| [`PLAN.md`](./PLAN.md) | Build plan + the metric-semantics contract. |
-| `dealership_data.json` | The provided dataset (also bundled inside the app). |
+| `dealerpulse/` | The Next.js web application (the deliverable). Design rationale in `dealerpulse/DECISIONS.md`. |
+| `analysis/eda.ipynb` | Exploratory data analysis that grounds every metric and figure. |
+| `dealership_data.json` | The provided dataset, also bundled inside the app. |
 
-## Run the app
+## Run locally
+
 ```bash
 cd dealerpulse
 npm install
 npm run dev      # http://localhost:3000
-npm test         # analytics correctness suite (17 tests)
+npm test         # analytics and merge suite (39 tests)
 npm run build
 ```
 
-## Deploy to Vercel
-Import the repo at [vercel.com/new](https://vercel.com/new) and set the project
-**Root Directory** to `dealerpulse`. Framework preset (Next.js) is auto-detected;
-no environment variables are required.
+## Deploy
+
+Import the repository on Vercel and set the project Root Directory to `dealerpulse`. The Next.js preset is auto-detected and no environment variables are required.
+
+## Stack
+
+Next.js 16 (App Router), TypeScript, Tailwind, Recharts, Zod, and Vitest.
