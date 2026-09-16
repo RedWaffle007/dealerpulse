@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "_comment": "Untracked mutation-testing config for the PhD software-testing review. Mutates the pure analytics/reconciliation layer (the dashboard's correctness core) and runs the vitest suite against each mutant. Not pushed; part of the untracked testing additions.",
+  "packageManager": "npm",
+  "testRunner": "command",
+  "commandRunner": { "command": "npx vitest run" },
+  "reporters": ["clear-text", "progress"],
+  "mutate": [
+    "src/lib/metrics.ts",
+    "src/lib/merge.ts",
+    "src/lib/scenario.ts",
+    "src/lib/filter.ts",
+    "src/lib/indexes.ts",
+    "src/lib/format.ts"
+  ],
+  "concurrency": 4,
+  "coverageAnalysis": "off",
+  "clearTextReporter": { "maxTestsToLog": 0 }
+}
