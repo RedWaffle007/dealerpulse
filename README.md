@@ -18,7 +18,8 @@ Live: https://dealerpulse-sooty.vercel.app/
 cd dealerpulse
 npm install
 npm run dev      # http://localhost:3000
-npm test         # analytics and merge suite (39 tests)
+npm test         # analytics and merge unit suite (vitest)
+npm run test:e2e # Playwright end-to-end suite (see e2e/README.md)
 npm run build
 ```
 
@@ -28,4 +29,4 @@ Import the repository on Vercel and set the project Root Directory to `dealerpul
 
 ## Stack
 
-Next.js 16 (App Router), TypeScript, Tailwind, Recharts, Zod, and Vitest.
+Next.js 16 (App Router), TypeScript, Tailwind, Recharts, Zod, Vitest, and Playwright.

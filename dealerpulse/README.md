@@ -11,7 +11,8 @@ Design decisions and tradeoffs are documented in [`DECISIONS.md`](./DECISIONS.md
 ```bash
 npm install
 npm run dev      # http://localhost:3000
-npm test         # analytics and merge suite (39 tests)
+npm test         # analytics and merge unit suite (vitest)
+npm run test:e2e # Playwright end-to-end suite (see e2e/README.md)
 npm run build
 ```
 
@@ -21,4 +22,4 @@ Deploys to Vercel with the project Root Directory set to `dealerpulse`. The Next
 
 ## Stack
 
-Next.js 16 (App Router), TypeScript, Tailwind, Recharts, Zod, and Vitest.
+Next.js 16 (App Router), TypeScript, Tailwind, Recharts, Zod, Vitest, and Playwright.

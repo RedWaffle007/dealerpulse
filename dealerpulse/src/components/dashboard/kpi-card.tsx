@@ -83,6 +83,7 @@ export function KpiCard({
 }) {
   const card = (
     <Card
+      data-testid="kpi-card"
       className={cn(
         "relative h-full gap-0 overflow-hidden py-4",
         "before:absolute before:inset-y-0 before:left-0 before:w-1",
@@ -93,7 +94,7 @@ export function KpiCard({
     >
       <CardContent className="px-4 pl-5">
         <div className="flex items-center justify-between gap-2">
-          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          <div data-testid="kpi-label" className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
             {label}
           </div>
           {href && (
@@ -104,6 +105,7 @@ export function KpiCard({
           )}
         </div>
         <div
+          data-testid="kpi-value"
           className={cn(
             "mt-2 font-heading text-[1.4rem] tracking-tight [overflow-wrap:anywhere] sm:text-[1.6rem] font-semibold tabular-nums leading-none",
             valueClasses[tone],
@@ -111,7 +113,7 @@ export function KpiCard({
         >
           {value}
         </div>
-        {sub && <div className="mt-2 text-xs leading-relaxed text-muted-foreground">{sub}</div>}
+        {sub && <div data-testid="kpi-sub" className="mt-2 text-xs leading-relaxed text-muted-foreground">{sub}</div>}
         {(delta || (spark && spark.length > 1)) && (
           <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
             {delta ? <DeltaChip delta={delta} label={deltaLabel} /> : <span />}

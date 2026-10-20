@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useCallback, type ReactNode } from "react";
+import { useCallback, useMemo, type ReactNode } from "react";
 import {
   Select,
   SelectContent,
@@ -59,6 +59,18 @@ export function FilterBar({
     if (v) setParam(v < from ? { from: v, to: v } : { to: v });
   };
 
+  // Value-to-label maps let each trigger show "Oct 2025" or "Central Toyota"
+  // on first render, before its popup has ever mounted the options.
+  const periodItems = PERIOD_LABELS;
+  const monthItems = useMemo(
+    () => Object.fromEntries(months.map((m) => [m, formatMonth(m)])),
+    [months],
+  );
+  const branchItems = useMemo(
+    () => ({ all: "All branches", ...Object.fromEntries(branches.map((b) => [b.id, b.name])) }),
+    [branches],
+  );
+
   const presetValue =
     from === months[0] && to === months[months.length - 1]
       ? "all"
@@ -73,21 +85,22 @@ export function FilterBar({
   return (
     <div className="grid grid-cols-2 items-end gap-2 sm:flex sm:flex-wrap">
       <Field label="Period">
-        <Select value={presetValue === "custom" ? null : presetValue} onValueChange={applyPreset}>
+        <Select items={periodItems} value={presetValue === "custom" ? null : presetValue} onValueChange={applyPreset}>
           <SelectTrigger size="sm" className="w-full sm:w-[148px]">
             <SelectValue placeholder="Custom range" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All months</SelectItem>
-            <SelectItem value="q3">Q3 (Jul–Sep)</SelectItem>
-            <SelectItem value="q4">Q4 (Oct–Dec)</SelectItem>
-            <SelectItem value="last">Latest month</SelectItem>
+            {Object.entries(PERIOD_LABELS).map(([value, label]) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </Field>
 
       <Field label="From">
-        <Select value={from} onValueChange={setFrom}>
+        <Select items={monthItems} value={from} onValueChange={setFrom}>
           <SelectTrigger size="sm" className="w-full sm:w-[116px]">
             <SelectValue />
           </SelectTrigger>
@@ -103,7 +116,7 @@ export function FilterBar({
       </Field>
 
       <Field label="To">
-        <Select value={to} onValueChange={setTo}>
+        <Select items={monthItems} value={to} onValueChange={setTo}>
           <SelectTrigger size="sm" className="w-full sm:w-[116px]">
             <SelectValue />
           </SelectTrigger>
@@ -119,7 +132,7 @@ export function FilterBar({
       </Field>
 
       <Field label="Branch">
-        <Select value={branch} onValueChange={(v) => v && setParam({ branch: v })}>
+        <Select items={branchItems} value={branch} onValueChange={(v) => v && setParam({ branch: v })}>
           <SelectTrigger size="sm" className="w-full sm:w-[168px]">
             <SelectValue />
           </SelectTrigger>
@@ -136,6 +149,13 @@ export function FilterBar({
     </div>
   );
 }
+
+const PERIOD_LABELS: Record<string, string> = {
+  all: "All months",
+  q3: "Q3 (Jul–Sep)",
+  q4: "Q4 (Oct–Dec)",
+  last: "Latest month",
+};
 
 /** A control with a small caption above it, so no dropdown is a mystery. */
 function Field({ label, children }: { label: string; children: ReactNode }) {
